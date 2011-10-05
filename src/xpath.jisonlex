@@ -1,10 +1,10 @@
-WhiteSpace          [ \n\t\r\f]+
+WhiteSpace          \s+
 Digit               [0-9]
 Letter              [A-Za-z]
-NameStartChar       {Letter}|_
-NameTrailChar       {Letter}|{Digit}|[-._]
-NCName              {NameStartChar}{NameTrailChar}*
-QName               {NCName}(:{NCName})?
+NameStartChar       [A-Za-z_]
+NameTrailChar       [A-Za-z0-9._-]
+NCName              [A-Za-z_][A-Za-z0-9._-]*
+QName               [A-Za-z_][A-Za-z0-9._-]*(":"[A-Za-z_][A-Za-z0-9._-]*)?
 
 %s INITIAL OP_CONTEXT VAL_CONTEXT
       
@@ -42,18 +42,18 @@ QName               {NCName}(:{NCName})?
 <*>"::"        { this.begin("VAL_CONTEXT"); return "DBL_COLON"; }
 <*>","         { this.begin("VAL_CONTEXT"); return "COMMA"; }
 
-
 <*>"node"/{WhiteSpace}?"("                        { return "NODETYPE_NODE"; }
 <*>"text"/{WhiteSpace}?"("                        { return "NODETYPE_TEXT"; }
+
 <*>"comment"/{WhiteSpace}?"("                     { return "NODETYPE_COMMENT"; }
 <*>"processing-instruction"/{WhiteSpace}?"("      { return "NODETYPE_PROCINSTR"; }
-
 <*>"$"{QName}                                      { this.begin("OP_CONTEXT"); return "VAR"; }
 <*>{Digit}+("."{Digit}*)?|"."{Digit}+              { this.begin("OP_CONTEXT"); return "NUM"; }
 <*>"\""[^"\""]*"\""|"\'"[^"\'"]*"\'"               { this.begin("OP_CONTEXT"); return "STR"; }
 
+<*>{WhiteSpace}                         /* ignore whitespace */ 
+<*><<EOF>>                              return 'EOF';
 
 
-<*>{WhiteSpace}        { /* ignore whitespace */ }
 
-<*><<EOF>>                     return 'ENDOFFILE';
+

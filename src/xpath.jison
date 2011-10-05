@@ -20,7 +20,11 @@
 %left UNION
 
 %%
+xpath_expr:  expr EOF   { typeof console !== 'undefined' ? console.log($1) : print($1);
+                          return $1; }
+    ;
 
+ 
 expr:   base_expr                   {  $$ = $1; } /* not necessary as this is the default */
     |   op_expr                     {  $$ = $1; }
     |   path_expr                   {  $$ = $1; }
