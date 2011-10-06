@@ -3,11 +3,18 @@
 
 /* This jison grammar file is based off of the javarosa grammar file which can be found here:
  * https://bitbucket.org/javarosa/javarosa/src/tip/core/src/org/javarosa/xpath/parser/xpath.grammar
+ *
+ * Also see the associated lex file:
+ * https://bitbucket.org/javarosa/javarosa/src/tip/core/src/org/javarosa/xpath/parser/xpath.flex
+ *
+ * To build run:
+ *   $ ./bin/jison xpath.jison xpath.jisonlex
  */
 
+
+
 /* 
- *
- *  TODO Code
+ *  TODO Code?
  */
 
 %right OR
@@ -20,6 +27,22 @@
 %left UNION
 
 %%
+
+/* This doesn't work, not sure if it's possible to define stuff in this scope
+{
+
+    var foo = function() {
+       var that = {};
+       that.test = function() {
+            return "foo!";
+       };
+       return that;
+    }; 
+}
+
+*/
+
+
 xpath_expr:  expr EOF   { typeof console !== 'undefined' ? console.log($1) : print($1);
                           return $1; }
     ;
@@ -48,24 +71,26 @@ op_expr: expr OR expr               { $$ = {"expr": "or", "left": $1, "right": $
     |   expr MULT expr              { $$ = {"expr": "mult", "left":$1, "right": $3}; }
     |   expr DIV expr               { $$ = {"expr": "div", "left":$1, "right": $3}; }
     |   expr MOD expr               { $$ = {"expr": "mod", "left":$1, "right": $3}; }
-    |   MINUS expr %prec UMINUS     { $$ = {"expr": "neg", "val":$1}; }
-          
-    |   expr UNION expr             { $$ = {"expr": "union", "left":$1, "right": $3}; } /* TODO: this is definitely wrong */
+    |   MINUS expr %prec UMINUS     { $$ = {"expr": "uminus", "val":$1}; }
+    |   expr UNION expr             { $$ = {"expr": "union", "left":$1, "right": $3}; } 
     ;
 
-func_call:  QNAME LPAREN arg_list RPAREN   { $$ = "fixme"; } /* TODO: this is wrong */
-        |   QNAME LPAREN RPAREN            { $$ = "fixme"; } /* TODO: this is wrong */
+func_call:  QNAME LPAREN arg_list RPAREN   { $$ = {"expr": "func_call", "args": $3}; } 
+        |   QNAME LPAREN RPAREN            { $$ = {"expr": "func_call", "args": []}; } 
         ;
 
-arg_list:   arg_list COMMA expr     { $$ = "fixme"; }  /* TODO: this is likely wrong */
-        |   expr                    { $$ = "fixme"; }         /* TODO: this is likely wrong */
+arg_list:   arg_list COMMA expr     { var args = $1;
+                                      args.push($3);
+                                      $$ = args; }         /* TODO: this is likely wrong */
+        |   expr                    { $$ = [$1]; }         /* TODO: this is likely wrong */
         ;
 
 path_expr:  loc_path
         ; 
 
 /* This is commented out because there might be a bug in jison that thinks this is ambiguous
- * when in fact it's not.
+ * when in fact it's not. The first group belongs as part of the path_expr. The second should
+ * be added as a new filter_expr.
  */
 
 /*
@@ -74,51 +99,58 @@ path_expr:  loc_path
         ;
 
 filter_expr:  filter_expr predicate     { $$ = "Vappend(fe.v, p); RESULT = fe;" }
-|   base_expr                   { $$ = "new vectorWrapper(be);"; } 
+|   base_expr                   { $$ = "new vectorWrapper(be);"; } ***** THIS IS THE LINE THAT BREAKS *****  
         ;
 */ 
+
 predicate:   LBRACK expr RBRACK            { $$ = $1; }
         ;
 
 
-loc_path:   rel_loc_path                    { $$ = "new XPathPathExpr(XPathPathExpr.INIT_CONTEXT_RELATIVE, getStepArr(rlp))"; }
-        |   SLASH rel_loc_path              { $$ = "new XPathPathExpr(XPathPathExpr.INIT_CONTEXT_ROOT, getStepArr(rlp))"; }
+loc_path:   rel_loc_path                    { $$ = $1; }
+        |   SLASH rel_loc_path              { var path = $2;
+                                              path.type = "abs";
+                                              $$ = path; }
         |   DBL_SLASH rel_loc_path          { $$ = "new XPathPathExpr(XPathPathExpr.INIT_CONTEXT_ROOT, getStepArr(Vprepend(rlp, XPathStep.ABBR_DESCENDANTS())))"; }
-        |   SLASH                   { $$ = "new XPathPathExpr(XPathPathExpr.INIT_CONTEXT_ROOT, new XPathStep[0])"; }
+        |   SLASH                   { $$ = {"expr": "loc_path", "type": "abs", "steps": []}; }
         ;
 
-rel_loc_path: step                  { $$ = "Vappend(null, s)"; }
-        |   rel_loc_path SLASH step       { $$ = "Vappend(rlp, s)"; }
+rel_loc_path: step                        { $$ = {"expr": "loc_path", "type": "rel", "steps": [$step]}; }
+        |   rel_loc_path SLASH step       { var path = $1;
+                                            path.steps.push($3);
+                                            $$ = path; }
         |   rel_loc_path DBL_SLASH step   { $$ = "Vappend(Vappend(rlp, XPathStep.ABBR_DESCENDANTS()), s)"; }
         ;
 
-step:   step_unabbr                   { $$ = "s.unwrapStep()"; }
-    |   DOT                     { $$ = "XPathStep.ABBR_SELF()"; }
-    |   DBL_DOT                     { $$ = "XPathStep.ABBR_PARENT()"; }
+step:   step_unabbr                 { $$ = $1; }
+    |   DOT                         { $$ = {"expr": "step", "val": {"expr": "node_test", "class": "SELF"}}; }
+    |   DBL_DOT                     { $$ = {"expr": "step", "val": {"expr": "node_test", "class": "PARENT"}}; }
     ;
 
-step_unabbr:  step_unabbr predicate       { "Vappend(s.v, p); RESULT = s"; }
-        |   step_body                { $$ = "new vectorWrapper(sb)"; }
+step_unabbr:  step_unabbr predicate       { var step = $1;
+                                            step.predicate = $2;
+                                            $$ = step; }
+        |   step_body                { $$ = $1; }
         ;
 
-step_body: node_test                { $$ = "nt.generateStep(XPathStep.AXIS_CHILD)"; }
-        |   axis_specifier node_test       { $$ = "nt.generateStep(a.intValue())"; }
+step_body: node_test                    { $$ = {"expr": "step", "val": $1}; }
+        |   axis_specifier node_test    { $$ = {"expr": "step", "axis": $1, "val": $2}; }
         ;
 
-axis_specifier:  QNAME DBL_COLON           { $$ = "new Integer(validateAxisName(q.toString()))"; }
+axis_specifier:  QNAME DBL_COLON           { $$ = {"expr": "axis", "val": $1}; }
         |   AT                  { $$ = "new Integer(XPathStep.AXIS_ATTRIBUTE)"; }
         ;
 
-node_test:  QNAME                 { $$ = "new tempNodeTest(XPathStep.TEST_NAME, q)"; }
-        |   WILDCARD                { $$ = "new tempNodeTest(XPathStep.TEST_NAME_WILDCARD)"; }
-        |   NSWILDCARD              { $$ = "new tempNodeTest(XPathStep.TEST_NAMESPACE_WILDCARD, nwc)"; }
-        |   NODETYPE_NODE LPAREN RPAREN     { $$ = "new tempNodeTest(XPathStep.TEST_TYPE_NODE)"; }
-        |   NODETYPE_TEXT LPAREN RPAREN     { $$ = "new tempNodeTest(XPathStep.TEST_TYPE_TEXT)"; }
-        |   NODETYPE_COMMENT LPAREN RPAREN      { $$ = "new tempNodeTest(XPathStep.TEST_TYPE_COMMENT)"; }
-        |   NODETYPE_PROCINSTR LPAREN STR RPAREN  { $$ = "new tempNodeTest(XPathStep.TEST_TYPE_PROCESSING_INSTRUCTION, s)"; }
+node_test:  QNAME                 { $$ = {"expr": "node_test", "class": "NAME", "val": $1}; }
+        |   WILDCARD                { $$ = {"expr": "node_test", "class": "WILDCARD"}; }
+        |   NSWILDCARD              { $$ = {"expr": "node_test", "class": "NSWILDCARD"}; }
+        |   NODETYPE_NODE LPAREN RPAREN     { $$ = {"expr": "node_test", "class": "NODE"}; }
+        |   NODETYPE_TEXT LPAREN RPAREN     { $$ = {"expr": "node_test", "class": "TEXT"}; }
+        |   NODETYPE_COMMENT LPAREN RPAREN      { $$ = {"expr": "node_test", "class": "COMMENT"}; }
+        |   NODETYPE_PROCINSTR LPAREN STR RPAREN  { $$ = {"expr": "node_test", "class": "PROCESSING_INSTRUCTION", "val": $3}; }
         ;
 
-literal: STR                       { $$ = "new XPathStringLiteral(s)"; }
-    |   NUM                       { $$ = {"expr": "num", "val":$1}; }
+literal: STR                       { $$ = {"expr": "str", "val": $1}; }
+    |   NUM                       { $$ = {"expr": "num", "val": Number($1)}; }
     ;
   
