@@ -1,5 +1,7 @@
 An XPath Parser for JavaScript.
 
-This is built using jison.
+This is built using jison. To build the parser file run:
+
+$ node /path/to/jison src/xpath.jison src/xpath.jisonlex
 
 Better docs coming soon.
