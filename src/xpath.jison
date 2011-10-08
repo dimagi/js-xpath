@@ -122,20 +122,20 @@ step_body: node_test                    { $$ = {"expr": "step", "val": $1}; }
         |   axis_specifier node_test    { $$ = {"expr": "step", "axis": $1, "val": $2}; }
         ;
 
-axis_specifier:  QNAME DBL_COLON           { $$ = {"expr": "axis", "val": $1}; }
-        |   AT                  { $$ = "new Integer(XPathStep.AXIS_ATTRIBUTE)"; }
+axis_specifier:  QNAME DBL_COLON           { $$ = validateAxisName($1); }
+        |   AT                  { $$ = XPathAxisEnum.ATTRIBUTE; }
         ;
 
-node_test:  QNAME                 { $$ = {"expr": "node_test", "class": "NAME", "val": $1}; }
-        |   WILDCARD                { $$ = {"expr": "node_test", "class": "WILDCARD"}; }
-        |   NSWILDCARD              { $$ = {"expr": "node_test", "class": "NSWILDCARD"}; }
-        |   NODETYPE_NODE LPAREN RPAREN     { $$ = {"expr": "node_test", "class": "NODE"}; }
-        |   NODETYPE_TEXT LPAREN RPAREN     { $$ = {"expr": "node_test", "class": "TEXT"}; }
-        |   NODETYPE_COMMENT LPAREN RPAREN      { $$ = {"expr": "node_test", "class": "COMMENT"}; }
-        |   NODETYPE_PROCINSTR LPAREN STR RPAREN  { $$ = {"expr": "node_test", "class": "PROCESSING_INSTRUCTION", "val": $3}; }
+node_test:  QNAME                 { $$ = {"type": "node_test", "class": "NAME", "val": $1}; }
+        |   WILDCARD                { $$ = {"type": "node_test", "class": "WILDCARD"}; }
+        |   NSWILDCARD              { $$ = {"type": "node_test", "class": "NSWILDCARD"}; }
+        |   NODETYPE_NODE LPAREN RPAREN     { $$ = {"type": "node_test", "class": "NODE"}; }
+        |   NODETYPE_TEXT LPAREN RPAREN     { $$ = {"type": "node_test", "class": "TEXT"}; }
+        |   NODETYPE_COMMENT LPAREN RPAREN      { $$ = {"type": "node_test", "class": "COMMENT"}; }
+        |   NODETYPE_PROCINSTR LPAREN STR RPAREN  { $$ = {"type": "node_test", "class": "PROCESSING_INSTRUCTION", "val": $3}; }
         ;
 
-literal: STR                       { $$ = {"expr": "str", "val": $1}; }
-    |   NUM                       { $$ = {"expr": "num", "val": Number($1)}; }
+literal: STR                       { $$ = new XPathStringLiteral($1); }
+    |   NUM                       { $$ = new XPathNumericLiteral(Number($1)); }
     ;
   
