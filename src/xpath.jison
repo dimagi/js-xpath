@@ -28,21 +28,6 @@
 
 %%
 
-/* This doesn't work, not sure if it's possible to define stuff in this scope
-{
-
-    var foo = function() {
-       var that = {};
-       that.test = function() {
-            return "foo!";
-       };
-       return that;
-    }; 
-}
-
-*/
-
-
 xpath_expr:  expr EOF   { typeof console !== 'undefined' ? console.log($1) : print($1);
                           return $1; }
     ;
@@ -75,7 +60,7 @@ op_expr: expr OR expr               { $$ = {"expr": "or", "left": $1, "right": $
     |   expr UNION expr             { $$ = {"expr": "union", "left":$1, "right": $3}; } 
     ;
 
-func_call:  QNAME LPAREN arg_list RPAREN   { $$ = {"expr": "func_call", "args": $3}; } 
+func_call:  QNAME LPAREN arg_list RPAREN   { $$ = {"expr": "func_call", "args": $3, "random": foo()}; } 
         |   QNAME LPAREN RPAREN            { $$ = {"expr": "func_call", "args": []}; } 
         ;
 
