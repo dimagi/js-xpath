@@ -3,6 +3,7 @@
         <title>XPath Test</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <script type="text/javascript" src="models.js"></script>
+        <script type="text/javascript" src="utils.js"></script>
         <script type="text/javascript" src="xpath.js"></script>
   <script type="text/javascript">
         console.log("xpath", xpath);
@@ -13,6 +14,6 @@
 <body>
     <p>Enter an expression below to parse. Output is simply logged to the console.</p>
     <input id="expression" type="text" placeholder="asdf('bcd', 1, 'foo/bar')" />
-    <input type="submit" value="submit" onclick="xpath.parse(document.getElementById('expression').value);" />
+    <input type="submit" value="Parse" onclick="xpath.parse(document.getElementById('expression').value);" />
 </body>
 </html>
