@@ -118,21 +118,24 @@ step_unabbr:  step_unabbr predicate       { var step = $1;
         |   step_body                { $$ = $1; }
         ;
 
-step_body: node_test                    { $$ = {"expr": "step", "val": $1}; }
-        |   axis_specifier node_test    { $$ = {"expr": "step", "axis": $1, "val": $2}; }
+step_body: node_test                    { var nodeTest = $1; // temporary dict with appropriate args
+                                          $$ = new XPathStep(nodeTest); }
+        |   axis_specifier node_test    { var nodeTest = $1;  // temporary dict with appropriate args
+                                          nodeTest.axis = $1; // add axis
+                                          $$ = new XPathStep(nodeTest); }
         ;
 
 axis_specifier:  QNAME DBL_COLON           { $$ = validateAxisName($1); }
         |   AT                  { $$ = XPathAxisEnum.ATTRIBUTE; }
         ;
 
-node_test:  QNAME                 { $$ = {"type": "node_test", "class": "NAME", "val": $1}; }
-        |   WILDCARD                { $$ = {"type": "node_test", "class": "WILDCARD"}; }
-        |   NSWILDCARD              { $$ = {"type": "node_test", "class": "NSWILDCARD"}; }
-        |   NODETYPE_NODE LPAREN RPAREN     { $$ = {"type": "node_test", "class": "NODE"}; }
-        |   NODETYPE_TEXT LPAREN RPAREN     { $$ = {"type": "node_test", "class": "TEXT"}; }
-        |   NODETYPE_COMMENT LPAREN RPAREN      { $$ = {"type": "node_test", "class": "COMMENT"}; }
-        |   NODETYPE_PROCINSTR LPAREN STR RPAREN  { $$ = {"type": "node_test", "class": "PROCESSING_INSTRUCTION", "val": $3}; }
+node_test:  QNAME                 { $$ = {"test": XPathTestEnum.NAME, "name": $1}; }
+        |   WILDCARD                { $$ = {"test": XPathTestEnum.NAME_WILDCARD}; }
+        |   NSWILDCARD              { $$ = {"test": XPathTestEnum.NAMESPACE_WILDCARD}; }
+        |   NODETYPE_NODE LPAREN RPAREN     { $$ = {"test": XPathTestEnum.TYPE_NODE}; }
+        |   NODETYPE_TEXT LPAREN RPAREN     { $$ = {"test": XPathTestEnum.TYPE_TEXT}; }
+        |   NODETYPE_COMMENT LPAREN RPAREN      { $$ = {"test": XPathTestEnum.TYPE_COMMENT}; }
+        |   NODETYPE_PROCINSTR LPAREN STR RPAREN  { $$ = {"test": XPathTestEnum.TYPE_PROCESSING_INSTRUCTION, "literal": $3}; }
         ;
 
 literal: STR                       { $$ = new XPathStringLiteral($1); }

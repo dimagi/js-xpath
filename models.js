@@ -42,7 +42,7 @@ var XPathTestEnum = {
 
 };
 
-var XPathStep = function(axis, test, predicates, name, namespace, literal) {
+var XPathStep = function(definition) {
 /*        
     
         public static XPathStep ABBR_SELF () {
@@ -57,11 +57,11 @@ var XPathStep = function(axis, test, predicates, name, namespace, literal) {
                 return new XPathStep(AXIS_DESCENDANT_OR_SELF, TEST_TYPE_NODE);
         }
 */
-    this.axis = axis;
-    this.test = test;
-    this.predicates = predicates;
-    this.name = name;
-    this.namespace = namespace;
-    this.literal = literal;
+    this.axis = definition.axis;
+    this.test = definition.test;
+    this.predicates = definition.predicates;
+    this.name = definition.name;
+    this.namespace = definition.namespace;
+    this.literal = definition.literal;
     return this;        
 }
