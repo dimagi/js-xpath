@@ -43,20 +43,10 @@ var XPathTestEnum = {
 };
 
 var XPathStep = function(definition) {
-/*        
-    
-        public static XPathStep ABBR_SELF () {
-                return new XPathStep(AXIS_SELF, TEST_TYPE_NODE);
-        }
-
-        public static XPathStep ABBR_PARENT () {
-                return new XPathStep(AXIS_PARENT, TEST_TYPE_NODE);
-        }
-
-        public static XPathStep ABBR_DESCENDANTS () {
-                return new XPathStep(AXIS_DESCENDANT_OR_SELF, TEST_TYPE_NODE);
-        }
-*/
+/*
+ * A step (part of a path)
+ * 
+ */        
     this.axis = definition.axis;
     this.test = definition.test;
     this.predicates = definition.predicates;
@@ -64,4 +54,31 @@ var XPathStep = function(definition) {
     this.namespace = definition.namespace;
     this.literal = definition.literal;
     return this;        
+}
+
+var XPathInitialContextEnum = {
+    ROOT: "root", 
+    RELATIVE: "rel", 
+    EXPR: "expr", 
+};
+
+var XPathPathExpr = function(definition) {
+    /**
+     * an XPath path, which consists mainly of steps
+     */
+
+    this.initial_context = definition.initial_context;
+    this.steps = definition.steps || [];
+    this.filter = definition.filter;
+    return this;
+}
+
+
+var XPathFuncExpr = function (definition) {
+	/**
+	 * Representation of an xpath function expression.
+	 */
+    this.id = definition.id;                   //name of the function
+    this.args = definition.args || [];       //argument list
+    return this;    
 }

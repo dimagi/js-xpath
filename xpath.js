@@ -49,9 +49,9 @@ case 21: this.$ = {"expr": "uminus", "val":$$[$0-1]};
 break;
 case 22: this.$ = {"expr": "union", "left":$$[$0-2], "right": $$[$0]}; 
 break;
-case 23: this.$ = {"expr": "func_call", "args": $$[$0-1], "random": foo()}; 
+case 23: this.$ = new XPathFuncExpr({id: $$[$0-3], args: $$[$0-1]}); 
 break;
-case 24: this.$ = {"expr": "func_call", "args": []}; 
+case 24: this.$ = new XPathFuncExpr({id: $$[$0-2], args: []}); 
 break;
 case 25: var args = $$[$0-2];
                                       args.push($$[$0]);
@@ -61,29 +61,41 @@ case 26: this.$ = [$$[$0]];
 break;
 case 28: this.$ = $$[$0-2]; 
 break;
-case 29: this.$ = $$[$0]; 
+case 29: this.$ = new XPathPathExpr({initial_context: XPathInitialContextEnum.RELATIVE,
+                                                                      steps: $$[$0]}); 
 break;
-case 30: var path = $$[$0];
-                                              path.type = "abs";
-                                              this.$ = path; 
+case 30: this.$ = new XPathPathExpr({initial_context: XPathInitialContextEnum.ROOT,
+                                                                      steps: $$[$0]}); 
 break;
-case 31: this.$ = "new XPathPathExpr(XPathPathExpr.INIT_CONTEXT_ROOT, getStepArr(Vprepend(rlp, XPathStep.ABBR_DESCENDANTS())))"; 
+case 31: var steps = $$[$0];
+                                              // insert descendant step into beginning
+                                              steps.splice(0, 0, new XPathStep({axis: XPathAxisEnum.DESCENDANT, 
+                                                                                test: XPathTestEnum.TYPE_NODE}));
+                                              this.$ = new XPathPathExpr({initial_context: XPathInitialContextEnum.ROOT,
+                                                                      steps: steps}); 
 break;
-case 32: this.$ = {"expr": "loc_path", "type": "abs", "steps": []}; 
+case 32: this.$ = new XPathPathExpr({initial_context: XPathInitialContextEnum.ROOT,
+                                                              steps: []});
 break;
-case 33: this.$ = {"expr": "loc_path", "type": "rel", "steps": [$$[$0]]}; 
+case 33: this.$ = [$$[$0]];
 break;
 case 34: var path = $$[$0-2];
-                                            path.steps.push($$[$0]);
+                                            path.push($$[$0]);
                                             this.$ = path; 
 break;
-case 35: this.$ = "Vappend(Vappend(rlp, XPathStep.ABBR_DESCENDANTS()), s)"; 
+case 35: var path = $$[$0-2];
+                                            path.push(new XPathStep({axis: XPathAxisEnum.DESCENDANT, 
+                                                                     test: XPathTestEnum.TYPE_NODE}));
+                                            path.push($$[$0]);
+                                            this.$ = path; 
 break;
 case 36: this.$ = $$[$0]; 
 break;
-case 37: this.$ = {"expr": "step", "val": {"expr": "node_test", "class": "SELF"}}; 
+case 37: this.$ = new XPathStep({axis: XPathAxisEnum.SELF, 
+                                                          test: XPathTestEnum.TYPE_NODE}); 
 break;
-case 38: this.$ = {"expr": "step", "val": {"expr": "node_test", "class": "PARENT"}}; 
+case 38: this.$ = new XPathStep({axis: XPathAxisEnum.PARENT, 
+                                                          test: XPathTestEnum.TYPE_NODE}); 
 break;
 case 39: var step = $$[$0-1];
                                             step.predicate = $$[$0];
@@ -462,9 +474,9 @@ case 15: this.begin("VAL_CONTEXT"); return "MINUS";
 break;
 case 16: this.begin("VAL_CONTEXT"); return "UNION"; 
 break;
-case 17: this.begin("VAL_CONTEXT"); return "SLASH"; 
+case 17: this.begin("VAL_CONTEXT"); return "DBL_SLASH"; 
 break;
-case 18: this.begin("VAL_CONTEXT"); return "DBL_SLASH"; 
+case 18: this.begin("VAL_CONTEXT"); return "SLASH"; 
 break;
 case 19: this.begin("VAL_CONTEXT"); return "LBRACK"; 
 break;
@@ -504,7 +516,7 @@ case 36:return 5;
 break;
 }
 };
-lexer.rules = [/^\*/,/^[A-Za-z_][A-Za-z0-9._-]*(:[A-Za-z_][A-Za-z0-9._-]*)?/,/^[A-Za-z_][A-Za-z0-9._-]*\*/,/^\*/,/^and\b/,/^or\b/,/^div\b/,/^mod\b/,/^=/,/^!=/,/^</,/^>/,/^<=/,/^>=/,/^\+/,/^-/,/^\|/,/^\//,/^\/\//,/^\[/,/^\]/,/^\(/,/^\)/,/^\./,/^\.\./,/^@/,/^::/,/^,/,/^node(?=\s+?)\(/,/^text(?=\s+?)\(/,/^comment(?=\s+?)\(/,/^processing-instruction(?=\s+?)\(/,/^\$[A-Za-z_][A-Za-z0-9._-]*(:[A-Za-z_][A-Za-z0-9._-]*)?/,/^[0-9]+(\.[0-9]*)?|\.[0-9]+/,/^"[^"\""]*"|\\'[^"\'"]*\\'/,/^\s+/,/^$/];
+lexer.rules = [/^\*/,/^[A-Za-z_][A-Za-z0-9._-]*(:[A-Za-z_][A-Za-z0-9._-]*)?/,/^[A-Za-z_][A-Za-z0-9._-]*\*/,/^\*/,/^and\b/,/^or\b/,/^div\b/,/^mod\b/,/^=/,/^!=/,/^</,/^>/,/^<=/,/^>=/,/^\+/,/^-/,/^\|/,/^\/\//,/^\//,/^\[/,/^\]/,/^\(/,/^\)/,/^\./,/^\.\./,/^@/,/^::/,/^,/,/^node(?=\s+?)\(/,/^text(?=\s+?)\(/,/^comment(?=\s+?)\(/,/^processing-instruction(?=\s+?)\(/,/^\$[A-Za-z_][A-Za-z0-9._-]*(:[A-Za-z_][A-Za-z0-9._-]*)?/,/^[0-9]+(\.[0-9]*)?|\.[0-9]+/,/^"[^"\""]*"|\\'[^"\'"]*\\'/,/^\s+/,/^$/];
 lexer.conditions = {"INITIAL":{"rules":[0,1,2,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36],"inclusive":true},"OP_CONTEXT":{"rules":[3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36],"inclusive":true},"VAL_CONTEXT":{"rules":[0,1,2,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36],"inclusive":true}};return lexer;})()
 parser.lexer = lexer;
 return parser;

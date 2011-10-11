@@ -60,14 +60,14 @@ op_expr: expr OR expr               { $$ = {"expr": "or", "left": $1, "right": $
     |   expr UNION expr             { $$ = {"expr": "union", "left":$1, "right": $3}; } 
     ;
 
-func_call:  QNAME LPAREN arg_list RPAREN   { $$ = {"expr": "func_call", "args": $3, "random": foo()}; } 
-        |   QNAME LPAREN RPAREN            { $$ = {"expr": "func_call", "args": []}; } 
+func_call:  QNAME LPAREN arg_list RPAREN   { $$ = new XPathFuncExpr({id: $1, args: $3}); } 
+        |   QNAME LPAREN RPAREN            { $$ = new XPathFuncExpr({id: $1, args: []}); } 
         ;
 
 arg_list:   arg_list COMMA expr     { var args = $1;
                                       args.push($3);
-                                      $$ = args; }         /* TODO: this is likely wrong */
-        |   expr                    { $$ = [$1]; }         /* TODO: this is likely wrong */
+                                      $$ = args; }         
+        |   expr                    { $$ = [$1]; }
         ;
 
 path_expr:  loc_path
@@ -92,24 +92,36 @@ predicate:   LBRACK expr RBRACK            { $$ = $1; }
         ;
 
 
-loc_path:   rel_loc_path                    { $$ = $1; }
-        |   SLASH rel_loc_path              { var path = $2;
-                                              path.type = "abs";
-                                              $$ = path; }
-        |   DBL_SLASH rel_loc_path          { $$ = "new XPathPathExpr(XPathPathExpr.INIT_CONTEXT_ROOT, getStepArr(Vprepend(rlp, XPathStep.ABBR_DESCENDANTS())))"; }
-        |   SLASH                   { $$ = {"expr": "loc_path", "type": "abs", "steps": []}; }
+loc_path:   rel_loc_path                    { $$ = new XPathPathExpr({initial_context: XPathInitialContextEnum.RELATIVE,
+                                                                      steps: $1}); }
+        |   SLASH rel_loc_path              { $$ = new XPathPathExpr({initial_context: XPathInitialContextEnum.ROOT,
+                                                                      steps: $2}); }
+        |   DBL_SLASH rel_loc_path          { var steps = $2;
+                                              // insert descendant step into beginning
+                                              steps.splice(0, 0, new XPathStep({axis: XPathAxisEnum.DESCENDANT, 
+                                                                                test: XPathTestEnum.TYPE_NODE}));
+                                              $$ = new XPathPathExpr({initial_context: XPathInitialContextEnum.ROOT,
+                                                                      steps: steps}); }
+        |   SLASH                   { $$ = new XPathPathExpr({initial_context: XPathInitialContextEnum.ROOT,
+                                                              steps: []});}
         ;
 
-rel_loc_path: step                        { $$ = {"expr": "loc_path", "type": "rel", "steps": [$step]}; }
+rel_loc_path: step                        { $$ = [$1];}
         |   rel_loc_path SLASH step       { var path = $1;
-                                            path.steps.push($3);
+                                            path.push($3);
                                             $$ = path; }
-        |   rel_loc_path DBL_SLASH step   { $$ = "Vappend(Vappend(rlp, XPathStep.ABBR_DESCENDANTS()), s)"; }
+        |   rel_loc_path DBL_SLASH step   { var path = $1;
+                                            path.push(new XPathStep({axis: XPathAxisEnum.DESCENDANT, 
+                                                                     test: XPathTestEnum.TYPE_NODE}));
+                                            path.push($3);
+                                            $$ = path; }
         ;
 
 step:   step_unabbr                 { $$ = $1; }
-    |   DOT                         { $$ = {"expr": "step", "val": {"expr": "node_test", "class": "SELF"}}; }
-    |   DBL_DOT                     { $$ = {"expr": "step", "val": {"expr": "node_test", "class": "PARENT"}}; }
+    |   DOT                         { $$ = new XPathStep({axis: XPathAxisEnum.SELF, 
+                                                          test: XPathTestEnum.TYPE_NODE}); }
+    |   DBL_DOT                     { $$ = new XPathStep({axis: XPathAxisEnum.PARENT, 
+                                                          test: XPathTestEnum.TYPE_NODE}); }
     ;
 
 step_unabbr:  step_unabbr predicate       { var step = $1;
