@@ -62,15 +62,43 @@ var XPathStep = function(definition) {
  */        
     this.axis = definition.axis;
     this.test = definition.test;
-    this.predicates = definition.predicates;
+    this.predicates = definition.predicates || [];
     this.name = definition.name;
     this.namespace = definition.namespace;
     this.literal = definition.literal;
+    
+    this.testString = function () {
+         switch(this.test) {
+            case XPathTestEnum.NAME:
+                return String(this.name);           
+            case XPathTestEnum.TYPE_PROCESSING_INSTRUCTION:
+                return "proc-instr(" + (this.literal == null ? "" : "\'" + literal + "\'") + ")";
+             default:
+                return this.test || null;
+         }
+    }
+    
+    this.toString = function() {
+        var stringArray = [];
+                
+        stringArray.push("{step:");
+	    stringArray.push(String(this.axis));
+	    stringArray.push(",");
+	    stringArray.push(this.testString());
+	    if (this.predicates.length > 0) {
+            stringArray.push(",{");
+            stringArray.append(this.predicates.join(","));
+            stringArray.push("}");
+	    }
+	    
+	    stringArray.push("}");
+	    return stringArray.join("");
+    };
     return this;        
 };
 
 var XPathInitialContextEnum = {
-    ROOT: "root", 
+    ROOT: "abs", 
     RELATIVE: "rel", 
     EXPR: "expr", 
 };
@@ -83,6 +111,15 @@ var XPathPathExpr = function(definition) {
     this.initial_context = definition.initial_context;
     this.steps = definition.steps || [];
     this.filter = definition.filter;
+    this.toString = function() {
+        var stringArray = [];
+        stringArray.push("{path-expr:");
+        stringArray.push(this.initial_context == XPathInitialContextEnum.EXPR ? String(this.filter) : this.initial_context)
+        stringArray.push(",{");
+        stringArray.push(this.steps.join(","));
+        stringArray.push("}}");
+        return stringArray.join("");
+    };
     return this;
 };
 
@@ -93,7 +130,14 @@ var XPathFuncExpr = function (definition) {
 	 */
     this.id = definition.id;                   //name of the function
     this.args = definition.args || [];       //argument list
-    return this;    
+    this.toString = function() {
+        var stringArray = [];
+        stringArray.push("{func-expr:", String(this.id), ",{");
+        stringArray.push(this.args.join(","));
+        stringArray.push("}}");
+        return stringArray.join("");
+    }
+    return this;
 };
 
 

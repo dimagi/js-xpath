@@ -131,8 +131,9 @@ step_unabbr:  step_unabbr predicate       { var step = $1;
         ;
 
 step_body: node_test                    { var nodeTest = $1; // temporary dict with appropriate args
+                                          nodeTest.axis = XPathAxisEnum.CHILD;
                                           $$ = new XPathStep(nodeTest); }
-        |   axis_specifier node_test    { var nodeTest = $1;  // temporary dict with appropriate args
+        |   axis_specifier node_test    { var nodeTest = $2;  // temporary dict with appropriate args
                                           nodeTest.axis = $1; // add axis
                                           $$ = new XPathStep(nodeTest); }
         ;

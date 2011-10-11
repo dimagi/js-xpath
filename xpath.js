@@ -107,9 +107,10 @@ break;
 case 41: this.$ = $$[$0]; 
 break;
 case 42: var nodeTest = $$[$0]; // temporary dict with appropriate args
+                                          nodeTest.axis = XPathAxisEnum.CHILD;
                                           this.$ = new XPathStep(nodeTest); 
 break;
-case 43: var nodeTest = $$[$0-1];  // temporary dict with appropriate args
+case 43: var nodeTest = $$[$0];  // temporary dict with appropriate args
                                           nodeTest.axis = $$[$0-1]; // add axis
                                           this.$ = new XPathStep(nodeTest); 
 break;
