@@ -6,12 +6,18 @@
  */
 
 var XPathNumericLiteral = function(value) {
-    this.value = value; 
+    this.value = value;
+    this.toString = function() {
+        return "{num:" + String(this.value) + "}";
+    }
     return this;
 };
 
 var XPathStringLiteral = function(value) {
     this.value = value; 
+    this.toString = function() {
+        return "{str:'" + this.value + "'}"; //TODO: s needs to be escaped (' -> \'; \ -> \\)
+    }
     return this;
 };
 
