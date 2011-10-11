@@ -54,7 +54,7 @@ var XPathStep = function(definition) {
     this.namespace = definition.namespace;
     this.literal = definition.literal;
     return this;        
-}
+};
 
 var XPathInitialContextEnum = {
     ROOT: "root", 
@@ -71,7 +71,7 @@ var XPathPathExpr = function(definition) {
     this.steps = definition.steps || [];
     this.filter = definition.filter;
     return this;
-}
+};
 
 
 var XPathFuncExpr = function (definition) {
@@ -81,4 +81,60 @@ var XPathFuncExpr = function (definition) {
     this.id = definition.id;                   //name of the function
     this.args = definition.args || [];       //argument list
     return this;    
-}
+};
+
+
+// expressions
+
+var XPathExpressionTypeEnum = {
+    AND: "and", 
+    OR: "or",
+    EQ: "eq",
+    NEQ: "neq",
+    LT: "lt",
+    LTE: "lte",
+    GT: "gt",
+    GTE: "gte"
+    
+};
+
+var XPathBoolExpr = function(definition) {
+    this.type = definition.type;
+    this.left = definition.left;
+    this.right = definition.right;
+    return this;
+};
+
+var XPathEqExpr = function(definition) {
+    this.type = definition.type;
+    this.left = definition.left;
+    this.right = definition.right;
+    return this;
+};
+
+var XPathCmpExpr = function(definition) {
+    this.type = definition.type;
+    this.left = definition.left;
+    this.right = definition.right;
+    return this;
+};
+ 
+var XPathArithExpr = function(definition) {
+    this.type = definition.type;
+    this.left = definition.left;
+    this.right = definition.right;
+    return this;
+};
+
+var XPathNumNegExpr = function(definition) {
+    this.type = definition.type;
+    this.value = definition.left;
+    return this;
+};
+
+var XPathUnionExpr = function(definition) {
+    this.type = definition.type;
+    this.left = definition.left;
+    this.right = definition.right;
+    return this;
+};
