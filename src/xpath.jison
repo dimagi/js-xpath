@@ -39,7 +39,7 @@ expr:   base_expr                   {  $$ = $1; } /* not necessary as this is th
 
 base_expr:  LPAREN expr RPAREN            { $$ = $2; }
         |   func_call                
-        |   VAR                   
+        |   VAR                           { $$ = new XPathVariableReference($1); }
         |   literal               
         ;
 

@@ -21,6 +21,13 @@ var XPathStringLiteral = function(value) {
     return this;
 };
 
+var XPathVariableReference = function(value) {
+    this.value = value;
+    this.toString = function() {
+        return "{var:" + String(this.value) + "}";
+    }
+}
+
 var XPathAxisEnum = {
     CHILD: "child",
     DESCENDANT: "descendant",

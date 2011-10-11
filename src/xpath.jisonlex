@@ -47,7 +47,7 @@ QName               [A-Za-z_][A-Za-z0-9._-]*(":"[A-Za-z_][A-Za-z0-9._-]*)?
 
 <*>"comment"/{WhiteSpace}?"("                     { return "NODETYPE_COMMENT"; }
 <*>"processing-instruction"/{WhiteSpace}?"("      { return "NODETYPE_PROCINSTR"; }
-<*>"$"{QName}                                      { this.begin("OP_CONTEXT"); return "VAR"; }
+<*>"$"{QName}                                      { this.begin("OP_CONTEXT"); yytext = yytext.substr(1,yyleng-1); return "VAR"; }
 <*>{Digit}+("."{Digit}*)?|"."{Digit}+              { this.begin("OP_CONTEXT"); return "NUM"; }
 <*>"\""[^"\""]*"\""|"\'"[^"\'"]*"\'"               { this.begin("OP_CONTEXT"); yytext = yytext.substr(1,yyleng-2); return "STR"; }
 
