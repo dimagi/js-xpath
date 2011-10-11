@@ -28,8 +28,7 @@
 
 %%
 
-xpath_expr:  expr EOF   { typeof console !== 'undefined' ? console.log($1) : print($1);
-                          return $1; }
+xpath_expr:  expr EOF   { return $1; }
     ;
 
  
