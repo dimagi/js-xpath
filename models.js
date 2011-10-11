@@ -100,21 +100,36 @@ var XPathFuncExpr = function (definition) {
 // expressions
 
 var XPathExpressionTypeEnum = {
+    /*
+     * These aren't yet really used anywhere, but they are correct.
+     * They correlate with the "type" field in the parser for ops.
+     * 
+     */
+    
     AND: "and", 
     OR: "or",
-    EQ: "eq",
-    NEQ: "neq",
-    LT: "lt",
-    LTE: "lte",
-    GT: "gt",
-    GTE: "gte"
-    
+    EQ: "==",
+    NEQ: "!=",
+    LT: "<",
+    LTE: "<=",
+    GT: ">",
+    GTE: ">=",
+    PLUS: "+",
+    MINUS: "-",
+    MULT: "*",
+    DIV: "/",
+    MOD: "%"    
 };
+
+var binOpToString = function() {
+    return "{binop-expr:" + this.type + "," + String(this.left) + "," + String(this.right) + "}";
+}
 
 var XPathBoolExpr = function(definition) {
     this.type = definition.type;
     this.left = definition.left;
     this.right = definition.right;
+    this.toString = binOpToString;
     return this;
 };
 
@@ -122,6 +137,7 @@ var XPathEqExpr = function(definition) {
     this.type = definition.type;
     this.left = definition.left;
     this.right = definition.right;
+    this.toString = binOpToString;
     return this;
 };
 
@@ -129,6 +145,7 @@ var XPathCmpExpr = function(definition) {
     this.type = definition.type;
     this.left = definition.left;
     this.right = definition.right;
+    this.toString = binOpToString;
     return this;
 };
  
@@ -136,12 +153,7 @@ var XPathArithExpr = function(definition) {
     this.type = definition.type;
     this.left = definition.left;
     this.right = definition.right;
-    return this;
-};
-
-var XPathNumNegExpr = function(definition) {
-    this.type = definition.type;
-    this.value = definition.left;
+    this.toString = binOpToString;
     return this;
 };
 
@@ -149,5 +161,15 @@ var XPathUnionExpr = function(definition) {
     this.type = definition.type;
     this.left = definition.left;
     this.right = definition.right;
+    this.toString = binOpToString;
+    return this;
+};
+
+var XPathNumNegExpr = function(definition) {
+    this.type = definition.type;
+    this.value = definition.value;
+    this.toString = function() {
+        return "{unop-expr:" + this.type + "," + String(this.value) + "}";
+    }
     return this;
 };

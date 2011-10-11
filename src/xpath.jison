@@ -45,18 +45,18 @@ base_expr:  LPAREN expr RPAREN            { $$ = $2; }
 
 op_expr: expr OR expr               { $$ = new XPathBoolExpr({"type": "or", "left": $1, "right": $3}); }
     |   expr AND expr               { $$ = new XPathBoolExpr({"type": "and", "left": $1, "right": $3}); }
-    |   expr EQ expr                { $$ = new XPathEqExpr({"type": "eq", "left": $1, "right": $3}); }
-    |   expr NEQ expr               { $$ = new XPathEqExpr({"type": "neq", "left": $1, "right": $3}); }
-    |   expr LT expr                { $$ = new XPathCmpExpr({"type": "lt", "left":$1, "right": $3}); }
-    |   expr LTE expr               { $$ = new XPathCmpExpr({"type": "lte", "left":$1, "right": $3}); }
-    |   expr GT expr                { $$ = new XPathCmpExpr({"type": "gt", "left":$1, "right": $3}); }
-    |   expr GTE expr               { $$ = new XPathCmpExpr({"type": "gte", "left":$1, "right": $3}); }
-    |   expr PLUS expr              { $$ = new XPathArithExpr({"type": "plus", "left":$1, "right": $3}); }
-    |   expr MINUS expr             { $$ = new XPathArithExpr({"type": "minus", "left":$1, "right": $3}); }
-    |   expr MULT expr              { $$ = new XPathArithExpr({"type": "mult", "left":$1, "right": $3}); }
-    |   expr DIV expr               { $$ = new XPathArithExpr({"type": "div", "left":$1, "right": $3}); }
-    |   expr MOD expr               { $$ = new XPathArithExpr({"type": "mod", "left":$1, "right": $3}); }
-    |   MINUS expr %prec UMINUS     { $$ = new XPathNumNegExpr({"type": "uminus", "val":$1}); }
+    |   expr EQ expr                { $$ = new XPathEqExpr({"type": "==", "left": $1, "right": $3}); }
+    |   expr NEQ expr               { $$ = new XPathEqExpr({"type": "!=", "left": $1, "right": $3}); }
+    |   expr LT expr                { $$ = new XPathCmpExpr({"type": "<", "left":$1, "right": $3}); }
+    |   expr LTE expr               { $$ = new XPathCmpExpr({"type": "<=", "left":$1, "right": $3}); }
+    |   expr GT expr                { $$ = new XPathCmpExpr({"type": ">", "left":$1, "right": $3}); }
+    |   expr GTE expr               { $$ = new XPathCmpExpr({"type": ">=", "left":$1, "right": $3}); }
+    |   expr PLUS expr              { $$ = new XPathArithExpr({"type": "+", "left":$1, "right": $3}); }
+    |   expr MINUS expr             { $$ = new XPathArithExpr({"type": "-", "left":$1, "right": $3}); }
+    |   expr MULT expr              { $$ = new XPathArithExpr({"type": "*", "left":$1, "right": $3}); }
+    |   expr DIV expr               { $$ = new XPathArithExpr({"type": "/", "left":$1, "right": $3}); }
+    |   expr MOD expr               { $$ = new XPathArithExpr({"type": "%", "left":$1, "right": $3}); }
+    |   MINUS expr %prec UMINUS     { $$ = new XPathNumNegExpr({"type": "num-neg", "value":$2}); }
     |   expr UNION expr             { $$ = new XPathUnionExpr({"type": "union", "left":$1, "right": $3}); } 
     ;
 
