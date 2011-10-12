@@ -23,6 +23,9 @@ QName               [A-Za-z_][A-Za-z0-9._-]*(":"[A-Za-z_][A-Za-z0-9._-]*)?
 
 
 <*>{Digit}+("."{Digit}*)?|"."{Digit}+              { this.begin("OP_CONTEXT"); return "NUM"; }
+<*>"\""[^"\""]*"\""|'\''[^'\'']*'\''               { this.begin("OP_CONTEXT"); yytext = yytext.substr(1,yyleng-2); return "STR"; }
+
+
 
 <*>"="         { this.begin("VAL_CONTEXT"); return "EQ"; }
 <*>"!="        { this.begin("VAL_CONTEXT"); return "NEQ"; }
@@ -51,7 +54,6 @@ QName               [A-Za-z_][A-Za-z0-9._-]*(":"[A-Za-z_][A-Za-z0-9._-]*)?
 <*>"comment"/{WhiteSpace}?"("                     { return "NODETYPE_COMMENT"; }
 <*>"processing-instruction"/{WhiteSpace}?"("      { return "NODETYPE_PROCINSTR"; }
 <*>"$"{QName}                                      { this.begin("OP_CONTEXT"); yytext = yytext.substr(1,yyleng-1); return "VAR"; }
-<*>"\""[^"\""]*"\""|"\'"[^"\'"]*"\'"               { this.begin("OP_CONTEXT"); yytext = yytext.substr(1,yyleng-2); return "STR"; }
 
 <*>{WhiteSpace}                         /* ignore whitespace */ 
 <*><<EOF>>                              return 'EOF';
