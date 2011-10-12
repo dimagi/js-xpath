@@ -111,6 +111,8 @@ test("operators", function () {
         "5 div 5": "{binop-expr:/,{num:5},{num:5}}",
         "5 mod 5": "{binop-expr:%,{num:5},{num:5}}",
         "3mod4": "{binop-expr:%,{num:3},{num:4}}",
+        "3 mod6": "{binop-expr:%,{num:3},{num:6}}",
+        "3mod 7": "{binop-expr:%,{num:3},{num:7}}",
         "5 divseparate-token": "{binop-expr:/,{num:5},{path-expr:rel,{{step:child,separate-token}}}}", //not quite sure if this is legal xpath or not, but it *can* be parsed unambiguously
         "5 = 5": "{binop-expr:==,{num:5},{num:5}}",
         "5 != 5": "{binop-expr:!=,{num:5},{num:5}}",
@@ -278,7 +280,7 @@ test("paths", function () {
         "/": "{path-expr:abs,{}}",
         "//all": "{path-expr:abs,{{step:descendant-or-self,node()},{step:child,all}}}",
         "a/.//../z": "{path-expr:rel,{{step:child,a},{step:self,node()},{step:descendant-or-self,node()},{step:parent,node()},{step:child,z}}}",
-        "6andpath": "{binop-expr:and,{num:6},{path-expr:rel,{{step:child,path}}}",
+        "6andpath": "{binop-expr:and,{num:6},{path-expr:rel,{{step:child,path}}}}",
     
     });
     runFailures({
