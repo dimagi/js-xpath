@@ -8,7 +8,7 @@
   </head>
 <body>
     <p>Enter an expression below to parse. Output is simply logged to the console.</p>
-    <form onsubmit="console.log(xpath.parse(document.getElementById('expression').value)); return false;" >
+    <form onsubmit="console.log(xpath.parse(document.getElementById('expression').value)); return false;" action="#">
         <input id="expression" type="text" placeholder="asdf('bcd', 1, 'foo/bar')" />
         <input type="submit" value="Parse" />
     </form>
