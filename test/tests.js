@@ -196,10 +196,10 @@ test("function calls that are actually node tests", function () {
 
 test("filter expressions", function () {
     runCommon({
-        "bunch-o-nodes()[3]": "{filt-expr:{func-expr:bunch-o-nodes,{}},{{num:3.0}}}",
-        "bunch-o-nodes()[3]['predicates'!='galore']": "{filt-expr:{func-expr:bunch-o-nodes,{}},{{num:3.0},{binop-expr:!=,{str:'predicates'},{str:'galore'}}}}",
-        "(bunch-o-nodes)[3]": "{filt-expr:{path-expr:rel,{{step:child,bunch-o-nodes}}},{{num:3.0}}}",
-        "bunch-o-nodes[3]": "{path-expr:rel,{{step:child,bunch-o-nodes,{{num:3.0}}}}}",
+        "bunch-o-nodes()[3]": "{filt-expr:{func-expr:bunch-o-nodes,{}},{{num:3}}}",
+        "bunch-o-nodes()[3]['predicates'!='galore']": "{filt-expr:{func-expr:bunch-o-nodes,{}},{{num:3},{binop-expr:!=,{str:'predicates'},{str:'galore'}}}}",
+        "(bunch-o-nodes)[3]": "{filt-expr:{path-expr:rel,{{step:child,bunch-o-nodes}}},{{num:3}}}",
+        "bunch-o-nodes[3]": "{path-expr:rel,{{step:child,bunch-o-nodes,{{num:3}}}}}",
     });
     runFailures({});
 });
@@ -278,7 +278,7 @@ test("paths", function () {
         "/": "{path-expr:abs,{}}",
         "//all": "{path-expr:abs,{{step:descendant-or-self,node()},{step:child,all}}}",
         "a/.//../z": "{path-expr:rel,{{step:child,a},{step:self,node()},{step:descendant-or-self,node()},{step:parent,node()},{step:child,z}}}",
-        "6andpath": "{binop-expr:and,{num:6.0},{path-expr:rel,{{step:child,path}}}",
+        "6andpath": "{binop-expr:and,{num:6},{path-expr:rel,{{step:child,path}}}",
     
     });
     runFailures({
@@ -290,9 +290,9 @@ test("paths", function () {
 
 test("real world examples", function () {
     runCommon({
-        "/patient/sex = 'male' and /patient/age > 15": "{binop-expr:and,{binop-expr:==,{path-expr:abs,{{step:child,patient},{step:child,sex}}},{str:'male'}},{binop-expr:>,{path-expr:abs,{{step:child,patient},{step:child,age}}},{num:15.0}}}",
+        "/patient/sex = 'male' and /patient/age > 15": "{binop-expr:and,{binop-expr:==,{path-expr:abs,{{step:child,patient},{step:child,sex}}},{str:'male'}},{binop-expr:>,{path-expr:abs,{{step:child,patient},{step:child,age}}},{num:15}}}",
         "../jr:hist-data/labs[@type=\"cd4\"]": "{path-expr:rel,{{step:parent,node()},{step:child,jr:hist-data},{step:child,labs,{{binop-expr:==,{path-expr:rel,{{step:attribute,type}}},{str:'cd4'}}}}}}",
-        "function_call(26*(7+3), //*, /im/child::an/ancestor::x[3][true()]/path)": "{func-expr:function_call,{{binop-expr:*,{num:26.0},{binop-expr:+,{num:7.0},{num:3.0}}},{path-expr:abs,{{step:descendant-or-self,node()},{step:child,*}}},{path-expr:abs,{{step:child,im},{step:child,an},{step:ancestor,x,{{num:3.0},{func-expr:true,{}}}},{step:child,path}}}}}"             
+        "function_call(26*(7+3), //*, /im/child::an/ancestor::x[3][true()]/path)": "{func-expr:function_call,{{binop-expr:*,{num:26},{binop-expr:+,{num:7},{num:3}}},{path-expr:abs,{{step:descendant-or-self,node()},{step:child,*}}},{path-expr:abs,{{step:child,im},{step:child,an},{step:ancestor,x,{{num:3},{func-expr:true,{}}}},{step:child,path}}}}}"             
     });
 });
 
