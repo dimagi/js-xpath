@@ -50,17 +50,13 @@ test("generator strings", function () {
     });
 });
 
-//test("generator variables", function () {
-//    runGeneratorTests({
-//		"$var": "{var:var}",
-//		"$qualified:name": "{var:qualified:name}"
-//    });
-//    runFailures({
-//        "$x:*": null,
-//        "$": null,
-//        "$$asdf": null
-//    });
-//});
+test("generator variables", function () {
+    runGeneratorTests({
+		"$var": "$var",
+		"$qualified:name": "$qualified:name"
+    });
+});
+
 //
 //test("generator parens nesting", function () {
 //    runGeneratorTests({

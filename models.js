@@ -82,6 +82,10 @@ var XPathVariableReference = function(value) {
     this.toString = function() {
         return "{var:" + String(this.value) + "}";
     }
+    this.toXPath = function() {
+        return "$" + String(this.value);
+    };
+    
 }
 
 var XPathAxisEnum = {
