@@ -1,4 +1,4 @@
-WhiteSpace          [\s+]
+WhiteSpace          (\s+)
 Digit               [0-9]
 Letter              [A-Za-z]
 NameStartChar       [A-Za-z_]
