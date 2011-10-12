@@ -98,7 +98,7 @@ loc_path:   rel_loc_path                    { $$ = new XPathPathExpr({initial_co
                                                                       steps: $2}); }
         |   DBL_SLASH rel_loc_path          { var steps = $2;
                                               // insert descendant step into beginning
-                                              steps.splice(0, 0, new XPathStep({axis: XPathAxisEnum.DESCENDANT, 
+                                              steps.splice(0, 0, new XPathStep({axis: XPathAxisEnum.DESCENDANT_OR_SELF, 
                                                                                 test: XPathTestEnum.TYPE_NODE}));
                                               $$ = new XPathPathExpr({initial_context: XPathInitialContextEnum.ROOT,
                                                                       steps: steps}); }
@@ -111,7 +111,7 @@ rel_loc_path: step                        { $$ = [$1];}
                                             path.push($3);
                                             $$ = path; }
         |   rel_loc_path DBL_SLASH step   { var path = $1;
-                                            path.push(new XPathStep({axis: XPathAxisEnum.DESCENDANT, 
+                                            path.push(new XPathStep({axis: XPathAxisEnum.DESCENDANT_OR_SELF, 
                                                                      test: XPathTestEnum.TYPE_NODE}));
                                             path.push($3);
                                             $$ = path; }
