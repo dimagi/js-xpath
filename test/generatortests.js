@@ -92,34 +92,30 @@ test("generator operators", function () {
     });
 });
 
-//test("generator operator associativity", function () {
-//    runGeneratorTests({
-//        "1 or 2 or 3": "{binop-expr:or,{num:1},{binop-expr:or,{num:2},{num:3}}}",
-//        "1 and 2 and 3": "{binop-expr:and,{num:1},{binop-expr:and,{num:2},{num:3}}}",
-//        "1 = 2 != 3 != 4 = 5": "{binop-expr:==,{binop-expr:!=,{binop-expr:!=,{binop-expr:==,{num:1},{num:2}},{num:3}},{num:4}},{num:5}}",
-//        "1 < 2 >= 3 <= 4 > 5": "{binop-expr:>,{binop-expr:<=,{binop-expr:>=,{binop-expr:<,{num:1},{num:2}},{num:3}},{num:4}},{num:5}}",
-//        "1 + 2 - 3 - 4 + 5": "{binop-expr:+,{binop-expr:-,{binop-expr:-,{binop-expr:+,{num:1},{num:2}},{num:3}},{num:4}},{num:5}}",
-//        "1 mod 2 div 3 div 4 * 5": "{binop-expr:*,{binop-expr:/,{binop-expr:/,{binop-expr:%,{num:1},{num:2}},{num:3}},{num:4}},{num:5}}",
-//        "1|2|3": "{binop-expr:union,{binop-expr:union,{num:1},{num:2}},{num:3}}",
-//        
-//    });
-//    
-//});
-//
-//test("generator operator precedence", function () {
-//    runGeneratorTests({
-//        "1 < 2 = 3 > 4 and 5 <= 6 != 7 >= 8 or 9 and 10":
-//                "{binop-expr:or,{binop-expr:and,{binop-expr:==,{binop-expr:<,{num:1},{num:2}},{binop-expr:>,{num:3},{num:4}}},{binop-expr:!=,{binop-expr:<=,{num:5},{num:6}},{binop-expr:>=,{num:7},{num:8}}}},{binop-expr:and,{num:9},{num:10}}}",
-//        "1 * 2 + 3 div 4 < 5 mod 6 | 7 - 8":
-//                "{binop-expr:<,{binop-expr:+,{binop-expr:*,{num:1},{num:2}},{binop-expr:/,{num:3},{num:4}}},{binop-expr:-,{binop-expr:%,{num:5},{binop-expr:union,{num:6},{num:7}}},{num:8}}}",
-//        "- 4 * 6": "{binop-expr:*,{unop-expr:num-neg,{num:4}},{num:6}}",
-//        "6*(3+4)and(5or2)": "{binop-expr:and,{binop-expr:*,{num:6},{binop-expr:+,{num:3},{num:4}}},{binop-expr:or,{num:5},{num:2}}}",
-//    });
-//    runFailures({
-//        // disallowed by the xpath spec, but we don't care enough to catch this
-//        // "8|-9": null 
-//    });
-//});
+test("generator operator associativity", function () {
+    runGeneratorTests({
+        "1 or 2 or 3": "1 or 2 or 3",
+        "1 and 2 and 3": "1 and 2 and 3",
+        "1 = 2 != 3 != 4 = 5": "1 = 2 != 3 != 4 = 5",
+        "1 < 2 >= 3 <= 4 > 5": "1 < 2 >= 3 <= 4 > 5",
+        "1 + 2 - 3 - 4 + 5": "1 + 2 - 3 - 4 + 5",
+        "1 mod 2 div 3 div 4 * 5": "1 mod 2 div 3 div 4 * 5",
+        "1|2|3": "1 | 2 | 3",
+    });
+    
+});
+
+test("generator operator precedence", function () {
+    runGeneratorTests({
+        "1 < 2 = 3 > 4 and 5 <= 6 != 7 >= 8 or 9 and 10": "1 < 2 = 3 > 4 and 5 <= 6 != 7 >= 8 or 9 and 10",
+        "1 * 2 + 3 div 4 < 5 mod 6 | 7 - 8": "1 * 2 + 3 div 4 < 5 mod 6 | 7 - 8",
+        "- 4 * 6": "-4 * 6",
+        "6*(3+4)and(5or2)": "6 * (3 + 4) and (5 or 2)",
+        "(1 - 2) - 3": "1 - 2 - 3",        
+        "1 - (2 - 3)": "1 - (2 - 3)"
+    });
+});
+
 //
 //test("generator function calls", function () {
 //    runGeneratorTests({

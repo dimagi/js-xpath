@@ -224,7 +224,7 @@ var XPathExpressionTypeEnum = {
     MULT: "*",
     DIV: "/",
     MOD: "%",
-    NEG: "num-neg",
+    UMINUS: "num-neg",
     UNION: "union"
 };
 
@@ -236,7 +236,7 @@ var expressionTypeEnumToXPathLiteral = function (val) {
             return "mod";
         case XPathExpressionTypeEnum.DIV:
             return "div";
-        case XPathExpressionTypeEnum.NEG:
+        case XPathExpressionTypeEnum.UMINUS:
             return "-";
         case XPathExpressionTypeEnum.UNION:
             return "|";
@@ -249,8 +249,97 @@ var binOpToString = function() {
     return "{binop-expr:" + this.type + "," + String(this.left) + "," + String(this.right) + "}";
 }
 
+var getOrdering = function(type) {
+    
+    switch(type) {
+        case XPathExpressionTypeEnum.OR:
+        case XPathExpressionTypeEnum.AND:
+            return "right";
+        case XPathExpressionTypeEnum.EQ:
+        case XPathExpressionTypeEnum.NEQ:
+        case XPathExpressionTypeEnum.LT:
+        case XPathExpressionTypeEnum.LTE:
+        case XPathExpressionTypeEnum.GT:
+        case XPathExpressionTypeEnum.GTE:
+        case XPathExpressionTypeEnum.PLUS:
+        case XPathExpressionTypeEnum.MINUS:
+        case XPathExpressionTypeEnum.MULT:
+        case XPathExpressionTypeEnum.DIV:
+        case XPathExpressionTypeEnum.MOD:
+        case XPathExpressionTypeEnum.UNION:
+            return "left";
+        case XPathExpressionTypeEnum.UMINUS:
+            return "nonassoc";
+        default:
+            throw("No order for " + type);
+    }
+}
+
+var getPrecedence = function(type) {
+    // we need to mimic the structure defined in the jison file
+    //%right OR
+    //%right AND
+    //%left EQ NEQ
+    //%left LT LTE GT GTE
+    //%left PLUS MINUS
+    //%left MULT DIV MOD
+    //%nonassoc UMINUS
+    //%left UNION
+    switch(type) {
+        case XPathExpressionTypeEnum.OR:
+            return 0;
+        case XPathExpressionTypeEnum.AND:
+            return 1;
+	    case XPathExpressionTypeEnum.EQ:
+	    case XPathExpressionTypeEnum.NEQ:
+	        return 2;
+	    case XPathExpressionTypeEnum.LT:
+	    case XPathExpressionTypeEnum.LTE:
+	    case XPathExpressionTypeEnum.GT:
+	    case XPathExpressionTypeEnum.GTE:
+	        return 3;
+	    case XPathExpressionTypeEnum.PLUS:
+	    case XPathExpressionTypeEnum.MINUS:
+	        return 4;
+	    case XPathExpressionTypeEnum.MULT:
+	    case XPathExpressionTypeEnum.DIV:
+	    case XPathExpressionTypeEnum.MOD:
+	        return 5;
+	    case XPathExpressionTypeEnum.UMINUS:
+	        return 6;
+	    case XPathExpressionTypeEnum.UNION:
+	        return 7;
+        default:
+            throw("No precedence for " + type);
+    }	        
+}
+
+var isOp = function(someToken) {
+    /*
+     * Whether something is an operation
+     */
+    // this is probably breaking an abstraction layer.
+    var str = someToken.toString();
+    return str.indexOf("{binop-expr:") === 0 || str.indexOf("{unop-expr:") === 0;
+} 
+
 var binOpToXPath = function() {
-    return this.left.toXPath() + " " + expressionTypeEnumToXPathLiteral(this.type) + " " + this.right.toXPath();
+    var prec = getPrecedence(this.type), lprec, rprec, lneedsParens = false, rneedsParens = false,
+        lString, rSTring;
+    // if the child has higher precedence we can omit parens
+    // if they are the same then we can omit
+    // if they tie, we look to the ordering
+    if (isOp(this.left)) {
+        lprec = getPrecedence(this.left.type);
+        lneedsParens = (lprec > prec) ? false : (lprec !== prec) ? true : (getOrdering(this.type) === "right");
+    } 
+    if (isOp(this.right)) {
+        rprec = getPrecedence(this.right.type);
+        rneedsParens = (rprec > prec) ? false : (rprec !== prec) ? true : (getOrdering(this.type) === "left");
+    } 
+    lString = lneedsParens ? "(" + this.left.toXPath() + ")" : this.left.toXPath();
+    rString = rneedsParens ? "(" + this.right.toXPath() + ")" : this.right.toXPath();
+    return lString + " " + expressionTypeEnumToXPathLiteral(this.type) + " " + rString;
 }
 
 var XPathBoolExpr = function(definition) {
