@@ -57,56 +57,41 @@ test("generator variables", function () {
     });
 });
 
-//
-//test("generator parens nesting", function () {
-//    runGeneratorTests({
-//        "(5)": "{num:5}",
-//        "(( (( (5 )) )))  ": "{num:5}",
-//    });
-//    runFailures({
-//        ")": null,
-//        "(": null,
-//        "()": null,
-//        "(((3))": null
-//    });
-//});
-//
-//test("generator operators", function () {
-//    runGeneratorTests({
-//        "5 + 5": "{binop-expr:+,{num:5},{num:5}}",
-//        "-5": "{unop-expr:num-neg,{num:5}}",
-//        "- 5": "{unop-expr:num-neg,{num:5}}",
-//        "----5": "{unop-expr:num-neg,{unop-expr:num-neg,{unop-expr:num-neg,{unop-expr:num-neg,{num:5}}}}}",
-//        "6 * - 7": "{binop-expr:*,{num:6},{unop-expr:num-neg,{num:7}}}",
-//        "0--0": "{binop-expr:-,{num:0},{unop-expr:num-neg,{num:0}}}",             
-//        "5 * 5": "{binop-expr:*,{num:5},{num:5}}",
-//        "5 div 5": "{binop-expr:/,{num:5},{num:5}}",
-//        "5 mod 5": "{binop-expr:%,{num:5},{num:5}}",
-//        "3mod4": "{binop-expr:%,{num:3},{num:4}}",
-//        "3 mod6": "{binop-expr:%,{num:3},{num:6}}",
-//        "3mod 7": "{binop-expr:%,{num:3},{num:7}}",
-//        "5 divseparate-token": "{binop-expr:/,{num:5},{path-expr:rel,{{step:child,separate-token}}}}", //not quite sure if this is legal xpath or not, but it *can* be parsed unambiguously
-//        "5 = 5": "{binop-expr:==,{num:5},{num:5}}",
-//        "5 != 5": "{binop-expr:!=,{num:5},{num:5}}",
-//        "5 < 5": "{binop-expr:<,{num:5},{num:5}}",
-//        "5 <= 5": "{binop-expr:<=,{num:5},{num:5}}",
-//        "5 > 5": "{binop-expr:>,{num:5},{num:5}}",
-//        "5 >= 5": "{binop-expr:>=,{num:5},{num:5}}",
-//        "5 and 5": "{binop-expr:and,{num:5},{num:5}}",
-//        "5 or 5": "{binop-expr:or,{num:5},{num:5}}",
-//        "5 | 5": "{binop-expr:union,{num:5},{num:5}}"
-//    });
-//    runFailures({
-//        "+-": null,
-//        "5/5": null,
-//        "5%5": null,
-//        "5 == 5": null,
-//        "5 <> 5": null,
-//        ">=": null,
-//        "'asdf'!=": null
-//    });
-//});
-//
+
+test("generator parens nesting", function () {
+    runGeneratorTests({
+        "(5)": "5",
+        "(( (( (5 )) )))  ": "5",
+    });
+});
+
+test("generator operators", function () {
+    runGeneratorTests({
+        "5 + 5": "5 + 5",
+        "-5": "-5",
+        "- 5": "-5",
+        "----5": "----5",
+        "6 * - 7": "6 * -7",
+        "0--0": "0 - -0",             
+        "5 * 5": "5 * 5",
+        "5 div 5": "5 div 5",
+        "5 mod 5": "5 mod 5",
+        "3mod4": "3 mod 4",
+        "3 mod6": "3 mod 6",
+        "3mod 7": "3 mod 7",
+        "5 divseparate-token": "5 div separate-token", //not quite sure if this is legal xpath or not, but it *can* be parsed unambiguously
+        "5 = 5": "5 = 5",
+        "5 != 5": "5 != 5",
+        "5 < 5": "5 < 5",
+        "5 <= 5": "5 <= 5",
+        "5 > 5": "5 > 5",
+        "5 >= 5": "5 >= 5",
+        "5 and 5": "5 and 5",
+        "5 or 5": "5 or 5",
+        "5 | 5": "5 | 5"
+    });
+});
+
 //test("generator operator associativity", function () {
 //    runGeneratorTests({
 //        "1 or 2 or 3": "{binop-expr:or,{num:1},{binop-expr:or,{num:2},{num:3}}}",

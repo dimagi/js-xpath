@@ -211,7 +211,6 @@ var XPathExpressionTypeEnum = {
      * They correlate with the "type" field in the parser for ops.
      * 
      */
-    
     AND: "and", 
     OR: "or",
     EQ: "==",
@@ -224,11 +223,34 @@ var XPathExpressionTypeEnum = {
     MINUS: "-",
     MULT: "*",
     DIV: "/",
-    MOD: "%"    
+    MOD: "%",
+    NEG: "num-neg",
+    UNION: "union"
 };
+
+var expressionTypeEnumToXPathLiteral = function (val) {
+    switch (val) {
+        case XPathExpressionTypeEnum.EQ:
+            return "=";
+        case XPathExpressionTypeEnum.MOD:
+            return "mod";
+        case XPathExpressionTypeEnum.DIV:
+            return "div";
+        case XPathExpressionTypeEnum.NEG:
+            return "-";
+        case XPathExpressionTypeEnum.UNION:
+            return "|";
+        default:
+            return val;
+    }
+}
 
 var binOpToString = function() {
     return "{binop-expr:" + this.type + "," + String(this.left) + "," + String(this.right) + "}";
+}
+
+var binOpToXPath = function() {
+    return this.left.toXPath() + " " + expressionTypeEnumToXPathLiteral(this.type) + " " + this.right.toXPath();
 }
 
 var XPathBoolExpr = function(definition) {
@@ -236,6 +258,7 @@ var XPathBoolExpr = function(definition) {
     this.left = definition.left;
     this.right = definition.right;
     this.toString = binOpToString;
+    this.toXPath = binOpToXPath;
     return this;
 };
 
@@ -244,6 +267,7 @@ var XPathEqExpr = function(definition) {
     this.left = definition.left;
     this.right = definition.right;
     this.toString = binOpToString;
+    this.toXPath = binOpToXPath;
     return this;
 };
 
@@ -252,6 +276,7 @@ var XPathCmpExpr = function(definition) {
     this.left = definition.left;
     this.right = definition.right;
     this.toString = binOpToString;
+    this.toXPath = binOpToXPath;
     return this;
 };
  
@@ -260,6 +285,7 @@ var XPathArithExpr = function(definition) {
     this.left = definition.left;
     this.right = definition.right;
     this.toString = binOpToString;
+    this.toXPath = binOpToXPath;
     return this;
 };
 
@@ -268,6 +294,7 @@ var XPathUnionExpr = function(definition) {
     this.left = definition.left;
     this.right = definition.right;
     this.toString = binOpToString;
+    this.toXPath = binOpToXPath;
     return this;
 };
 
@@ -276,6 +303,9 @@ var XPathNumNegExpr = function(definition) {
     this.value = definition.value;
     this.toString = function() {
         return "{unop-expr:" + this.type + "," + String(this.value) + "}";
-    }
+    };
+    this.toXPath = function() {
+        return "-" + this.value.toXPath();
+    };
     return this;
 };
