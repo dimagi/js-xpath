@@ -7,3 +7,4 @@ var validateAxisName = function(name) {
     }
     throw name + " is not a valid axis name!";
 }
+

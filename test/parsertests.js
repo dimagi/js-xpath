@@ -38,41 +38,35 @@ test("null expressions", function () {
 test("numbers", function() {
     runCommon({
         "10": "{num:10}",
-        "123.": "{num:123}",
+        "123.": "{num:123.}",
  		"734.04": "{num:734.04}",
 		"0.12345": "{num:0.12345}",
 		".666": "{num:0.666}",
 		"00000333.3330000": "{num:333.333}",
-		"1230000000000000000000": "{num:1.23e+21}",
+		"1230000000000000000000": "{num:1230000000000000000000}",
+		"1230000000000000000000.0": "{num:1.23e+21}",
 		"0.00000000000000000123": "{num:1.23e-18}",
 		"0": "{num:0}",
-		"0.": "{num:0}",
-		".0": "{num:0}",
-		"0.0": "{num:0}"
-    });
-});
-
-test("null expressions", function () {
-    runFailures({
-        "": null,
-        "     ": null,
-        "  \t \n  \r ": null
+		"0.": "{num:0.}",
+		".0": "{num:0.}",
+		"0.0": "{num:0.}"
     });
 });
 
 test("strings", function () {
     runCommon({
-		"\"\"": "{str:''}",
-		"\"   \"": "{str:'   '}",
-		"''": "{str:''}",
-		"'\"'": "{str:'\"'}",
-		"\"'\"": "{str:'''}",
-		"'mary had a little lamb'": "{str:'mary had a little lamb'}"
+        "\"\"": "{str:''}",
+        "\"   \"": "{str:'   '}",
+        "''": "{str:''}",
+        "'\"'": "{str:'\"'}",
+        "\"'\"": "{str:\"'\"}",
+        "'mary had a little lamb'": "{str:'mary had a little lamb'}"
     });
     runFailures({
         "'unterminated string...": null,
     });
 });
+
 
 test("variables", function () {
     runCommon({

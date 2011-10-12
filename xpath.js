@@ -136,7 +136,7 @@ case 53: this.$ = {"test": XPathTestEnum.TYPE_PROCESSING_INSTRUCTION, "literal":
 break;
 case 54: this.$ = new XPathStringLiteral($$[$0]); 
 break;
-case 55: this.$ = new XPathNumericLiteral(Number($$[$0])); 
+case 55: this.$ = new XPathNumericLiteral($$[$0]); 
 break;
 }
 },

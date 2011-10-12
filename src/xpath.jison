@@ -153,6 +153,6 @@ node_test:  QNAME                 { $$ = {"test": XPathTestEnum.NAME, "name": $1
         ;
 
 literal: STR                       { $$ = new XPathStringLiteral($1); }
-    |   NUM                       { $$ = new XPathNumericLiteral(Number($1)); }
+    |   NUM                       { $$ = new XPathNumericLiteral($1); }
     ;
   
