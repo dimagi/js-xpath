@@ -21,6 +21,9 @@ QName               [A-Za-z_][A-Za-z0-9._-]*(":"[A-Za-z_][A-Za-z0-9._-]*)?
 <OP_CONTEXT>"div"                  { this.begin("VAL_CONTEXT"); return "DIV"; }
 <OP_CONTEXT>"mod"                  { this.begin("VAL_CONTEXT"); return "MOD"; }
 
+
+<*>{Digit}+("."{Digit}*)?|"."{Digit}+              { this.begin("OP_CONTEXT"); return "NUM"; }
+
 <*>"="         { this.begin("VAL_CONTEXT"); return "EQ"; }
 <*>"!="        { this.begin("VAL_CONTEXT"); return "NEQ"; }
 <*>"<"         { this.begin("VAL_CONTEXT"); return "LT"; }
@@ -48,7 +51,6 @@ QName               [A-Za-z_][A-Za-z0-9._-]*(":"[A-Za-z_][A-Za-z0-9._-]*)?
 <*>"comment"/{WhiteSpace}?"("                     { return "NODETYPE_COMMENT"; }
 <*>"processing-instruction"/{WhiteSpace}?"("      { return "NODETYPE_PROCINSTR"; }
 <*>"$"{QName}                                      { this.begin("OP_CONTEXT"); yytext = yytext.substr(1,yyleng-1); return "VAR"; }
-<*>{Digit}+("."{Digit}*)?|"."{Digit}+              { this.begin("OP_CONTEXT"); return "NUM"; }
 <*>"\""[^"\""]*"\""|"\'"[^"\'"]*"\'"               { this.begin("OP_CONTEXT"); yytext = yytext.substr(1,yyleng-2); return "STR"; }
 
 <*>{WhiteSpace}                         /* ignore whitespace */ 
