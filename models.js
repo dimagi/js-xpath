@@ -89,7 +89,7 @@ var XPathStep = function(definition) {
 	    stringArray.push(this.testString());
 	    if (this.predicates.length > 0) {
             stringArray.push(",{");
-            stringArray.append(this.predicates.join(","));
+            stringArray.push(this.predicates.join(","));
             stringArray.push("}");
 	    }
 	    

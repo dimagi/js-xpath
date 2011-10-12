@@ -88,7 +88,7 @@ filter_expr:  filter_expr predicate     { $$ = "Vappend(fe.v, p); RESULT = fe;" 
         ;
 */ 
 
-predicate:   LBRACK expr RBRACK            { $$ = $1; }
+predicate:   LBRACK expr RBRACK            { $$ = $2; }
         ;
 
 
@@ -125,7 +125,7 @@ step:   step_unabbr                 { $$ = $1; }
     ;
 
 step_unabbr:  step_unabbr predicate       { var step = $1;
-                                            step.predicate = $2;
+                                            step.predicates.push($2);
                                             $$ = step; }
         |   step_body                { $$ = $1; }
         ;

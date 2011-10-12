@@ -62,7 +62,7 @@ case 26: var args = $$[$0-2];
 break;
 case 27: this.$ = [$$[$0]]; 
 break;
-case 29: this.$ = $$[$0-2]; 
+case 29: this.$ = $$[$0-1]; 
 break;
 case 30: this.$ = new XPathPathExpr({initial_context: XPathInitialContextEnum.RELATIVE,
                                                                       steps: $$[$0]}); 
@@ -101,7 +101,7 @@ case 39: this.$ = new XPathStep({axis: XPathAxisEnum.PARENT,
                                                           test: XPathTestEnum.TYPE_NODE}); 
 break;
 case 40: var step = $$[$0-1];
-                                            step.predicate = $$[$0];
+                                            step.predicates.push($$[$0]);
                                             this.$ = step; 
 break;
 case 41: this.$ = $$[$0]; 

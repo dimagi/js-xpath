@@ -261,7 +261,7 @@ test("axes", function () {
 
 test("predicates", function () {
     runCommon({
-        "descendant::node()[@attr='blah'][4]": "{path-expr:rel,{{step:descendant,node(),{{binop-expr:==,{path-expr:rel,{{step:attribute,attr}}},{str:'blah'}},{num:4.0}}}}}",
+        "descendant::node()[@attr='blah'][4]": "{path-expr:rel,{{step:descendant,node(),{{binop-expr:==,{path-expr:rel,{{step:attribute,attr}}},{str:'blah'}},{num:4}}}}}",
     });
     runFailures({
         "[2+3]": null,
