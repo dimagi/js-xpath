@@ -72,7 +72,7 @@ var XPathStep = function(definition) {
             case XPathTestEnum.NAME:
                 return String(this.name);           
             case XPathTestEnum.TYPE_PROCESSING_INSTRUCTION:
-                return "proc-instr(" + (this.literal == null ? "" : "\'" + literal + "\'") + ")";
+                return "proc-instr(" + (this.literal ? "\'" + this.literal + "\'" : "") + ")";
             case XPathTestEnum.NAMESPACE_WILDCARD:
                 return this.namespace + ":*";
             default:

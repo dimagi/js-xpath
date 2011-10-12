@@ -148,6 +148,7 @@ node_test:  QNAME                 { $$ = {"test": XPathTestEnum.NAME, "name": $1
         |   NODETYPE_NODE LPAREN RPAREN     { $$ = {"test": XPathTestEnum.TYPE_NODE}; }
         |   NODETYPE_TEXT LPAREN RPAREN     { $$ = {"test": XPathTestEnum.TYPE_TEXT}; }
         |   NODETYPE_COMMENT LPAREN RPAREN      { $$ = {"test": XPathTestEnum.TYPE_COMMENT}; }
+        |   NODETYPE_PROCINSTR LPAREN RPAREN  { $$ = {"test": XPathTestEnum.TYPE_PROCESSING_INSTRUCTION, "literal": null}; }
         |   NODETYPE_PROCINSTR LPAREN STR RPAREN  { $$ = {"test": XPathTestEnum.TYPE_PROCESSING_INSTRUCTION, "literal": $3}; }
         ;
 

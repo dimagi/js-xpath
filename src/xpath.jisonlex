@@ -1,4 +1,4 @@
-WhiteSpace          \s+
+WhiteSpace          [\s+]
 Digit               [0-9]
 Letter              [A-Za-z]
 NameStartChar       [A-Za-z_]
@@ -10,6 +10,15 @@ QName               [A-Za-z_][A-Za-z0-9._-]*(":"[A-Za-z_][A-Za-z0-9._-]*)?
       
 %%
 
+<*>{WhiteSpace}                         /* ignore whitespace */ 
+
+<*>"node"/({WhiteSpace}?"(")                     { return "NODETYPE_NODE"; }
+<*>"text"/({WhiteSpace}?"(")                     { return "NODETYPE_TEXT"; }
+
+<*>"comment"/({WhiteSpace}?"(")                  { return "NODETYPE_COMMENT"; }
+<*>"processing-instruction"/({WhiteSpace}?"(")   { return "NODETYPE_PROCINSTR"; }
+
+<*>"$"{QName}                                      { this.begin("OP_CONTEXT"); yytext = yytext.substr(1,yyleng-1); return "VAR"; }
 
 <VAL_CONTEXT,INITIAL>{NCName}":*"  { this.begin("OP_CONTEXT"); 
                                      yytext = yytext.substr(0, yyleng-2);
@@ -23,10 +32,7 @@ QName               [A-Za-z_][A-Za-z0-9._-]*(":"[A-Za-z_][A-Za-z0-9._-]*)?
 <OP_CONTEXT>"div"                  { this.begin("VAL_CONTEXT"); return "DIV"; }
 <OP_CONTEXT>"mod"                  { this.begin("VAL_CONTEXT"); return "MOD"; }
 
-
 <*>{Digit}+("."{Digit}*)?|"."{Digit}+              { this.begin("OP_CONTEXT"); return "NUM"; }
-<*>"\""[^"\""]*"\""|'\''[^'\'']*'\''               { this.begin("OP_CONTEXT"); yytext = yytext.substr(1,yyleng-2); return "STR"; }
-
 
 
 <*>"="         { this.begin("VAL_CONTEXT"); return "EQ"; }
@@ -50,14 +56,9 @@ QName               [A-Za-z_][A-Za-z0-9._-]*(":"[A-Za-z_][A-Za-z0-9._-]*)?
 <*>"::"        { this.begin("VAL_CONTEXT"); return "DBL_COLON"; }
 <*>","         { this.begin("VAL_CONTEXT"); return "COMMA"; }
 
-<*>"node"/{WhiteSpace}?"("                        { return "NODETYPE_NODE"; }
-<*>"text"/{WhiteSpace}?"("                        { return "NODETYPE_TEXT"; }
+<*>"\""[^"\""]*"\""|'\''[^'\'']*'\''               { this.begin("OP_CONTEXT"); yytext = yytext.substr(1,yyleng-2); return "STR"; }
 
-<*>"comment"/{WhiteSpace}?"("                     { return "NODETYPE_COMMENT"; }
-<*>"processing-instruction"/{WhiteSpace}?"("      { return "NODETYPE_PROCINSTR"; }
-<*>"$"{QName}                                      { this.begin("OP_CONTEXT"); yytext = yytext.substr(1,yyleng-1); return "VAR"; }
 
-<*>{WhiteSpace}                         /* ignore whitespace */ 
 <*><<EOF>>                              return 'EOF';
 
 
