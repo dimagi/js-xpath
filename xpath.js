@@ -122,7 +122,7 @@ case 46: this.$ = {"test": XPathTestEnum.NAME, "name": $$[$0]};
 break;
 case 47: this.$ = {"test": XPathTestEnum.NAME_WILDCARD}; 
 break;
-case 48: this.$ = {"test": XPathTestEnum.NAMESPACE_WILDCARD}; 
+case 48: this.$ = {"test": XPathTestEnum.NAMESPACE_WILDCARD, "namespace": $$[$0]}; 
 break;
 case 49: this.$ = {"test": XPathTestEnum.TYPE_NODE}; 
 break;
@@ -444,11 +444,13 @@ lexer.performAction = function anonymous(yy,yy_,$avoiding_name_collisions,YY_STA
 
 var YYSTATE=YY_START
 switch($avoiding_name_collisions) {
-case 0: this.begin("OP_CONTEXT"); return "WILDCARD"; 
+case 0: this.begin("OP_CONTEXT"); 
+                                     yy_.yytext = yy_.yytext.substr(0, yy_.yyleng-2);
+                                     return "NSWILDCARD"; 
 break;
 case 1: this.begin("OP_CONTEXT"); return "QNAME"; 
 break;
-case 2: this.begin("OP_CONTEXT"); return "NSWILDCARD"; 
+case 2: this.begin("OP_CONTEXT"); return "WILDCARD"; 
 break;
 case 3: this.begin("VAL_CONTEXT"); return "MULT"; 
 break;
@@ -468,13 +470,13 @@ case 10: this.begin("VAL_CONTEXT"); return "EQ";
 break;
 case 11: this.begin("VAL_CONTEXT"); return "NEQ"; 
 break;
-case 12: this.begin("VAL_CONTEXT"); return "LT"; 
+case 12: this.begin("VAL_CONTEXT"); return "LTE"; 
 break;
-case 13: this.begin("VAL_CONTEXT"); return "GT"; 
+case 13: this.begin("VAL_CONTEXT"); return "LT"; 
 break;
-case 14: this.begin("VAL_CONTEXT"); return "LTE"; 
+case 14: this.begin("VAL_CONTEXT"); return "GTE"; 
 break;
-case 15: this.begin("VAL_CONTEXT"); return "GTE"; 
+case 15: this.begin("VAL_CONTEXT"); return "GT"; 
 break;
 case 16: this.begin("VAL_CONTEXT"); return "PLUS"; 
 break;
@@ -494,9 +496,9 @@ case 23: this.begin("VAL_CONTEXT"); return "LPAREN";
 break;
 case 24: this.begin("OP_CONTEXT");  return "RPAREN"; 
 break;
-case 25: this.begin("OP_CONTEXT");  return "DOT"; 
+case 25: this.begin("OP_CONTEXT");  return "DBL_DOT"; 
 break;
-case 26: this.begin("OP_CONTEXT");  return "DBL_DOT"; 
+case 26: this.begin("OP_CONTEXT");  return "DOT"; 
 break;
 case 27: this.begin("VAL_CONTEXT"); return "AT"; 
 break;
@@ -520,7 +522,7 @@ case 36:return 5;
 break;
 }
 };
-lexer.rules = [/^\*/,/^[A-Za-z_][A-Za-z0-9._-]*(:[A-Za-z_][A-Za-z0-9._-]*)?/,/^[A-Za-z_][A-Za-z0-9._-]*\*/,/^\*/,/^and\b/,/^or\b/,/^div\b/,/^mod\b/,/^[0-9]+(\.[0-9]*)?|\.[0-9]+/,/^"[^"\""]*"|'[^'\'']*'/,/^=/,/^!=/,/^</,/^>/,/^<=/,/^>=/,/^\+/,/^-/,/^\|/,/^\/\//,/^\//,/^\[/,/^\]/,/^\(/,/^\)/,/^\./,/^\.\./,/^@/,/^::/,/^,/,/^node(?=\s+?)\(/,/^text(?=\s+?)\(/,/^comment(?=\s+?)\(/,/^processing-instruction(?=\s+?)\(/,/^\$[A-Za-z_][A-Za-z0-9._-]*(:[A-Za-z_][A-Za-z0-9._-]*)?/,/^\s+/,/^$/];
+lexer.rules = [/^[A-Za-z_][A-Za-z0-9._-]*:\*/,/^[A-Za-z_][A-Za-z0-9._-]*(:[A-Za-z_][A-Za-z0-9._-]*)?/,/^\*/,/^\*/,/^and\b/,/^or\b/,/^div\b/,/^mod\b/,/^[0-9]+(\.[0-9]*)?|\.[0-9]+/,/^"[^"\""]*"|'[^'\'']*'/,/^=/,/^!=/,/^<=/,/^</,/^>=/,/^>/,/^\+/,/^-/,/^\|/,/^\/\//,/^\//,/^\[/,/^\]/,/^\(/,/^\)/,/^\.\./,/^\./,/^@/,/^::/,/^,/,/^node(?=\s+?)\(/,/^text(?=\s+?)\(/,/^comment(?=\s+?)\(/,/^processing-instruction(?=\s+?)\(/,/^\$[A-Za-z_][A-Za-z0-9._-]*(:[A-Za-z_][A-Za-z0-9._-]*)?/,/^\s+/,/^$/];
 lexer.conditions = {"INITIAL":{"rules":[0,1,2,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36],"inclusive":true},"OP_CONTEXT":{"rules":[3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36],"inclusive":true},"VAL_CONTEXT":{"rules":[0,1,2,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36],"inclusive":true}};return lexer;})()
 parser.lexer = lexer;
 return parser;

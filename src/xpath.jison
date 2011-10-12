@@ -144,7 +144,7 @@ axis_specifier:  QNAME DBL_COLON           { $$ = validateAxisName($1); }
 
 node_test:  QNAME                 { $$ = {"test": XPathTestEnum.NAME, "name": $1}; }
         |   WILDCARD                { $$ = {"test": XPathTestEnum.NAME_WILDCARD}; }
-        |   NSWILDCARD              { $$ = {"test": XPathTestEnum.NAMESPACE_WILDCARD}; }
+        |   NSWILDCARD              { $$ = {"test": XPathTestEnum.NAMESPACE_WILDCARD, "namespace": $1}; }
         |   NODETYPE_NODE LPAREN RPAREN     { $$ = {"test": XPathTestEnum.TYPE_NODE}; }
         |   NODETYPE_TEXT LPAREN RPAREN     { $$ = {"test": XPathTestEnum.TYPE_TEXT}; }
         |   NODETYPE_COMMENT LPAREN RPAREN      { $$ = {"test": XPathTestEnum.TYPE_COMMENT}; }

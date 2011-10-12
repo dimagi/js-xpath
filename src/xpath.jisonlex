@@ -11,9 +11,11 @@ QName               [A-Za-z_][A-Za-z0-9._-]*(":"[A-Za-z_][A-Za-z0-9._-]*)?
 %%
 
 
-<VAL_CONTEXT,INITIAL>"*"           { this.begin("OP_CONTEXT"); return "WILDCARD"; }
+<VAL_CONTEXT,INITIAL>{NCName}":*"  { this.begin("OP_CONTEXT"); 
+                                     yytext = yytext.substr(0, yyleng-2);
+                                     return "NSWILDCARD"; }
 <VAL_CONTEXT,INITIAL>{QName}       { this.begin("OP_CONTEXT"); return "QNAME"; } 
-<VAL_CONTEXT,INITIAL>{NCName}:\*   { this.begin("OP_CONTEXT"); return "NSWILDCARD"; }
+<VAL_CONTEXT,INITIAL>"*"           { this.begin("OP_CONTEXT"); return "WILDCARD"; }
 
 <OP_CONTEXT>"*"                    { this.begin("VAL_CONTEXT"); return "MULT"; }
 <OP_CONTEXT>"and"                  { this.begin("VAL_CONTEXT"); return "AND"; }
@@ -29,10 +31,10 @@ QName               [A-Za-z_][A-Za-z0-9._-]*(":"[A-Za-z_][A-Za-z0-9._-]*)?
 
 <*>"="         { this.begin("VAL_CONTEXT"); return "EQ"; }
 <*>"!="        { this.begin("VAL_CONTEXT"); return "NEQ"; }
-<*>"<"         { this.begin("VAL_CONTEXT"); return "LT"; }
-<*>">"         { this.begin("VAL_CONTEXT"); return "GT"; }
 <*>"<="        { this.begin("VAL_CONTEXT"); return "LTE"; }
+<*>"<"         { this.begin("VAL_CONTEXT"); return "LT"; }
 <*>">="        { this.begin("VAL_CONTEXT"); return "GTE"; }
+<*>">"         { this.begin("VAL_CONTEXT"); return "GT"; }
 <*>"+"         { this.begin("VAL_CONTEXT"); return "PLUS"; }
 <*>"-"         { this.begin("VAL_CONTEXT"); return "MINUS"; }
 <*>"|"         { this.begin("VAL_CONTEXT"); return "UNION"; }
@@ -42,8 +44,8 @@ QName               [A-Za-z_][A-Za-z0-9._-]*(":"[A-Za-z_][A-Za-z0-9._-]*)?
 <*>"]"         { this.begin("OP_CONTEXT");  return "RBRACK"; }
 <*>"("         { this.begin("VAL_CONTEXT"); return "LPAREN"; }
 <*>")"         { this.begin("OP_CONTEXT");  return "RPAREN"; }
-<*>"."         { this.begin("OP_CONTEXT");  return "DOT"; }
 <*>".."        { this.begin("OP_CONTEXT");  return "DBL_DOT"; }
+<*>"."         { this.begin("OP_CONTEXT");  return "DOT"; }
 <*>"@"         { this.begin("VAL_CONTEXT"); return "AT"; }
 <*>"::"        { this.begin("VAL_CONTEXT"); return "DBL_COLON"; }
 <*>","         { this.begin("VAL_CONTEXT"); return "COMMA"; }
