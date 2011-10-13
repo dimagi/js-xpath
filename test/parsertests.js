@@ -178,8 +178,8 @@ test("function calls that are actually node tests", function () {
         "node()": "{path-expr:rel,{{step:child,node()}}}",
         "text()": "{path-expr:rel,{{step:child,text()}}}",
         "comment()": "{path-expr:rel,{{step:child,comment()}}}",
-        "processing-instruction()": "{path-expr:rel,{{step:child,proc-instr()}}}",
-        "processing-instruction('asdf')": "{path-expr:rel,{{step:child,proc-instr('asdf')}}}",
+        "processing-instruction()": "{path-expr:rel,{{step:child,processing-instruction()}}}",
+        "processing-instruction('asdf')": "{path-expr:rel,{{step:child,processing-instruction('asdf')}}}",
     });
     runFailures({
         "node(5)": null,

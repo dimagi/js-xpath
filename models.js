@@ -27,7 +27,11 @@ var toFixed = function (x) {
     }
   }
   return x;
-}
+};
+
+var objToXPath = function(something) {
+    return something.toXPath();
+};
 
 var XPathNumericLiteral = function(value) {
     /*
@@ -63,7 +67,7 @@ var toXPathString = function(value) {
         // have a double quote
         return "'" + value + "'";
     }
-}
+};
 
 var XPathStringLiteral = function(value) {
     this.value = value; 
@@ -81,12 +85,12 @@ var XPathVariableReference = function(value) {
     this.value = value;
     this.toString = function() {
         return "{var:" + String(this.value) + "}";
-    }
+    };
     this.toXPath = function() {
         return "$" + String(this.value);
     };
     
-}
+};
 
 var XPathAxisEnum = {
     CHILD: "child",
@@ -111,15 +115,16 @@ var XPathTestEnum = {
 	TYPE_NODE: "node()", 
 	TYPE_TEXT: "text()", 
 	TYPE_COMMENT: "comment()", 
-	TYPE_PROCESSING_INSTRUCTION: "proc-instr" 
+	TYPE_PROCESSING_INSTRUCTION: "processing-instruction" 
 
 };
 
+    
 var XPathStep = function(definition) {
-/*
- * A step (part of a path)
- * 
- */        
+	/*
+	 * A step (part of a path)
+	 * 
+	 */        
     this.axis = definition.axis;
     this.test = definition.test;
     this.predicates = definition.predicates || [];
@@ -132,13 +137,13 @@ var XPathStep = function(definition) {
             case XPathTestEnum.NAME:
                 return String(this.name);           
             case XPathTestEnum.TYPE_PROCESSING_INSTRUCTION:
-                return "proc-instr(" + (this.literal ? "\'" + this.literal + "\'" : "") + ")";
+                return "processing-instruction(" + (this.literal ? "\'" + this.literal + "\'" : "") + ")";
             case XPathTestEnum.NAMESPACE_WILDCARD:
                 return this.namespace + ":*";
             default:
                 return this.test || null;
          }
-    }
+    };
     
     this.toString = function() {
         var stringArray = [];
@@ -155,6 +160,47 @@ var XPathStep = function(definition) {
 	    
 	    stringArray.push("}");
 	    return stringArray.join("");
+    };
+    
+    this.mainXPath = function () {
+        var axisPrefix = this.axis + "::"; // this is the default
+        // Use the abbreviated syntax to shorten the axis
+        // or in some cases the whole thing
+        switch (this.axis) {
+            case XPathAxisEnum.DESCENDANT_OR_SELF:
+                if (this.test == XPathTestEnum.TYPE_NODE) {
+                    return "//";
+                }
+                break;
+            case XPathAxisEnum.CHILD:
+                axisPrefix = ""; // this is the default
+                break;
+            case XPathAxisEnum.ATTRIBUTE:
+                axisPrefix = "@";
+                break;
+            case XPathAxisEnum.SELF:
+                if (this.test == XPathTestEnum.TYPE_NODE) {
+                    return ".";
+                }
+                break;
+            case XPathAxisEnum.PARENT:
+                if (this.test == XPathTestEnum.TYPE_NODE) {
+                    return "..";
+                }
+                break;
+            default:
+               break;
+        }
+        return axisPrefix + this.testString();
+    }
+    this.predicateXPath = function () {
+        if (this.predicates.length > 0) {
+            return "[" + this.predicates.map(objToXPath).join("][") + "]"; 
+        }
+        return "";
+    } 
+    this.toXPath = function() {
+        return this.mainXPath() + this.predicateXPath();
     };
     return this;        
 };
@@ -182,6 +228,26 @@ var XPathPathExpr = function(definition) {
         stringArray.push("}}");
         return stringArray.join("");
     };
+    this.toXPath = function() {
+        var parts = this.steps.map(objToXPath), ret = [], curPart, prevPart, sep;
+        var root = (this.initial_context === XPathInitialContextEnum.ROOT) ? "/" : "";
+        if (parts.length === 0) {
+            return root;
+        }
+        for (var i = 0; i < parts.length; i ++) {
+            curPart = parts[i];
+            if (curPart !== "//" && prevPart !== "//") {
+                // unless the current part starts with a slash, put slashes between
+                // parts. the only exception to this rule is at the beginning, 
+                // when we only use a slash if it's an absolute path
+                sep = (i === 0) ? root : "/";
+                ret.push(sep);
+            }
+            ret.push(curPart);
+            prevPart = curPart;
+        }
+        return ret.join("");
+    };
     return this;
 };
 
@@ -200,10 +266,7 @@ var XPathFuncExpr = function (definition) {
         return stringArray.join("");
     };
     this.toXPath = function() {
-        var _toXPath = function(something) {
-            return something.toXPath();
-        }
-        return this.id + "(" + this.args.map(_toXPath).join(", ") + ")";
+        return this.id + "(" + this.args.map(objToXPath).join(", ") + ")";
     };
     return this;
 };
