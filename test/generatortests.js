@@ -116,22 +116,19 @@ test("generator operator precedence", function () {
     });
 });
 
-//
-//test("generator function calls", function () {
-//    runGeneratorTests({
-//        "function()": "{func-expr:function,{}}",
-//        "func:tion()": "{func-expr:func:tion,{}}",
-//        "function(   )": "{func-expr:function,{}}",
-//        "function (5)": "{func-expr:function,{{num:5}}}",
-//        "function   ( 5, 'arg', 4 * 12)": "{func-expr:function,{{num:5},{str:'arg'},{binop-expr:*,{num:4},{num:12}}}}",
-//        "4andfunc()": "{binop-expr:and,{num:4},{func-expr:func,{}}}",
-//    });
-//    runFailures({
-//        "function ( 4, 5, 6 ": null,
-//    });
-//});
-//
-//
+
+test("generator function calls", function () {
+    runGeneratorTests({
+        "function()": "function()",
+        "func:tion()": "func:tion()",
+        "function(   )": "function()",
+        "function (5)": "function(5)",
+        "function   ( 5, 'arg', 4 * 12)": "function(5, 'arg', 4 * 12)",
+        "4andfunc()": "4 and func()",
+    });
+});
+
+
 //test("generator function calls that are actually node tests", function () {
 //    runGeneratorTests({
 //        "node()": "{path-expr:rel,{{step:child,node()}}}",

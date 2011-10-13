@@ -190,7 +190,7 @@ var XPathFuncExpr = function (definition) {
 	/**
 	 * Representation of an xpath function expression.
 	 */
-    this.id = definition.id;                   //name of the function
+    this.id = definition.id;                 //name of the function
     this.args = definition.args || [];       //argument list
     this.toString = function() {
         var stringArray = [];
@@ -198,7 +198,13 @@ var XPathFuncExpr = function (definition) {
         stringArray.push(this.args.join(","));
         stringArray.push("}}");
         return stringArray.join("");
-    }
+    };
+    this.toXPath = function() {
+        var _toXPath = function(something) {
+            return something.toXPath();
+        }
+        return this.id + "(" + this.args.map(_toXPath).join(", ") + ")";
+    };
     return this;
 };
 
