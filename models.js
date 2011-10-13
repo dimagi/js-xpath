@@ -12,14 +12,15 @@ var toFixed = function (x) {
    *
    * HT: http://stackoverflow.com/questions/1685680/how-to-avoid-scientific-notation-for-large-numbers-in-javascript
    */
+  var e;
   if (x < 1.0) {
-    var e = parseInt(x.toString().split('e-')[1]);
+    e = parseInt(x.toString().split('e-')[1]);
     if (e) {
         x *= Math.pow(10,e-1);
         x = '0.' + (new Array(e)).join('0') + x.toString().substring(2);
     }
   } else {
-    var e = parseInt(x.toString().split('+')[1]);
+    e = parseInt(x.toString().split('+')[1]);
     if (e > 20) {
         e -= 20;
         x /= Math.pow(10,e);
@@ -46,7 +47,7 @@ var XPathNumericLiteral = function(value) {
     this.value = SchemeNumber(value);
     this.toString = function() {
         return "{num:" + this.value.toString() + "}";
-    }
+    };
     this.toXPath = function() {
         return toFixed(this.value.toString());
     };
@@ -59,7 +60,7 @@ var toXPathString = function(value) {
      * marks and if we find them, use the other kind.
      *  
      */
-    if (value.indexOf("'") != -1) {
+    if (value.indexOf("'") !== -1) {
         // it has an apostrophe so wrap it in double quotes
         return '"' + value + '"';
     } else {
@@ -74,7 +75,7 @@ var XPathStringLiteral = function(value) {
     this.valueDisplay = toXPathString(value);
     this.toString = function() {
         return "{str:" + this.valueDisplay + "}"; 
-    }
+    };
     this.toXPath = function() {
         return this.valueDisplay;
     };
@@ -168,7 +169,7 @@ var XPathStep = function(definition) {
         // or in some cases the whole thing
         switch (this.axis) {
             case XPathAxisEnum.DESCENDANT_OR_SELF:
-                if (this.test == XPathTestEnum.TYPE_NODE) {
+                if (this.test === XPathTestEnum.TYPE_NODE) {
                     return "//";
                 }
                 break;
@@ -179,12 +180,12 @@ var XPathStep = function(definition) {
                 axisPrefix = "@";
                 break;
             case XPathAxisEnum.SELF:
-                if (this.test == XPathTestEnum.TYPE_NODE) {
+                if (this.test === XPathTestEnum.TYPE_NODE) {
                     return ".";
                 }
                 break;
             case XPathAxisEnum.PARENT:
-                if (this.test == XPathTestEnum.TYPE_NODE) {
+                if (this.test === XPathTestEnum.TYPE_NODE) {
                     return "..";
                 }
                 break;
@@ -192,13 +193,13 @@ var XPathStep = function(definition) {
                break;
         }
         return axisPrefix + this.testString();
-    }
+    };
     this.predicateXPath = function () {
         if (this.predicates.length > 0) {
             return "[" + this.predicates.map(objToXPath).join("][") + "]"; 
         }
         return "";
-    } 
+    };
     this.toXPath = function() {
         return this.mainXPath() + this.predicateXPath();
     };
@@ -208,7 +209,7 @@ var XPathStep = function(definition) {
 var XPathInitialContextEnum = {
     ROOT: "abs", 
     RELATIVE: "rel", 
-    EXPR: "expr", 
+    EXPR: "expr"
 };
 
 var XPathPathExpr = function(definition) {
@@ -222,7 +223,8 @@ var XPathPathExpr = function(definition) {
     this.toString = function() {
         var stringArray = [];
         stringArray.push("{path-expr:");
-        stringArray.push(this.initial_context == XPathInitialContextEnum.EXPR ? String(this.filter) : this.initial_context)
+        stringArray.push(this.initial_context === XPathInitialContextEnum.EXPR ? 
+                         String(this.filter) : this.initial_context);
         stringArray.push(",{");
         stringArray.push(this.steps.join(","));
         stringArray.push("}}");
@@ -312,11 +314,11 @@ var expressionTypeEnumToXPathLiteral = function (val) {
         default:
             return val;
     }
-}
+};
 
 var binOpToString = function() {
     return "{binop-expr:" + this.type + "," + String(this.left) + "," + String(this.right) + "}";
-}
+};
 
 var getOrdering = function(type) {
     
@@ -342,7 +344,7 @@ var getOrdering = function(type) {
         default:
             throw("No order for " + type);
     }
-}
+};
 
 var getPrecedence = function(type) {
     // we need to mimic the structure defined in the jison file
@@ -380,8 +382,8 @@ var getPrecedence = function(type) {
 	        return 7;
         default:
             throw("No precedence for " + type);
-    }	        
-}
+    }     
+};
 
 var isOp = function(someToken) {
     /*
@@ -390,11 +392,11 @@ var isOp = function(someToken) {
     // this is probably breaking an abstraction layer.
     var str = someToken.toString();
     return str.indexOf("{binop-expr:") === 0 || str.indexOf("{unop-expr:") === 0;
-} 
+};
 
 var binOpToXPath = function() {
     var prec = getPrecedence(this.type), lprec, rprec, lneedsParens = false, rneedsParens = false,
-        lString, rSTring;
+        lString, rString;
     // if the child has higher precedence we can omit parens
     // if they are the same then we can omit
     // if they tie, we look to the ordering
@@ -409,7 +411,7 @@ var binOpToXPath = function() {
     lString = lneedsParens ? "(" + this.left.toXPath() + ")" : this.left.toXPath();
     rString = rneedsParens ? "(" + this.right.toXPath() + ")" : this.right.toXPath();
     return lString + " " + expressionTypeEnumToXPathLiteral(this.type) + " " + rString;
-}
+};
 
 var XPathBoolExpr = function(definition) {
     this.type = definition.type;
