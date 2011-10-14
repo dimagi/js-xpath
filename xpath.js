@@ -20,41 +20,41 @@ case 4:  this.$ = $$[$0];
 break;
 case 5: this.$ = $$[$0-1]; 
 break;
-case 7: this.$ = new XPathVariableReference($$[$0]); 
+case 7: this.$ = new xpathmodels.XPathVariableReference($$[$0]); 
 break;
-case 9: this.$ = new XPathBoolExpr({"type": "or", "left": $$[$0-2], "right": $$[$0]}); 
+case 9: this.$ = new xpathmodels.XPathBoolExpr({"type": "or", "left": $$[$0-2], "right": $$[$0]}); 
 break;
-case 10: this.$ = new XPathBoolExpr({"type": "and", "left": $$[$0-2], "right": $$[$0]}); 
+case 10: this.$ = new xpathmodels.XPathBoolExpr({"type": "and", "left": $$[$0-2], "right": $$[$0]}); 
 break;
-case 11: this.$ = new XPathEqExpr({"type": "==", "left": $$[$0-2], "right": $$[$0]}); 
+case 11: this.$ = new xpathmodels.XPathEqExpr({"type": "==", "left": $$[$0-2], "right": $$[$0]}); 
 break;
-case 12: this.$ = new XPathEqExpr({"type": "!=", "left": $$[$0-2], "right": $$[$0]}); 
+case 12: this.$ = new xpathmodels.XPathEqExpr({"type": "!=", "left": $$[$0-2], "right": $$[$0]}); 
 break;
-case 13: this.$ = new XPathCmpExpr({"type": "<", "left":$$[$0-2], "right": $$[$0]}); 
+case 13: this.$ = new xpathmodels.XPathCmpExpr({"type": "<", "left":$$[$0-2], "right": $$[$0]}); 
 break;
-case 14: this.$ = new XPathCmpExpr({"type": "<=", "left":$$[$0-2], "right": $$[$0]}); 
+case 14: this.$ = new xpathmodels.XPathCmpExpr({"type": "<=", "left":$$[$0-2], "right": $$[$0]}); 
 break;
-case 15: this.$ = new XPathCmpExpr({"type": ">", "left":$$[$0-2], "right": $$[$0]}); 
+case 15: this.$ = new xpathmodels.XPathCmpExpr({"type": ">", "left":$$[$0-2], "right": $$[$0]}); 
 break;
-case 16: this.$ = new XPathCmpExpr({"type": ">=", "left":$$[$0-2], "right": $$[$0]}); 
+case 16: this.$ = new xpathmodels.XPathCmpExpr({"type": ">=", "left":$$[$0-2], "right": $$[$0]}); 
 break;
-case 17: this.$ = new XPathArithExpr({"type": "+", "left":$$[$0-2], "right": $$[$0]}); 
+case 17: this.$ = new xpathmodels.XPathArithExpr({"type": "+", "left":$$[$0-2], "right": $$[$0]}); 
 break;
-case 18: this.$ = new XPathArithExpr({"type": "-", "left":$$[$0-2], "right": $$[$0]}); 
+case 18: this.$ = new xpathmodels.XPathArithExpr({"type": "-", "left":$$[$0-2], "right": $$[$0]}); 
 break;
-case 19: this.$ = new XPathArithExpr({"type": "*", "left":$$[$0-2], "right": $$[$0]}); 
+case 19: this.$ = new xpathmodels.XPathArithExpr({"type": "*", "left":$$[$0-2], "right": $$[$0]}); 
 break;
-case 20: this.$ = new XPathArithExpr({"type": "/", "left":$$[$0-2], "right": $$[$0]}); 
+case 20: this.$ = new xpathmodels.XPathArithExpr({"type": "/", "left":$$[$0-2], "right": $$[$0]}); 
 break;
-case 21: this.$ = new XPathArithExpr({"type": "%", "left":$$[$0-2], "right": $$[$0]}); 
+case 21: this.$ = new xpathmodels.XPathArithExpr({"type": "%", "left":$$[$0-2], "right": $$[$0]}); 
 break;
-case 22: this.$ = new XPathNumNegExpr({"type": "num-neg", "value":$$[$0]}); 
+case 22: this.$ = new xpathmodels.XPathNumNegExpr({"type": "num-neg", "value":$$[$0]}); 
 break;
-case 23: this.$ = new XPathUnionExpr({"type": "union", "left":$$[$0-2], "right": $$[$0]}); 
+case 23: this.$ = new xpathmodels.XPathUnionExpr({"type": "union", "left":$$[$0-2], "right": $$[$0]}); 
 break;
-case 24: this.$ = new XPathFuncExpr({id: $$[$0-3], args: $$[$0-1]}); 
+case 24: this.$ = new xpathmodels.XPathFuncExpr({id: $$[$0-3], args: $$[$0-1]}); 
 break;
-case 25: this.$ = new XPathFuncExpr({id: $$[$0-2], args: []}); 
+case 25: this.$ = new xpathmodels.XPathFuncExpr({id: $$[$0-2], args: []}); 
 break;
 case 26: var args = $$[$0-2];
                                       args.push($$[$0]);
@@ -64,20 +64,20 @@ case 27: this.$ = [$$[$0]];
 break;
 case 29: this.$ = $$[$0-1]; 
 break;
-case 30: this.$ = new XPathPathExpr({initial_context: XPathInitialContextEnum.RELATIVE,
+case 30: this.$ = new xpathmodels.XPathPathExpr({initial_context: xpathmodels.XPathInitialContextEnum.RELATIVE,
                                                                       steps: $$[$0]}); 
 break;
-case 31: this.$ = new XPathPathExpr({initial_context: XPathInitialContextEnum.ROOT,
+case 31: this.$ = new xpathmodels.XPathPathExpr({initial_context: xpathmodels.XPathInitialContextEnum.ROOT,
                                                                       steps: $$[$0]}); 
 break;
 case 32: var steps = $$[$0];
                                               // insert descendant step into beginning
-                                              steps.splice(0, 0, new XPathStep({axis: XPathAxisEnum.DESCENDANT_OR_SELF, 
-                                                                                test: XPathTestEnum.TYPE_NODE}));
-                                              this.$ = new XPathPathExpr({initial_context: XPathInitialContextEnum.ROOT,
+                                              steps.splice(0, 0, new xpathmodels.XPathStep({axis: xpathmodels.XPathAxisEnum.DESCENDANT_OR_SELF, 
+                                                                                test: xpathmodels.XPathTestEnum.TYPE_NODE}));
+                                              this.$ = new xpathmodels.XPathPathExpr({initial_context: xpathmodels.XPathInitialContextEnum.ROOT,
                                                                       steps: steps}); 
 break;
-case 33: this.$ = new XPathPathExpr({initial_context: XPathInitialContextEnum.ROOT,
+case 33: this.$ = new xpathmodels.XPathPathExpr({initial_context: xpathmodels.XPathInitialContextEnum.ROOT,
                                                               steps: []});
 break;
 case 34: this.$ = [$$[$0]];
@@ -87,18 +87,18 @@ case 35: var path = $$[$0-2];
                                             this.$ = path; 
 break;
 case 36: var path = $$[$0-2];
-                                            path.push(new XPathStep({axis: XPathAxisEnum.DESCENDANT_OR_SELF, 
-                                                                     test: XPathTestEnum.TYPE_NODE}));
+                                            path.push(new xpathmodels.XPathStep({axis: xpathmodels.XPathAxisEnum.DESCENDANT_OR_SELF, 
+                                                                     test: xpathmodels.XPathTestEnum.TYPE_NODE}));
                                             path.push($$[$0]);
                                             this.$ = path; 
 break;
 case 37: this.$ = $$[$0]; 
 break;
-case 38: this.$ = new XPathStep({axis: XPathAxisEnum.SELF, 
-                                                          test: XPathTestEnum.TYPE_NODE}); 
+case 38: this.$ = new xpathmodels.XPathStep({axis: xpathmodels.XPathAxisEnum.SELF, 
+                                                          test: xpathmodels.XPathTestEnum.TYPE_NODE}); 
 break;
-case 39: this.$ = new XPathStep({axis: XPathAxisEnum.PARENT, 
-                                                          test: XPathTestEnum.TYPE_NODE}); 
+case 39: this.$ = new xpathmodels.XPathStep({axis: xpathmodels.XPathAxisEnum.PARENT, 
+                                                          test: xpathmodels.XPathTestEnum.TYPE_NODE}); 
 break;
 case 40: var step = $$[$0-1];
                                             step.predicates.push($$[$0]);
@@ -107,36 +107,36 @@ break;
 case 41: this.$ = $$[$0]; 
 break;
 case 42: var nodeTest = $$[$0]; // temporary dict with appropriate args
-                                          nodeTest.axis = XPathAxisEnum.CHILD;
-                                          this.$ = new XPathStep(nodeTest); 
+                                          nodeTest.axis = xpathmodels.XPathAxisEnum.CHILD;
+                                          this.$ = new xpathmodels.XPathStep(nodeTest); 
 break;
 case 43: var nodeTest = $$[$0];  // temporary dict with appropriate args
                                           nodeTest.axis = $$[$0-1]; // add axis
-                                          this.$ = new XPathStep(nodeTest); 
+                                          this.$ = new xpathmodels.XPathStep(nodeTest); 
 break;
-case 44: this.$ = validateAxisName($$[$0-1]); 
+case 44: this.$ = xpathmodels.validateAxisName($$[$0-1]); 
 break;
-case 45: this.$ = XPathAxisEnum.ATTRIBUTE; 
+case 45: this.$ = xpathmodels.XPathAxisEnum.ATTRIBUTE; 
 break;
-case 46: this.$ = {"test": XPathTestEnum.NAME, "name": $$[$0]}; 
+case 46: this.$ = {"test": xpathmodels.XPathTestEnum.NAME, "name": $$[$0]}; 
 break;
-case 47: this.$ = {"test": XPathTestEnum.NAME_WILDCARD}; 
+case 47: this.$ = {"test": xpathmodels.XPathTestEnum.NAME_WILDCARD}; 
 break;
-case 48: this.$ = {"test": XPathTestEnum.NAMESPACE_WILDCARD, "namespace": $$[$0]}; 
+case 48: this.$ = {"test": xpathmodels.XPathTestEnum.NAMESPACE_WILDCARD, "namespace": $$[$0]}; 
 break;
-case 49: this.$ = {"test": XPathTestEnum.TYPE_NODE}; 
+case 49: this.$ = {"test": xpathmodels.XPathTestEnum.TYPE_NODE}; 
 break;
-case 50: this.$ = {"test": XPathTestEnum.TYPE_TEXT}; 
+case 50: this.$ = {"test": xpathmodels.XPathTestEnum.TYPE_TEXT}; 
 break;
-case 51: this.$ = {"test": XPathTestEnum.TYPE_COMMENT}; 
+case 51: this.$ = {"test": xpathmodels.XPathTestEnum.TYPE_COMMENT}; 
 break;
-case 52: this.$ = {"test": XPathTestEnum.TYPE_PROCESSING_INSTRUCTION, "literal": null}; 
+case 52: this.$ = {"test": xpathmodels.XPathTestEnum.TYPE_PROCESSING_INSTRUCTION, "literal": null}; 
 break;
-case 53: this.$ = {"test": XPathTestEnum.TYPE_PROCESSING_INSTRUCTION, "literal": $$[$0-1]}; 
+case 53: this.$ = {"test": xpathmodels.XPathTestEnum.TYPE_PROCESSING_INSTRUCTION, "literal": $$[$0-1]}; 
 break;
-case 54: this.$ = new XPathStringLiteral($$[$0]); 
+case 54: this.$ = new xpathmodels.XPathStringLiteral($$[$0]); 
 break;
-case 55: this.$ = new XPathNumericLiteral($$[$0]); 
+case 55: this.$ = new xpathmodels.XPathNumericLiteral($$[$0]); 
 break;
 }
 },
