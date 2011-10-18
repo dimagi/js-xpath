@@ -410,6 +410,16 @@ xpathmodels = {};
 	    return str.indexOf("{binop-expr:") === 0 || str.indexOf("{unop-expr:") === 0;
 	};
 	
+	var isLiteral = xpm.isLiteral = function(someToken) {
+        return (someToken instanceof xpm.XPathNumericLiteral || 
+                someToken instanceof xpm.XPathStringLiteral ||
+                someToken instanceof xpm.XPathPathExpr); 
+	};
+	
+	var isSimpleOp = xpm.isSimpleOp = function(someToken) {
+	    return isOp(someToken) && isLiteral(someToken.left) && isLiteral(someToken.right);
+	};
+	
 	var binOpToXPath = function() {
 	    var prec = getPrecedence(this.type), lprec, rprec, lneedsParens = false, rneedsParens = false,
 	        lString, rString;
