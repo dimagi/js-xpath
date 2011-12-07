@@ -1,6 +1,6 @@
 /* Jison generated parser */
 var xpath = (function(){
-    var DEBUG_MODE = false;
+
 var parser = {trace: function trace() { },
 yy: {},
 symbols_: {"error":2,"xpath_expr":3,"expr":4,"EOF":5,"base_expr":6,"op_expr":7,"path_expr":8,"LPAREN":9,"RPAREN":10,"func_call":11,"VAR":12,"literal":13,"OR":14,"AND":15,"EQ":16,"NEQ":17,"LT":18,"LTE":19,"GT":20,"GTE":21,"PLUS":22,"MINUS":23,"MULT":24,"DIV":25,"MOD":26,"UNION":27,"QNAME":28,"arg_list":29,"COMMA":30,"loc_path":31,"predicate":32,"LBRACK":33,"RBRACK":34,"rel_loc_path":35,"SLASH":36,"DBL_SLASH":37,"step":38,"step_unabbr":39,"DOT":40,"DBL_DOT":41,"step_body":42,"node_test":43,"axis_specifier":44,"DBL_COLON":45,"AT":46,"WILDCARD":47,"NSWILDCARD":48,"NODETYPE_NODE":49,"NODETYPE_TEXT":50,"NODETYPE_COMMENT":51,"NODETYPE_PROCINSTR":52,"STR":53,"NUM":54,"$accept":0,"$end":1},
@@ -448,83 +448,83 @@ var YYSTATE=YY_START
 switch($avoiding_name_collisions) {
 case 0:/* ignore whitespace */ 
 break;
-case 1: if(DEBUG_MODE) { console.log("NODETYPE", yy_.yytext);} return "NODETYPE_NODE";
+case 1: debuglog("NODETYPE", yy_.yytext); return "NODETYPE_NODE"; 
 break;
-case 2: if (DEBUG_MODE) { console.log("NODETYPE",  yy_.yytext); } return "NODETYPE_TEXT";
+case 2: debuglog("NODETYPE", yy_.yytext); return "NODETYPE_TEXT"; 
 break;
-case 3: if (DEBUG_MODE) { console.log("NODETYPE",  yy_.yytext); } return "NODETYPE_COMMENT";
+case 3: debuglog("NODETYPE", yy_.yytext); return "NODETYPE_COMMENT"; 
 break;
-case 4: if (DEBUG_MODE) { console.log("NODETYPE",  yy_.yytext); } return "NODETYPE_PROCINSTR";
+case 4: debuglog("NODETYPE", yy_.yytext); return "NODETYPE_PROCINSTR"; 
 break;
-case 5: this.begin("OP_CONTEXT"); yy_.yytext = yy_.yytext.substr(1,yy_.yyleng-1); if (DEBUG_MODE) { console.log("VAR",  yy_.yytext); } return "VAR";
+case 5: this.begin("OP_CONTEXT"); yy_.yytext = yy_.yytext.substr(1,yy_.yyleng-1); debuglog("VAR", yy_.yytext); return "VAR"; 
 break;
 case 6: this.begin("OP_CONTEXT"); 
                                      yy_.yytext = yy_.yytext.substr(0, yy_.yyleng-2);
-                                     if (DEBUG_MODE) { console.log("NSWILDCARD",  yy_.yytext); } return "NSWILDCARD";
+                                     debuglog("NSWILDCARD", yy_.yytext); return "NSWILDCARD"; 
 break;
-case 7: this.begin("OP_CONTEXT"); if (DEBUG_MODE) { console.log("QNAME",  yy_.yytext); } return "QNAME";
+case 7: this.begin("OP_CONTEXT"); debuglog("QNAME", yy_.yytext); return "QNAME"; 
 break;
-case 8: this.begin("OP_CONTEXT"); if (DEBUG_MODE) { console.log("WILDCARD",  yy_.yytext); } return "WILDCARD";
+case 8: this.begin("OP_CONTEXT"); debuglog("WILDCARD", yy_.yytext); return "WILDCARD"; 
 break;
-case 9: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("MULT",  yy_.yytext); } return "MULT";
+case 9: this.begin("VAL_CONTEXT"); debuglog("MULT", yy_.yytext); return "MULT"; 
 break;
-case 10: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("AND",  yy_.yytext); } return "AND";
+case 10: this.begin("VAL_CONTEXT"); debuglog("AND", yy_.yytext); return "AND"; 
 break;
-case 11: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("OR",  yy_.yytext); } return "OR";
+case 11: this.begin("VAL_CONTEXT"); debuglog("OR", yy_.yytext); return "OR"; 
 break;
-case 12: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("DIV",  yy_.yytext); } return "DIV";
+case 12: this.begin("VAL_CONTEXT"); debuglog("DIV", yy_.yytext); return "DIV"; 
 break;
-case 13: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("MOD",  yy_.yytext); } return "MOD";
+case 13: this.begin("VAL_CONTEXT"); debuglog("MOD", yy_.yytext); return "MOD"; 
 break;
-case 14: this.begin("OP_CONTEXT"); if (DEBUG_MODE) { console.log("NUM",  yy_.yytext); } return "NUM";
+case 14: this.begin("OP_CONTEXT"); debuglog("NUM", yy_.yytext); return "NUM"; 
 break;
-case 15: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("EQ",  yy_.yytext); } return "EQ";
+case 15: this.begin("VAL_CONTEXT"); debuglog("EQ", yy_.yytext); return "EQ"; 
 break;
-case 16: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("NEQ",  yy_.yytext); } return "NEQ";
+case 16: this.begin("VAL_CONTEXT"); debuglog("NEQ", yy_.yytext); return "NEQ"; 
 break;
-case 17: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("LTE",  yy_.yytext); } return "LTE";
+case 17: this.begin("VAL_CONTEXT"); debuglog("LTE", yy_.yytext); return "LTE"; 
 break;
-case 18: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("LT",  yy_.yytext); } return "LT";
+case 18: this.begin("VAL_CONTEXT"); debuglog("LT", yy_.yytext); return "LT"; 
 break;
-case 19: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("GTE",  yy_.yytext); } return "GTE";
+case 19: this.begin("VAL_CONTEXT"); debuglog("GTE", yy_.yytext); return "GTE"; 
 break;
-case 20: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("GT",  yy_.yytext); } return "GT";
+case 20: this.begin("VAL_CONTEXT"); debuglog("GT", yy_.yytext); return "GT"; 
 break;
-case 21: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("PLUS",  yy_.yytext); } return "PLUS";
+case 21: this.begin("VAL_CONTEXT"); debuglog("PLUS", yy_.yytext); return "PLUS"; 
 break;
-case 22: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("MINUS",  yy_.yytext); } return "MINUS";
+case 22: this.begin("VAL_CONTEXT"); debuglog("MINUS", yy_.yytext); return "MINUS"; 
 break;
-case 23: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("UNION",  yy_.yytext); } return "UNION";
+case 23: this.begin("VAL_CONTEXT"); debuglog("UNION", yy_.yytext); return "UNION"; 
 break;
-case 24: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("DBL",  yy_.yytext); } return "DBL_SLASH";
+case 24: this.begin("VAL_CONTEXT"); debuglog("DBL", yy_.yytext); return "DBL_SLASH"; 
 break;
-case 25: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("SLASH",  yy_.yytext); } return "SLASH";
+case 25: this.begin("VAL_CONTEXT"); debuglog("SLASH", yy_.yytext); return "SLASH"; 
 break;
-case 26: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("LBRACK",  yy_.yytext); } return "LBRACK";
+case 26: this.begin("VAL_CONTEXT"); debuglog("LBRACK", yy_.yytext); return "LBRACK"; 
 break;
-case 27: this.begin("OP_CONTEXT");  if (DEBUG_MODE) { console.log("RBRACK",  yy_.yytext); } return "RBRACK";
+case 27: this.begin("OP_CONTEXT");  debuglog("RBRACK", yy_.yytext); return "RBRACK"; 
 break;
-case 28: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("LPAREN",  yy_.yytext); } return "LPAREN";
+case 28: this.begin("VAL_CONTEXT"); debuglog("LPAREN", yy_.yytext); return "LPAREN"; 
 break;
-case 29: this.begin("OP_CONTEXT");  if (DEBUG_MODE) { console.log("RPAREN",  yy_.yytext); } return "RPAREN";
+case 29: this.begin("OP_CONTEXT");  debuglog("RPAREN", yy_.yytext); return "RPAREN"; 
 break;
-case 30: this.begin("OP_CONTEXT");  if (DEBUG_MODE) { console.log("DBL",  yy_.yytext); } return "DBL_DOT";
+case 30: this.begin("OP_CONTEXT");  debuglog("DBL", yy_.yytext); return "DBL_DOT"; 
 break;
-case 31: this.begin("OP_CONTEXT");  if (DEBUG_MODE) { console.log("DOT",  yy_.yytext); } return "DOT";
+case 31: this.begin("OP_CONTEXT");  debuglog("DOT", yy_.yytext); return "DOT"; 
 break;
-case 32: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("AT",  yy_.yytext); } return "AT";
+case 32: this.begin("VAL_CONTEXT"); debuglog("AT", yy_.yytext); return "AT"; 
 break;
-case 33: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("DBL",  yy_.yytext); } return "DBL_COLON";
+case 33: this.begin("VAL_CONTEXT"); debuglog("DBL", yy_.yytext); return "DBL_COLON"; 
 break;
-case 34: this.begin("VAL_CONTEXT"); if (DEBUG_MODE) { console.log("COMMA",  yy_.yytext); } return "COMMA";
+case 34: this.begin("VAL_CONTEXT"); debuglog("COMMA", yy_.yytext); return "COMMA"; 
 break;
-case 35: this.begin("OP_CONTEXT"); yy_.yytext = yy_.yytext.substr(1,yy_.yyleng-2); return "STR"; 
+case 35: this.begin("OP_CONTEXT"); yy_.yytext = yy_.yytext.substr(1,yy_.yyleng-2); debuglog("STR", yy_.yytext); return "STR"; 
 break;
 case 36:return 5;
 break;
 }
 };
-lexer.rules = [/^(\s+)/,/^node(?=((\s+)?\())/,/^text(?=((\s+)?\())/,/^comment(?=((\s+)?\())/,/^processing-instruction(?=((\s+)?\())/,/^\$[A-Za-z_][A-Za-z0-9._-]*(:[A-Za-z_][A-Za-z0-9._-]*)?/,/^[A-Za-z_][A-Za-z0-9._-]*:\*/,/^[A-Za-z_][A-Za-z0-9._-]*(:[A-Za-z_][A-Za-z0-9._-]*)?/,/^\*/,/^\*/,/^(and)/,/^(or)/,/^(div)/,/^(mod)/,/^[0-9]+(\.[0-9]*)?|\.[0-9]+/,/^=/,/^!=/,/^<=/,/^</,/^>=/,/^>/,/^\+/,/^-/,/^\|/,/^\/\//,/^\//,/^\[/,/^\]/,/^\(/,/^\)/,/^\.\./,/^\./,/^@/,/^::/,/^,/,/^"[^"\""]*"|'[^'\'']*'/,/^$/];
+lexer.rules = [/^(\s+)/,/^node(?=((\s+)?\())/,/^text(?=((\s+)?\())/,/^comment(?=((\s+)?\())/,/^processing-instruction(?=((\s+)?\())/,/^\$[A-Za-z_][A-Za-z0-9._-]*(:[A-Za-z_][A-Za-z0-9._-]*)?/,/^[A-Za-z_][A-Za-z0-9._-]*:\*/,/^[A-Za-z_][A-Za-z0-9._-]*(:[A-Za-z_][A-Za-z0-9._-]*)?/,/^\*/,/^\*/,/^(and)/,/^(or)/,/^(div)/,/^(mod)/,/^([0-9]+(\.[0-9]*)?|(\.[0-9]+))/,/^=/,/^!=/,/^<=/,/^</,/^>=/,/^>/,/^\+/,/^-/,/^\|/,/^\/\//,/^\//,/^\[/,/^\]/,/^\(/,/^\)/,/^\.\./,/^\./,/^@/,/^::/,/^,/,/^("[^"\""]*"|'[^'\'']*')/,/^$/];
 lexer.conditions = {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36],"inclusive":true},"OP_CONTEXT":{"rules":[0,1,2,3,4,5,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36],"inclusive":true},"VAL_CONTEXT":{"rules":[0,1,2,3,4,5,6,7,8,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36],"inclusive":true}};return lexer;})()
 parser.lexer = lexer;
 return parser;

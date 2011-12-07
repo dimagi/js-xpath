@@ -5,6 +5,13 @@
  * 
  */
 xpathmodels = {};
+DEBUG_MODE = true;
+
+debuglog = function () {
+    if (DEBUG_MODE) {
+        console.log(arguments);   
+    }
+};
     
 (function() {
     var xpm = xpathmodels;
