@@ -5,10 +5,10 @@
  * 
  */
 xpathmodels = {};
-DEBUG_MODE = true;
+xpathmodels.DEBUG_MODE = true;
 
 debuglog = function () {
-    if (DEBUG_MODE) {
+    if (xpathmodels.DEBUG_MODE) {
         console.log(arguments);   
     }
 };
