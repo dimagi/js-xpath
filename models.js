@@ -5,7 +5,7 @@
  * 
  */
 xpathmodels = {};
-xpathmodels.DEBUG_MODE = true;
+xpathmodels.DEBUG_MODE = false;
 
 debuglog = function () {
     if (xpathmodels.DEBUG_MODE) {
