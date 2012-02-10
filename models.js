@@ -72,6 +72,9 @@ debuglog = function () {
 	        };
 	        return toFixed(this.value.toString());
 	    };
+	    this.getChildren = function () {
+	       return [];
+	    };
 	    return this;
 	};
 	
@@ -102,7 +105,10 @@ debuglog = function () {
 	    this.toXPath = function() {
 	        return this.valueDisplay;
 	    };
-	    return this;
+	    this.getChildren = function () {
+           return [];
+        };
+        return this;
 	};
 	
 	xpm.XPathVariableReference = function(value) {
@@ -113,6 +119,9 @@ debuglog = function () {
 	    this.toXPath = function() {
 	        return "$" + String(this.value);
 	    };
+	    this.getChildren = function () {
+           return [];
+        };
 	    
 	};
 	
@@ -226,6 +235,10 @@ debuglog = function () {
 	    this.toXPath = function() {
 	        return this.mainXPath() + this.predicateXPath();
 	    };
+	    this.getChildren = function () {
+           return [];
+        };
+        
 	    return this;        
 	};
 	
@@ -273,6 +286,10 @@ debuglog = function () {
 	        }
 	        return ret.join("");
 	    };
+	    this.getChildren = function () {
+           return this.steps;
+        };
+        
 	    return this;
 	};
 	
@@ -293,7 +310,10 @@ debuglog = function () {
 	    this.toXPath = function() {
 	        return this.id + "(" + this.args.map(objToXPath).join(", ") + ")";
 	    };
-	    return this;
+	    this.getChildren = function () {
+           return this.args;
+        };
+        return this;
 	};
 	
 	
@@ -446,13 +466,19 @@ debuglog = function () {
 	    return lString + " " + expressionTypeEnumToXPathLiteral(this.type) + " " + rString;
 	};
 	
+	var binOpChildren = function () {
+	    return [this.left, this.right];
+	};
+	
 	xpm.XPathBoolExpr = function(definition) {
 	    this.type = definition.type;
 	    this.left = definition.left;
 	    this.right = definition.right;
 	    this.toString = binOpToString;
 	    this.toXPath = binOpToXPath;
+	    this.getChidren = binOpChildren;
 	    return this;
+        
 	};
 	
 	xpm.XPathEqExpr = function(definition) {
@@ -461,7 +487,8 @@ debuglog = function () {
 	    this.right = definition.right;
 	    this.toString = binOpToString;
 	    this.toXPath = binOpToXPath;
-	    return this;
+	    this.getChidren = binOpChildren;
+        return this;
 	};
 	
 	xpm.XPathCmpExpr = function(definition) {
@@ -470,7 +497,8 @@ debuglog = function () {
 	    this.right = definition.right;
 	    this.toString = binOpToString;
 	    this.toXPath = binOpToXPath;
-	    return this;
+	    this.getChidren = binOpChildren;
+        return this;
 	};
 	 
 	xpm.XPathArithExpr = function(definition) {
@@ -479,7 +507,8 @@ debuglog = function () {
 	    this.right = definition.right;
 	    this.toString = binOpToString;
 	    this.toXPath = binOpToXPath;
-	    return this;
+	    this.getChidren = binOpChildren;
+        return this;
 	};
 	
 	xpm.XPathUnionExpr = function(definition) {
@@ -488,7 +517,8 @@ debuglog = function () {
 	    this.right = definition.right;
 	    this.toString = binOpToString;
 	    this.toXPath = binOpToXPath;
-	    return this;
+	    this.getChidren = binOpChildren;
+        return this;
 	};
 	
 	xpm.XPathNumNegExpr = function(definition) {
@@ -500,6 +530,9 @@ debuglog = function () {
 	    this.toXPath = function() {
 	        return "-" + this.value.toXPath();
 	    };
-	    return this;
+	    this.getChidren = function () {
+	       return [this.value];
+	    }
+        return this;
 	};
 }());
