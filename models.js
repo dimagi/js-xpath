@@ -476,7 +476,7 @@ debuglog = function () {
 	    this.right = definition.right;
 	    this.toString = binOpToString;
 	    this.toXPath = binOpToXPath;
-	    this.getChidren = binOpChildren;
+	    this.getChildren = binOpChildren;
 	    return this;
         
 	};
@@ -487,7 +487,7 @@ debuglog = function () {
 	    this.right = definition.right;
 	    this.toString = binOpToString;
 	    this.toXPath = binOpToXPath;
-	    this.getChidren = binOpChildren;
+	    this.getChildren = binOpChildren;
         return this;
 	};
 	
@@ -497,7 +497,7 @@ debuglog = function () {
 	    this.right = definition.right;
 	    this.toString = binOpToString;
 	    this.toXPath = binOpToXPath;
-	    this.getChidren = binOpChildren;
+	    this.getChildren = binOpChildren;
         return this;
 	};
 	 
@@ -507,7 +507,7 @@ debuglog = function () {
 	    this.right = definition.right;
 	    this.toString = binOpToString;
 	    this.toXPath = binOpToXPath;
-	    this.getChidren = binOpChildren;
+	    this.getChildren = binOpChildren;
         return this;
 	};
 	
@@ -517,7 +517,7 @@ debuglog = function () {
 	    this.right = definition.right;
 	    this.toString = binOpToString;
 	    this.toXPath = binOpToXPath;
-	    this.getChidren = binOpChildren;
+	    this.getChildren = binOpChildren;
         return this;
 	};
 	
@@ -530,7 +530,7 @@ debuglog = function () {
 	    this.toXPath = function() {
 	        return "-" + this.value.toXPath();
 	    };
-	    this.getChidren = function () {
+	    this.getChildren = function () {
 	       return [this.value];
 	    }
         return this;
