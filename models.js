@@ -252,8 +252,8 @@ debuglog = function () {
 	    /**
 	     * an XPath path, which consists mainly of steps
 	     */
-	
-	    this.initial_context = definition.initial_context;
+        var self = this;
+        this.initial_context = definition.initial_context;
 	    this.steps = definition.steps || [];
 	    this.filter = definition.filter;
 	    this.toString = function() {
@@ -266,29 +266,40 @@ debuglog = function () {
 	        stringArray.push("}}");
 	        return stringArray.join("");
 	    };
-	    this.toXPath = function() {
-	        var parts = this.steps.map(objToXPath), ret = [], curPart, prevPart, sep;
-	        var root = (this.initial_context === xpm.XPathInitialContextEnum.ROOT) ? "/" : "";
-	        if (parts.length === 0) {
-	            return root;
-	        }
-	        for (var i = 0; i < parts.length; i ++) {
-	            curPart = parts[i];
-	            if (curPart !== "//" && prevPart !== "//") {
-	                // unless the current part starts with a slash, put slashes between
-	                // parts. the only exception to this rule is at the beginning, 
-	                // when we only use a slash if it's an absolute path
-	                sep = (i === 0) ? root : "/";
-	                ret.push(sep);
-	            }
-	            ret.push(curPart);
-	            prevPart = curPart;
-	        }
-	        return ret.join("");
+	    var _combine = function (func) {
+	        // this helper function only exists so that 
+	        // the two methods below it can call itx
+	        var parts = self.steps.map(func), ret = [], curPart, prevPart, sep;
+            var root = (self.initial_context === xpm.XPathInitialContextEnum.ROOT) ? "/" : "";
+            if (parts.length === 0) {
+                return root;
+            }
+            for (var i = 0; i < parts.length; i ++) {
+                curPart = parts[i];
+                if (curPart !== "//" && prevPart !== "//") {
+                    // unless the current part starts with a slash, put slashes between
+                    // parts. the only exception to this rule is at the beginning, 
+                    // when we only use a slash if it's an absolute path
+                    sep = (i === 0) ? root : "/";
+                    ret.push(sep);
+                }
+                ret.push(curPart);
+                prevPart = curPart;
+            }
+            return ret.join(""); 
 	    };
+	    this.toXPath = function() {
+            return _combine(objToXPath);
+	    };
+	    // custom function to pull out any filters and just return the root path
+        this.pathWithoutPredicates = function() {
+            return _combine(function (step) { return step.mainXPath(); });
+        };
+        
 	    this.getChildren = function () {
            return this.steps;
         };
+        
         
 	    return this;
 	};
