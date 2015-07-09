@@ -142,7 +142,7 @@ test("generator function calls that are actually node tests", function () {
 test("generator filter expressions", function () {
     runGeneratorTests({
         "bunch-o-nodes()[3]": "bunch-o-nodes()[3]",
-        "bunch-o-nodes()[3]['predicates'!='galore']": "bunch-o-nodes()[3]['predicates'!='galore']",
+        "bunch-o-nodes()[3]['predicates'!='galore']": "bunch-o-nodes()[3]['predicates' != 'galore']",
         "(bunch-o-nodes)[3]": "(bunch-o-nodes)[3]",
         "bunch-o-nodes[3]": "bunch-o-nodes[3]",
     });

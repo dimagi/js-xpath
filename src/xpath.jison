@@ -35,6 +35,7 @@ xpath_expr:  expr EOF   { return $1; }
 expr:   base_expr                   {  $$ = $1; } /* not necessary as this is the default */
     |   op_expr                     {  $$ = $1; }
     |   path_expr                   {  $$ = $1; }
+    |   filter_expr                 {  $$ = $1; }
     ;
 
 base_expr:  LPAREN expr RPAREN            { $$ = $2; }
@@ -71,22 +72,37 @@ arg_list:   arg_list COMMA expr     { var args = $1;
         ;
 
 path_expr:  loc_path
-        ; 
-
-/* This is commented out because there might be a bug in jison that thinks this is ambiguous
- * when in fact it's not. The first group belongs as part of the path_expr. The second should
- * be added as a new filter_expr.
- */
-
-/*
-        |   filter_expr SLASH rel_loc_path          { $$ = "fe.unwrapPathExpr(rlp)"; }
-        |   filter_expr DBL_SLASH rel_loc_path      { $$ = "fe.unwrapPathExpr(Vprepend(rlp, xpathmodels.XPathStep.ABBR_DESCENDANTS()))"; }
+        |   filter_expr SLASH rel_loc_path          { $$ = new xpathmodels.XPathPathExpr({
+                                                                    initial_context: xpathmodels.XPathInitialContextEnum.EXPR,
+                                                                    filter: $1, steps: $3}); }
+        |   filter_expr DBL_SLASH rel_loc_path      { var steps = $3;
+                                                      steps.splice(0, 0, new xpathmodels.XPathStep({
+                                                                                axis: xpathmodels.XPathAxisEnum.DESCENDANT_OR_SELF, 
+                                                                                test: xpathmodels.XPathTestEnum.TYPE_NODE}));
+                                                      $$ = new xpathmodels.XPathPathExpr({
+                                                                    initial_context: xpathmodels.XPathInitialContextEnum.EXPR,
+                                                                    filter: $1, steps: steps}); }
+        |   base_expr SLASH rel_loc_path            { // could eliminate filterExpr wrapper, but this makes tests pass as-is
+                                                      var filterExpr = new xpathmodels.XPathFilterExpr({expr: $1});
+                                                      $$ = new xpathmodels.XPathPathExpr({
+                                                                    initial_context: xpathmodels.XPathInitialContextEnum.EXPR,
+                                                                    filter: filterExpr, steps: $3}); }
+        |   base_expr DBL_SLASH rel_loc_path        { var steps = $3;
+                                                      // could eliminate filterExpr wrapper, but this makes tests pass as-is
+                                                      var filterExpr = new xpathmodels.XPathFilterExpr({expr: $1});
+                                                      steps.splice(0, 0, new xpathmodels.XPathStep({
+                                                                                axis: xpathmodels.XPathAxisEnum.DESCENDANT_OR_SELF, 
+                                                                                test: xpathmodels.XPathTestEnum.TYPE_NODE}));
+                                                      $$ = new xpathmodels.XPathPathExpr({
+                                                                    initial_context: xpathmodels.XPathInitialContextEnum.EXPR,
+                                                                    filter: filterExpr, steps: steps}); }
         ;
 
-filter_expr:  filter_expr predicate     { $$ = "Vappend(fe.v, p); RESULT = fe;" }
-|   base_expr                   { $$ = "new vectorWrapper(be);"; } ***** THIS IS THE LINE THAT BREAKS *****  
+filter_expr:  base_expr predicate     { $$ = new xpathmodels.XPathFilterExpr({expr: $1, predicates: [$2]}); }
+        |   filter_expr predicate     { var filterExpr = $1;
+                                        filterExpr.predicates.push($2);
+                                        $$ = filterExpr; }
         ;
-*/ 
 
 predicate:   LBRACK expr RBRACK            { $$ = $2; }
         ;

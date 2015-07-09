@@ -47,3 +47,6 @@ $ node /path/to/jison src/xpath.jison src/xpath.jisonlex
 
 For more information on jison see the jison project website at: 
 http://zaach.github.com/jison/.
+
+See also https://github.com/zaach/jison/pull/290, which fixes a bug in
+jison 0.4.15
