@@ -271,6 +271,9 @@ debuglog = function () {
             // the two methods below it can call itx
             var parts = self.steps.map(func), ret = [], curPart, prevPart, sep;
             var root = (self.initial_context === xpm.XPathInitialContextEnum.ROOT) ? "/" : "";
+            if (self.filter) {
+                parts.splice(0, 0, func(self.filter));
+            }
             if (parts.length === 0) {
                 return root;
             }
@@ -323,6 +326,38 @@ debuglog = function () {
         };
         this.getChildren = function () {
            return this.args;
+        };
+        return this;
+    };
+    
+    
+    xpm.XPathFilterExpr = function (definition) {
+        /**
+         * Representation of an xpath filter expression.
+         */
+        this.expr = definition.expr;
+        this.predicates = definition.predicates || [];
+        this.toString = function() {
+            var stringArray = [];
+            stringArray.push("{filt-expr:", this.expr.toString(), ",{");
+            stringArray.push(this.predicates.join(","));
+            stringArray.push("}}");
+            return stringArray.join("");
+        };
+        this.toXPath = function() {
+            var predicates = "";
+            if (this.predicates.length > 0) {
+                predicates = "[" + this.predicates.map(objToXPath).join("][") + "]";
+            }
+            var expr = objToXPath(this.expr);
+            // FIXME should all non-function expressions be parenthesized?
+            if (!(this.expr instanceof xpm.XPathFuncExpr)) {
+                expr = "(" + expr + ")";
+            }
+            return expr + predicates;
+        };
+        this.getChildren = function () {
+           return this.predicates;
         };
         return this;
     };
