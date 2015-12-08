@@ -55,6 +55,7 @@ QName               [A-Za-z_][A-Za-z0-9._-]*(":"[A-Za-z_][A-Za-z0-9._-]*)?
 <*>"@"         { this.begin("VAL_CONTEXT"); debuglog("AT", yytext); return "AT"; }
 <*>"::"        { this.begin("VAL_CONTEXT"); debuglog("DBL", yytext); return "DBL_COLON"; }
 <*>","         { this.begin("VAL_CONTEXT"); debuglog("COMMA", yytext); return "COMMA"; }
+<*>"#"         { this.begin("VAL_CONTEXT"); debuglog("HASH", yytext); return "HASH"; }
 
 
 <*>("\""[^"\""]*"\""|'\''[^'\'']*'\'')               { this.begin("OP_CONTEXT"); yytext = yytext.substr(1,yyleng-2); debuglog("STR", yytext); return "STR"; }

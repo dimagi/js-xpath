@@ -215,3 +215,12 @@ test("generator real world examples", function () {
     });
 });
 
+test("generator hashtags", function () {
+    runGeneratorTests({
+        "#form/question": "#form/question",
+        "#form/group/question": "#form/group/question",
+        "#form/question = #case/question": "#form/question = #case/question",
+        "#form/question     =    #case/question": "#form/question = #case/question",
+    });
+});
+

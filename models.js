@@ -243,6 +243,7 @@ debuglog = function () {
     };
     
     xpm.XPathInitialContextEnum = {
+        HASHTAG: "hashtag",
         ROOT: "abs",
         RELATIVE: "rel",
         EXPR: "expr"
@@ -361,7 +362,50 @@ debuglog = function () {
         };
         return this;
     };
-    
+
+    xpm.HashtagExpr = function (definition) {
+        /**
+         * an extension of xpath that's not really an xpath
+         */
+        var self = this;
+        this.initial_context = definition.initial_context;
+        if (this.initial_context !== xpm.XPathInitialContextEnum.HASHTAG) {
+            throw "#nohashtag";
+        }
+        this.namespace = definition.namespace;
+        this.steps = definition.steps || [];
+        this.toString = function() {
+            var stringArray = [];
+            stringArray.push("{hashtag-expr:");
+            stringArray.push(this.namespace.name);
+            stringArray.push(",{");
+            stringArray.push(this.steps.join(","));
+            stringArray.push("}}");
+            return stringArray.join("");
+        };
+        var _combine = function (func) {
+            var parts = [self.namespace].concat(self.steps).map(func),
+                ret = [];
+            for (var i = 0; i < parts.length; i ++) {
+                // hashtag to start then /
+                ret.push((i === 0) ? '#' : "/");
+                ret.push(parts[i]);
+            }
+            return ret.join("");
+        };
+        this.toXPath = function(translation) {
+            var hashtag = _combine(objToXpath);
+            if (translation[hashtag]) {
+                return translation[hashtag];
+            }
+            return hashtag;
+        };
+        this.getChildren = function () {
+           return this.steps;
+        };
+
+        return this;
+    };
     
     // expressions
     

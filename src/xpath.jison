@@ -36,6 +36,7 @@ expr:   base_expr                   {  $$ = $1; } /* not necessary as this is th
     |   op_expr                     {  $$ = $1; }
     |   path_expr                   {  $$ = $1; }
     |   filter_expr                 {  $$ = $1; }
+    |   hashtag_expr                {  $$ = $1; }
     ;
 
 base_expr:  LPAREN expr RPAREN            { $$ = $2; }
@@ -103,6 +104,12 @@ filter_expr:  base_expr predicate     { $$ = new xpathmodels.XPathFilterExpr({ex
                                         filterExpr.predicates.push($2);
                                         $$ = filterExpr; }
         ;
+
+hashtag_expr:  HASH step SLASH rel_loc_path              { $$ = new xpathmodels.HashtagExpr({initial_context: xpathmodels.XPathInitialContextEnum.HASHTAG,
+                                                                      namespace: $2,
+                                                                      steps: $4}); }
+        ;
+
 
 predicate:   LBRACK expr RBRACK            { $$ = $2; }
         ;

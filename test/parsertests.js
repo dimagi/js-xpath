@@ -293,3 +293,14 @@ test("real world examples", function () {
         "function_call(26*(7+3), //*, /im/child::an/ancestor::x[3][true()]/path)": "{func-expr:function_call,{{binop-expr:*,{num:26},{binop-expr:+,{num:7},{num:3}}},{path-expr:abs,{{step:descendant-or-self,node()},{step:child,*}}},{path-expr:abs,{{step:child,im},{step:child,an},{step:ancestor,x,{{num:3},{func-expr:true,{}}}},{step:child,path}}}}}"             
     });
 });
+
+test("hashtags", function () {
+    runCommon({
+        "#form/question": "{hashtag-expr:form,{{step:child,question}}}",
+        "#form/group/question": "{hashtag-expr:form,{{step:child,group},{step:child,question}}}",
+        "#case/type/prop": "{hashtag-expr:case,{{step:child,type},{step:child,prop}}}",
+    });
+    runFailures({
+        "#": null,
+    });
+});
