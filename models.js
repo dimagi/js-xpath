@@ -238,16 +238,18 @@ debuglog = function () {
             }
             return axisPrefix + this.testString();
         };
-        this.predicateXPath = function () {
+        this.predicateXPath = function (func) {
             if (this.predicates.length > 0) {
-                return "[" + this.predicates.map(objToXPath).join("][") + "]";
+                return "[" + this.predicates.map(func).join("][") + "]";
             }
             return "";
         };
         this.toXPath = function() {
-            return this.mainXPath() + this.predicateXPath();
+            return this.mainXPath() + this.predicateXPath(objToXPath);
         };
-        this.toHashtag = this.toXPath;
+        this.toHashtag = function() {
+            return this.mainXPath() + this.predicateXPath(objToHashtag);
+        };
         this.getChildren = function () {
            return [];
         };
@@ -309,7 +311,7 @@ debuglog = function () {
             return _combine(objToXPath);
         };
         this.toHashtag = function () {
-            return xpathToHashtag(this.toXPath());
+            return _combine(objToHashtag);
         };
         // custom function to pull out any filters and just return the root path
         this.pathWithoutPredicates = function() {

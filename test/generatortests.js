@@ -217,23 +217,27 @@ test("generator real world examples", function () {
 });
 
 test("generator hashtags", function () {
-    runGeneratorTests({
-        "#form/question": "/data/question",
-        "#form/group/question": "/data/group/question",
-        "#form/question = #case/question": "/data/question = instance('casedb')/cases/case[@case_id = case_id]/question",
-        "#form/question     =    #case/question": "/data/question = instance('casedb')/cases/case[@case_id = case_id]/question",
-    }, {
-        '#form/question': '/data/question',
-        '#form/group/question': '/data/group/question',
-        '#case/question': "instance('casedb')/cases/case[@case_id = case_id]/question",
-        '/data/question':'#form/question', 
-        '/data/group/question': '#form/group/question', 
-        "instance('casedb')/cases/case[@case_id = case_id]/question": '#case/question',
-    });
+    var transDict = {
+            '#form/question': '/data/question',
+            '#form/group/question': '/data/group/question',
+            '#case/question': "instance('casedb')/cases/case[@case_id = case_id]/question",
+            '/data/question':'#form/question',
+            '/data/group/question': '#form/group/question',
+            "instance('casedb')/cases/case[@case_id = case_id]/question": '#case/question',
+        },
+        testCases = {
+            "#form/question": "/data/question",
+            "#form/group/question": "/data/group/question",
+            "#form/question = #case/question": "/data/question = instance('casedb')/cases/case[@case_id = case_id]/question",
+            "#form/question     =    #case/question": "/data/question = instance('casedb')/cases/case[@case_id = case_id]/question",
+            "/data/filtered[@id = #form/question]": "/data/filtered[@id = /data/question]"
+        };
+
+    runGeneratorTests(testCases, transDict);
 });
 
 test("hashtags with no xpath", function() {
-    xpathmodels.setTranslationDict({ });
+    xpathmodels.setTranslationDict({});
 
     var testcases = {
         "#form/question1": "/data/question1",
