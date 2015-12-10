@@ -8,7 +8,7 @@
  * https://bitbucket.org/javarosa/javarosa/src/tip/core/src/org/javarosa/xpath/parser/xpath.flex
  *
  * To build run:
- *   $ ./bin/jison xpath.jison xpath.jisonlex
+ *   $ npm run build
  */
 
 
