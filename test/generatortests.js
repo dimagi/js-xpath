@@ -4,7 +4,8 @@
  * 
  */
 
-var runGeneratorTests = function(testcases) {
+var runGeneratorTests = function(testcases, translationDict) {
+    xpathmodels.setTranslationDict(translationDict || {});
     var parsed;
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
@@ -14,7 +15,7 @@ var runGeneratorTests = function(testcases) {
                 // It seems reasonable to expect that the generated xpath
                 // should parse back to the same object, although this may 
                 // not always hold true.
-                equal(parsed.toString(), xpath.parse(parsed.toXPath()).toString(), "" + i + " produced same result when reparsed.");
+                equal(parsed.toString(), xpath.parse(parsed.toHashtag()).toString(), "" + i + " produced same result when reparsed.");
             } catch(err) {
                 ok(false, "" + err + " for input: " + i);
             }
@@ -217,10 +218,37 @@ test("generator real world examples", function () {
 
 test("generator hashtags", function () {
     runGeneratorTests({
-        "#form/question": "#form/question",
-        "#form/group/question": "#form/group/question",
-        "#form/question = #case/question": "#form/question = #case/question",
-        "#form/question     =    #case/question": "#form/question = #case/question",
+        "#form/question": "/data/question",
+        "#form/group/question": "/data/group/question",
+        "#form/question = #case/question": "/data/question = instance('casedb')/cases/case[@case_id = case_id]/question",
+        "#form/question     =    #case/question": "/data/question = instance('casedb')/cases/case[@case_id = case_id]/question",
+    }, {
+        '#form/question': '/data/question',
+        '#form/group/question': '/data/group/question',
+        '#case/question': "instance('casedb')/cases/case[@case_id = case_id]/question",
+        '/data/question':'#form/question', 
+        '/data/group/question': '#form/group/question', 
+        "instance('casedb')/cases/case[@case_id = case_id]/question": '#case/question',
     });
 });
 
+test("hashtags with no xpath", function() {
+    xpathmodels.setTranslationDict({ });
+
+    var testcases = {
+        "#form/question1": "/data/question1",
+    };
+    var parsed;
+    for (var i in testcases) {
+        if (testcases.hasOwnProperty(i)) {
+            try {
+                parsed = xpath.parse(i);
+                ok(true, i + " correctly parsed");
+                equal(parsed.toHashtag(), i, "" + i + " written as hashtag correctly");
+                throws(parsed.toXPath, /translate/);
+            } catch(err) {
+                ok(false, err);
+            }
+        }
+    }
+});

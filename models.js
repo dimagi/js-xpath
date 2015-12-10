@@ -15,6 +15,7 @@ debuglog = function () {
 
 (function() {
     var xpm = xpathmodels;
+    xpm.translationDict = {};
 
     var validateAxisName = xpm.validateAxisName = function(name) {
         for (var i in xpm.XPathAxisEnum) {
@@ -28,6 +29,14 @@ debuglog = function () {
     // helper function
     var objToXPath = function(something) {
         return something.toXPath();
+    };
+
+    var objToHashtag = function(something) {
+        return something.toHashtag ? something.toHashtag() : xpathToHashtag(objToXPath(something));
+    };
+
+    var xpathToHashtag = function(xpath) {
+        return xpm.translationDict[xpath] ? xpm.translationDict[xpath] : xpath;
     };
     
     xpm.XPathNumericLiteral = function(value) {
@@ -72,6 +81,7 @@ debuglog = function () {
             };
             return toFixed(this.value.toString());
         };
+        this.toHashtag = this.toXPath;
         this.getChildren = function () {
            return [];
         };
@@ -105,6 +115,7 @@ debuglog = function () {
         this.toXPath = function() {
             return this.valueDisplay;
         };
+        this.toHashtag = this.toXPath;
         this.getChildren = function () {
            return [];
         };
@@ -119,6 +130,7 @@ debuglog = function () {
         this.toXPath = function() {
             return "$" + String(this.value);
         };
+        this.toHashtag = this.toXPath;
         this.getChildren = function () {
            return [];
         };
@@ -235,6 +247,7 @@ debuglog = function () {
         this.toXPath = function() {
             return this.mainXPath() + this.predicateXPath();
         };
+        this.toHashtag = this.toXPath;
         this.getChildren = function () {
            return [];
         };
@@ -295,6 +308,9 @@ debuglog = function () {
         this.toXPath = function() {
             return _combine(objToXPath);
         };
+        this.toHashtag = function () {
+            return xpathToHashtag(this.toXPath());
+        };
         // custom function to pull out any filters and just return the root path
         this.pathWithoutPredicates = function() {
             return _combine(function (step) { return step.mainXPath(); });
@@ -324,6 +340,9 @@ debuglog = function () {
         };
         this.toXPath = function() {
             return this.id + "(" + this.args.map(objToXPath).join(", ") + ")";
+        };
+        this.toHashtag = function() {
+            return this.id + "(" + this.args.map(objToHashtag).join(", ") + ")";
         };
         this.getChildren = function () {
            return this.args;
@@ -357,6 +376,7 @@ debuglog = function () {
             }
             return expr + predicates;
         };
+        this.toHashtag = this.toXPath;
         this.getChildren = function () {
            return this.predicates;
         };
@@ -393,12 +413,15 @@ debuglog = function () {
             }
             return ret.join("");
         };
-        this.toXPath = function(translation) {
-            var hashtag = _combine(objToXpath);
-            if (translation[hashtag]) {
-                return translation[hashtag];
+        this.toXPath = function () {
+            var hashtag = _combine(objToXPath);
+            if (xpm.translationDict[hashtag]) {
+                return xpm.translationDict[hashtag];
             }
-            return hashtag;
+            throw "You need to translate the hashtag before you can have an xpath";
+        };
+        this.toHashtag = function () {
+            return _combine(objToHashtag);
         };
         this.getChildren = function () {
            return this.steps;
@@ -536,25 +559,31 @@ debuglog = function () {
     var isSimpleOp = xpm.isSimpleOp = function(someToken) {
         return isOp(someToken) && isLiteral(someToken.left) && isLiteral(someToken.right);
     };
+
+    function printBinOp (func) {
+        return function () {
+            var prec = getPrecedence(this.type), lprec, rprec, lneedsParens = false, rneedsParens = false,
+                lString, rString;
+            // if the child has higher precedence we can omit parens
+            // if they are the same then we can omit
+            // if they tie, we look to the ordering
+            if (isOp(this.left)) {
+                lprec = getPrecedence(this.left.type);
+                lneedsParens = (lprec > prec) ? false : (lprec !== prec) ? true : (getOrdering(this.type) === "right");
+            }
+            if (isOp(this.right)) {
+                rprec = getPrecedence(this.right.type);
+                rneedsParens = (rprec > prec) ? false : (rprec !== prec) ? true : (getOrdering(this.type) === "left");
+            }
+            lString = lneedsParens ? "(" + func(this.left) + ")" : func(this.left);
+            rString = rneedsParens ? "(" + func(this.right) + ")" : func(this.right);
+            return lString + " " + expressionTypeEnumToXPathLiteral(this.type) + " " + rString;
+        };
+    }
     
-    var binOpToXPath = function() {
-        var prec = getPrecedence(this.type), lprec, rprec, lneedsParens = false, rneedsParens = false,
-            lString, rString;
-        // if the child has higher precedence we can omit parens
-        // if they are the same then we can omit
-        // if they tie, we look to the ordering
-        if (isOp(this.left)) {
-            lprec = getPrecedence(this.left.type);
-            lneedsParens = (lprec > prec) ? false : (lprec !== prec) ? true : (getOrdering(this.type) === "right");
-        }
-        if (isOp(this.right)) {
-            rprec = getPrecedence(this.right.type);
-            rneedsParens = (rprec > prec) ? false : (rprec !== prec) ? true : (getOrdering(this.type) === "left");
-        }
-        lString = lneedsParens ? "(" + this.left.toXPath() + ")" : this.left.toXPath();
-        rString = rneedsParens ? "(" + this.right.toXPath() + ")" : this.right.toXPath();
-        return lString + " " + expressionTypeEnumToXPathLiteral(this.type) + " " + rString;
-    };
+    var binOpToXPath = printBinOp(objToXPath);
+
+    var binOpToHashtag = printBinOp(objToHashtag);
     
     var binOpChildren = function () {
         return [this.left, this.right];
@@ -566,6 +595,7 @@ debuglog = function () {
         this.right = definition.right;
         this.toString = binOpToString;
         this.toXPath = binOpToXPath;
+        this.toHashtag = binOpToHashtag;
         this.getChildren = binOpChildren;
         return this;
 
@@ -577,6 +607,7 @@ debuglog = function () {
         this.right = definition.right;
         this.toString = binOpToString;
         this.toXPath = binOpToXPath;
+        this.toHashtag = binOpToHashtag;
         this.getChildren = binOpChildren;
         return this;
     };
@@ -587,6 +618,7 @@ debuglog = function () {
         this.right = definition.right;
         this.toString = binOpToString;
         this.toXPath = binOpToXPath;
+        this.toHashtag = binOpToHashtag;
         this.getChildren = binOpChildren;
         return this;
     };
@@ -597,6 +629,7 @@ debuglog = function () {
         this.right = definition.right;
         this.toString = binOpToString;
         this.toXPath = binOpToXPath;
+        this.toHashtag = binOpToHashtag;
         this.getChildren = binOpChildren;
         return this;
     };
@@ -607,6 +640,7 @@ debuglog = function () {
         this.right = definition.right;
         this.toString = binOpToString;
         this.toXPath = binOpToXPath;
+        this.toHashtag = binOpToHashtag;
         this.getChildren = binOpChildren;
         return this;
     };
@@ -618,11 +652,18 @@ debuglog = function () {
             return "{unop-expr:" + this.type + "," + String(this.value) + "}";
         };
         this.toXPath = function() {
-            return "-" + this.value.toXPath();
+            return "-" + objToXPath(this.value);
+        };
+        this.toHashtag = function() {
+            return "-" + objToHashtag(this.value);
         };
         this.getChildren = function () {
            return [this.value];
         };
         return this;
+    };
+
+    xpm.setTranslationDict = function (translationDict) {
+        this.translationDict = translationDict;
     };
 }());
