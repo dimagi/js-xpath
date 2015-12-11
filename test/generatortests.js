@@ -221,9 +221,6 @@ test("generator hashtags", function () {
             '#form/question': '/data/question',
             '#form/group/question': '/data/group/question',
             '#case/question': "instance('casedb')/cases/case[@case_id = case_id]/question",
-            '/data/question':'#form/question',
-            '/data/group/question': '#form/group/question',
-            "instance('casedb')/cases/case[@case_id = case_id]/question": '#case/question',
         },
         testCases = {
             "#form/question": "/data/question",
