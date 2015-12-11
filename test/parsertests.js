@@ -17,15 +17,15 @@ var runCommon = function(testcases) {
 };
                 
 var runFailures = function(testcases) {
+    function tmpFunc() {
+        xpath.parse(i);
+    }
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
-            var tmpFunc = function() {
-                xpath.parse(i);
-            }
             raises(tmpFunc, testcases[i], "" + i + " correctly failed to parse.");
         }
-    }    
-}
+    }
+};
 
 test("null expressions", function () {
     runFailures({
@@ -292,9 +292,4 @@ test("real world examples", function () {
         "../jr:hist-data/labs[@type=\"cd4\"]": "{path-expr:rel,{{step:parent,node()},{step:child,jr:hist-data},{step:child,labs,{{binop-expr:==,{path-expr:rel,{{step:attribute,type}}},{str:'cd4'}}}}}}",
         "function_call(26*(7+3), //*, /im/child::an/ancestor::x[3][true()]/path)": "{func-expr:function_call,{{binop-expr:*,{num:26},{binop-expr:+,{num:7},{num:3}}},{path-expr:abs,{{step:descendant-or-self,node()},{step:child,*}}},{path-expr:abs,{{step:child,im},{step:child,an},{step:ancestor,x,{{num:3},{func-expr:true,{}}}},{step:child,path}}}}}"             
     });
-});
-
-test("template", function () {
-    runCommon({});
-    runFailures({});
 });
