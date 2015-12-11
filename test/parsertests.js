@@ -17,15 +17,15 @@ var runCommon = function(testcases) {
 };
                 
 var runFailures = function(testcases) {
+    function tmpFunc() {
+        xpath.parse(i);
+    }
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
-            var tmpFunc = function() {
-                xpath.parse(i);
-            }
             raises(tmpFunc, testcases[i], "" + i + " correctly failed to parse.");
         }
-    }    
-}
+    }
+};
 
 test("null expressions", function () {
     runFailures({
