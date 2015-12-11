@@ -23,7 +23,7 @@ debuglog = function () {
             }
         }
         throw name + " is not a valid axis name!";
-    }
+    };
     
     // helper function
     var objToXPath = function(something) {
@@ -578,7 +578,7 @@ debuglog = function () {
         };
         this.getChildren = function () {
            return [this.value];
-        }
+        };
         return this;
     };
 }());
