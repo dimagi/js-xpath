@@ -296,11 +296,12 @@ test("real world examples", function () {
 
 test("hashtags", function () {
     runCommon({
-        "#form/question": "{hashtag-expr:form,{{step:child,question}}}",
-        "#form/group/question": "{hashtag-expr:form,{{step:child,group},{step:child,question}}}",
-        "#case/type/prop": "{hashtag-expr:case,{{step:child,type},{step:child,prop}}}",
+        "#form/question": "{hashtag-expr:form,{question}}",
+        "#form/group/question": "{hashtag-expr:form,{group,question}}",
+        "#case/type/prop": "{hashtag-expr:case,{type,prop}}",
     });
     runFailures({
         "#": null,
+        "#case/type/prop[filter=filter]": null,
     });
 });

@@ -105,9 +105,13 @@ filter_expr:  base_expr predicate     { $$ = new xpathmodels.XPathFilterExpr({ex
                                         $$ = filterExpr; }
         ;
 
-hashtag_expr:  HASH step SLASH rel_loc_path              { $$ = new xpathmodels.HashtagExpr({initial_context: xpathmodels.XPathInitialContextEnum.HASHTAG,
+hashtag_expr:  HASH QNAME SLASH hashtag_path              { $$ = new xpathmodels.HashtagExpr({initial_context: xpathmodels.XPathInitialContextEnum.HASHTAG,
                                                                       namespace: $2,
                                                                       steps: $4}); }
+        ;
+
+hashtag_path: QNAME  {$$ = [$1];}
+        |   hashtag_path SLASH QNAME {var path = $1; path.push($3); $$ = path;}
         ;
 
 

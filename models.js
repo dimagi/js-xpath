@@ -399,14 +399,14 @@ debuglog = function () {
         this.toString = function() {
             var stringArray = [];
             stringArray.push("{hashtag-expr:");
-            stringArray.push(this.namespace.name);
+            stringArray.push(this.namespace);
             stringArray.push(",{");
             stringArray.push(this.steps.join(","));
             stringArray.push("}}");
             return stringArray.join("");
         };
         var _combine = function (func) {
-            var parts = [self.namespace].concat(self.steps).map(func),
+            var parts = [self.namespace].concat(self.steps),
                 ret = [];
             for (var i = 0; i < parts.length; i ++) {
                 // hashtag to start then /
@@ -416,7 +416,7 @@ debuglog = function () {
             return ret.join("");
         };
         this.toXPath = function () {
-            var hashtag = _combine(objToXPath);
+            var hashtag = _combine(objToHashtag);
             if (xpm.translationDict[hashtag]) {
                 return xpm.translationDict[hashtag];
             }
