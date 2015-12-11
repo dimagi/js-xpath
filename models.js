@@ -32,12 +32,9 @@ debuglog = function () {
     };
 
     var objToHashtag = function(something) {
-        return something.toHashtag ? something.toHashtag() : xpathToHashtag(objToXPath(something));
+        return something.toHashtag ? something.toHashtag() : objToXPath(something);
     };
 
-    var xpathToHashtag = function(xpath) {
-        return xpm.translationDict[xpath] ? xpm.translationDict[xpath] : xpath;
-    };
     
     xpm.XPathNumericLiteral = function(value) {
         /*
