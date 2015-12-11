@@ -15,7 +15,7 @@ debuglog = function () {
 
 (function() {
     var xpm = xpathmodels;
-    xpm.translationDict = {};
+    xpm.hashtagToXPathDict = {};
 
     var validateAxisName = xpm.validateAxisName = function(name) {
         for (var i in xpm.XPathAxisEnum) {
@@ -35,7 +35,6 @@ debuglog = function () {
         return something.toHashtag ? something.toHashtag() : objToXPath(something);
     };
 
-    
     xpm.XPathNumericLiteral = function(value) {
         /*
          * This is shockingly complicated for what should be simple thanks to
@@ -414,8 +413,8 @@ debuglog = function () {
         };
         this.toXPath = function () {
             var hashtag = _combine(objToHashtag);
-            if (xpm.translationDict[hashtag]) {
-                return xpm.translationDict[hashtag];
+            if (xpm.hashtagToXPathDict[hashtag]) {
+                return xpm.hashtagToXPathDict[hashtag];
             }
             throw "You need to translate the hashtag before you can have an xpath";
         };
@@ -662,7 +661,7 @@ debuglog = function () {
         return this;
     };
 
-    xpm.setTranslationDict = function (translationDict) {
-        this.translationDict = translationDict;
+    xpm.setHashtagToXPathDict = function (hashtagToXPathDict) {
+        this.hashtagToXPathDict = hashtagToXPathDict;
     };
 }());

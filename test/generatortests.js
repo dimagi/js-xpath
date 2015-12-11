@@ -5,7 +5,7 @@
  */
 
 var runGeneratorTests = function(testcases, translationDict) {
-    xpathmodels.setTranslationDict(translationDict || {});
+    xpathmodels.setHashtagToXPathDict(translationDict || {});
     var parsed;
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
@@ -237,7 +237,7 @@ test("generator hashtags", function () {
 });
 
 test("hashtags with no xpath", function() {
-    xpathmodels.setTranslationDict({});
+    xpathmodels.setHashtagToXPathDict({});
 
     var testcases = {
         "#form/question1": "/data/question1",
