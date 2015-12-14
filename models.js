@@ -388,9 +388,6 @@ debuglog = function () {
          */
         var self = this;
         this.initial_context = definition.initial_context;
-        if (this.initial_context !== xpm.XPathInitialContextEnum.HASHTAG) {
-            throw "#nohashtag";
-        }
         if (xpm.validHashtagNamespaces.indexOf(definition.namespace) === -1) {
             throw definition.namespace + " is not a valid # expression";
         }
