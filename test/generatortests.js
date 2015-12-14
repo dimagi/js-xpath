@@ -4,8 +4,9 @@
  * 
  */
 
-var runGeneratorTests = function(testcases, translationDict) {
+var runGeneratorTests = function(testcases, translationDict, namespaces) {
     xpathmodels.setHashtagToXPathDict(translationDict || {});
+    xpathmodels.setValidHashtagNamespaces(namespaces || []);
     var parsed;
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
@@ -230,11 +231,12 @@ test("generator hashtags", function () {
             "/data/filtered[@id = #form/question]": "/data/filtered[@id = /data/question]"
         };
 
-    runGeneratorTests(testCases, transDict);
+    runGeneratorTests(testCases, transDict, ['form', 'case']);
 });
 
 test("hashtags with no xpath", function() {
     xpathmodels.setHashtagToXPathDict({});
+    xpathmodels.setValidHashtagNamespaces(['form', 'case']);
 
     var testcases = {
         "#form/question1": "/data/question1",

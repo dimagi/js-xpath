@@ -15,6 +15,7 @@ debuglog = function () {
 
 (function() {
     var xpm = xpathmodels;
+    xpm.validHashtagNamespaces = [];
     xpm.hashtagToXPathDict = {};
 
     var validateAxisName = xpm.validateAxisName = function(name) {
@@ -390,6 +391,9 @@ debuglog = function () {
         if (this.initial_context !== xpm.XPathInitialContextEnum.HASHTAG) {
             throw "#nohashtag";
         }
+        if (xpm.validHashtagNamespaces.indexOf(definition.namespace) === -1) {
+            throw definition.namespace + " is not a valid # expression";
+        }
         this.namespace = definition.namespace;
         this.steps = definition.steps || [];
         this.toString = function() {
@@ -663,5 +667,9 @@ debuglog = function () {
 
     xpm.setHashtagToXPathDict = function (hashtagToXPathDict) {
         this.hashtagToXPathDict = hashtagToXPathDict;
+    };
+
+    xpm.setValidHashtagNamespaces = function (namespaces) {
+        this.validHashtagNamespaces = namespaces;
     };
 }());

@@ -4,7 +4,8 @@
  * 
  */
 
-var runCommon = function(testcases) {
+var runCommon = function(testcases, validHashtagNamepaces) {
+    xpathmodels.setValidHashtagNamespaces(validHashtagNamepaces || []);
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
             try {
@@ -16,7 +17,8 @@ var runCommon = function(testcases) {
     }
 };
                 
-var runFailures = function(testcases) {
+var runFailures = function(testcases, validHashtagNamepaces) {
+    xpathmodels.setValidHashtagNamespaces(validHashtagNamepaces || []);
     function tmpFunc() {
         xpath.parse(i);
     }
@@ -295,13 +297,16 @@ test("real world examples", function () {
 });
 
 test("hashtags", function () {
+    var namespaces = ['form', 'case'];
     runCommon({
         "#form/question": "{hashtag-expr:form,{question}}",
         "#form/group/question": "{hashtag-expr:form,{group,question}}",
         "#case/type/prop": "{hashtag-expr:case,{type,prop}}",
-    });
+    }, namespaces);
     runFailures({
         "#": null,
         "#case/type/prop[filter=filter]": null,
-    });
+        "#/case/type/prop": null,
+        "#whale/orca": null,
+    }, namespaces);
 });
