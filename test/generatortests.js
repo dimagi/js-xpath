@@ -5,8 +5,30 @@
  */
 
 var runGeneratorTests = function(testcases, translationDict, namespaces) {
-    xpathmodels.setHashtagToXPathDict(translationDict || {});
-    xpathmodels.setValidHashtagNamespaces(namespaces || []);
+    xpathmodels = XPathModels({
+        isValidNamespace: function (value) {
+            return namespaces.indexOf(value) !== -1;
+        },
+        hashtagToXPath: function (hashtagExpr) {
+            if (translationDict[hashtagExpr]) {
+                return translationDict[hashtagExpr];
+            }
+            throw new Error('blah');
+        },
+        toHashtag: function (xpath_) {
+            function toHashtag(xpathExpr) {
+                for (var key in translationDict) {
+                    if (translationDict.hasOwnProperty(key)) {
+                        if (translationDict[key] === xpathExpr)
+                            return key;
+                    }
+                }
+                return null;
+            }
+
+            return toHashtag(xpath_.toXPath()) || xpath_.toHashtag();
+        },
+    });
     var parsed;
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
@@ -235,8 +257,27 @@ test("generator hashtags", function () {
 });
 
 test("hashtags with no xpath", function() {
-    xpathmodels.setHashtagToXPathDict({});
-    xpathmodels.setValidHashtagNamespaces(['form', 'case']);
+    xpathmodels = XPathModels({
+        isValidNamespace: function (value) {
+            return ['form', 'case'].indexOf(value) !== -1;
+        },
+        hashtagToXPath: function (hashtagExpr) {
+            throw new Error('translate that hashtag, yo');
+        },
+        toHashtag: function (xpath_) {
+            function toHashtag(xpathExpr) {
+                for (var key in translationDict) {
+                    if (translationDict.hasOwnProperty(key)) {
+                        if (translationDict[key] === xpathExpr)
+                            return key;
+                    }
+                }
+                return null;
+            }
+
+            return toHashtag(xpath_.toXPath()) || xpath_.toHashtag();
+        },
+    });
 
     var testcases = {
         "#form/question1": "/data/question1",
@@ -244,13 +285,13 @@ test("hashtags with no xpath", function() {
     var parsed;
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
+            parsed = xpath.parse(i);
+            ok(true, i + " correctly parsed");
             try {
-                parsed = xpath.parse(i);
-                ok(true, i + " correctly parsed");
-                equal(parsed.toHashtag(), i, "" + i + " written as hashtag correctly");
-                throws(parsed.toXPath, /translate/);
+                parsed.toXPath();
+                ok(false, "This should not be translatable");
             } catch(err) {
-                ok(false, err);
+                ok(true, err);
             }
         }
     }

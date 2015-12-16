@@ -5,7 +5,17 @@
  */
 
 var runCommon = function(testcases, validHashtagNamepaces) {
-    xpathmodels.setValidHashtagNamespaces(validHashtagNamepaces || []);
+    xpathmodels = XPathModels({
+        isValidNamespace: function (value) {
+            return validHashtagNamepaces.indexOf(value) !== -1;
+        },
+        hashtagToXPath: function (hashtagExpr) {
+            throw new Error('blah');
+        },
+        toHashtag: function () {
+            return this.toXPath();
+        },
+    });
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
             try {
@@ -18,7 +28,6 @@ var runCommon = function(testcases, validHashtagNamepaces) {
 };
                 
 var runFailures = function(testcases, validHashtagNamepaces) {
-    xpathmodels.setValidHashtagNamespaces(validHashtagNamepaces || []);
     function tmpFunc() {
         xpath.parse(i);
     }
