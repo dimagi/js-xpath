@@ -10,7 +10,7 @@
     xpm.validHashtagNamespaces = [];
     xpm.hashtagToXPathDict = {};
 
-    var validateAxisName = xpm.validateAxisName = function(name) {
+    xpm.validateAxisName = function(name) {
         for (var i in xpm.XPathAxisEnum) {
             if (xpm.XPathAxisEnum.hasOwnProperty(i) && xpm.XPathAxisEnum[i] === name) {
                 return xpm.XPathAxisEnum[i];
