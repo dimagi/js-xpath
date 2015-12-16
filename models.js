@@ -4,17 +4,9 @@
  * https://bitbucket.org/javarosa/javarosa/src/tip/core/src/org/javarosa/xpath/expr/
  *
  */
-xpathmodels = {};
-xpathmodels.DEBUG_MODE = false;
 
-debuglog = function () {
-    if (xpathmodels.DEBUG_MODE) {
-        console.log(arguments);
-    }
-};
-
-(function() {
-    var xpm = xpathmodels;
+ var XPathModels = function() {
+    var xpm = {};
     xpm.validHashtagNamespaces = [];
     xpm.hashtagToXPathDict = {};
 
@@ -661,7 +653,7 @@ debuglog = function () {
         };
         return this;
     };
-
+    
     xpm.setHashtagToXPathDict = function (hashtagToXPathDict) {
         this.hashtagToXPathDict = hashtagToXPathDict;
     };
@@ -669,4 +661,15 @@ debuglog = function () {
     xpm.setValidHashtagNamespaces = function (namespaces) {
         this.validHashtagNamespaces = namespaces;
     };
-}());
+
+    return xpm;
+};
+
+xpathmodels = XPathModels();
+xpathmodels.DEBUG_MODE = false;
+
+debuglog = function () {
+    if (xpathmodels.DEBUG_MODE) {
+        console.log(arguments);
+    }
+};
