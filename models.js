@@ -5,10 +5,8 @@
  *
  */
 
- var XPathModels = function() {
+var XPathModels = function(hashtagConfig) {
     var xpm = {};
-    xpm.validHashtagNamespaces = [];
-    xpm.hashtagToXPathDict = {};
 
     xpm.validateAxisName = function(name) {
         for (var i in xpm.XPathAxisEnum) {
@@ -380,7 +378,7 @@
          */
         var self = this;
         this.initial_context = definition.initial_context;
-        if (xpm.validHashtagNamespaces.indexOf(definition.namespace) === -1) {
+        if (!hashtagConfig.isValidNamespace(definition.namespace)) {
             throw definition.namespace + " is not a valid # expression";
         }
         this.namespace = definition.namespace;
@@ -394,7 +392,7 @@
             stringArray.push("}}");
             return stringArray.join("");
         };
-        var _combine = function (func) {
+        var _combine = function () {
             var parts = [self.namespace].concat(self.steps),
                 ret = [];
             for (var i = 0; i < parts.length; i ++) {
@@ -405,14 +403,10 @@
             return ret.join("");
         };
         this.toXPath = function () {
-            var hashtag = _combine(objToHashtag);
-            if (xpm.hashtagToXPathDict[hashtag]) {
-                return xpm.hashtagToXPathDict[hashtag];
-            }
-            throw "You need to translate the hashtag before you can have an xpath";
+            return hashtagConfig.hashtagToXPath(this.toHashtag());
         };
         this.toHashtag = function () {
-            return _combine(objToHashtag);
+            return _combine();
         };
         this.getChildren = function () {
            return this.steps;
@@ -654,18 +648,22 @@
         return this;
     };
     
-    xpm.setHashtagToXPathDict = function (hashtagToXPathDict) {
-        this.hashtagToXPathDict = hashtagToXPathDict;
-    };
-
-    xpm.setValidHashtagNamespaces = function (namespaces) {
-        this.validHashtagNamespaces = namespaces;
-    };
-
     return xpm;
 };
 
-xpathmodels = XPathModels();
+var defaultHashtagConfig = {
+    isValidNamespace: function (value) {
+        return false;
+    },
+    hashtagToXPath: function (hashtagExpr) {
+        throw new Error("This should be overridden");
+    },
+    toHashtag: function () {
+        return this.toXPath();
+    },
+};
+
+var xpathmodels = XPathModels(defaultHashtagConfig);
 xpathmodels.DEBUG_MODE = false;
 
 debuglog = function () {
