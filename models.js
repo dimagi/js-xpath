@@ -22,10 +22,6 @@ var XPathModels = function(hashtagConfig) {
         return something.toXPath();
     };
 
-    var objToHashtag = function(something) {
-        return something.toHashtag ? something.toHashtag() : objToXPath(something);
-    };
-
     xpm.XPathNumericLiteral = function(value) {
         /*
          * This is shockingly complicated for what should be simple thanks to
@@ -231,12 +227,13 @@ var XPathModels = function(hashtagConfig) {
             }
             return "";
         };
-        this.toXPath = function() {
-            return this.mainXPath() + this.predicateXPath(objToXPath);
-        };
-        this.toHashtag = function() {
-            return this.mainXPath() + this.predicateXPath(objToHashtag);
-        };
+        function _combine (transFunc) {
+            return function() {
+                return this.mainXPath() + this.predicateXPath(transFunc);
+            };
+        }
+        this.toXPath = _combine(objToXPath);
+        this.toHashtag = _combine(hashtagConfig.toHashtag);
         this.getChildren = function () {
            return [];
         };
@@ -270,36 +267,34 @@ var XPathModels = function(hashtagConfig) {
             return stringArray.join("");
         };
         var _combine = function (func) {
-            // this helper function only exists so that
-            // the two methods below it can call itx
-            var parts = self.steps.map(func), ret = [], curPart, prevPart, sep;
-            var root = (self.initial_context === xpm.XPathInitialContextEnum.ROOT) ? "/" : "";
-            if (self.filter) {
-                parts.splice(0, 0, func(self.filter));
-            }
-            if (parts.length === 0) {
-                return root;
-            }
-            for (var i = 0; i < parts.length; i ++) {
-                curPart = parts[i];
-                if (curPart !== "//" && prevPart !== "//") {
-                    // unless the current part starts with a slash, put slashes between
-                    // parts. the only exception to this rule is at the beginning,
-                    // when we only use a slash if it's an absolute path
-                    sep = (i === 0) ? root : "/";
-                    ret.push(sep);
+            return function () {
+                // this helper function only exists so that
+                // the two methods below it can call itx
+                var parts = self.steps.map(func), ret = [], curPart, prevPart, sep;
+                var root = (self.initial_context === xpm.XPathInitialContextEnum.ROOT) ? "/" : "";
+                if (self.filter) {
+                    parts.splice(0, 0, func(self.filter));
                 }
-                ret.push(curPart);
-                prevPart = curPart;
-            }
-            return ret.join("");
+                if (parts.length === 0) {
+                    return root;
+                }
+                for (var i = 0; i < parts.length; i ++) {
+                    curPart = parts[i];
+                    if (curPart !== "//" && prevPart !== "//") {
+                        // unless the current part starts with a slash, put slashes between
+                        // parts. the only exception to this rule is at the beginning,
+                        // when we only use a slash if it's an absolute path
+                        sep = (i === 0) ? root : "/";
+                        ret.push(sep);
+                    }
+                    ret.push(curPart);
+                    prevPart = curPart;
+                }
+                return ret.join("");
+            };
         };
-        this.toXPath = function() {
-            return _combine(objToXPath);
-        };
-        this.toHashtag = function () {
-            return _combine(objToHashtag);
-        };
+        this.toXPath = _combine(objToXPath);
+        this.toHashtag = _combine(hashtagConfig.toHashtag);
         // custom function to pull out any filters and just return the root path
         this.pathWithoutPredicates = function() {
             return _combine(function (step) { return step.mainXPath(); });
@@ -327,12 +322,13 @@ var XPathModels = function(hashtagConfig) {
             stringArray.push("}}");
             return stringArray.join("");
         };
-        this.toXPath = function() {
-            return this.id + "(" + this.args.map(objToXPath).join(", ") + ")";
-        };
-        this.toHashtag = function() {
-            return this.id + "(" + this.args.map(objToHashtag).join(", ") + ")";
-        };
+        function _combine (transFunc) {
+            return function () {
+                return this.id + "(" + this.args.map(transFunc).join(", ") + ")";
+            };
+        }
+        this.toXPath = _combine(objToXPath);
+        this.toHashtag = _combine(hashtagConfig.toHashtag);
         this.getChildren = function () {
            return this.args;
         };
@@ -353,19 +349,22 @@ var XPathModels = function(hashtagConfig) {
             stringArray.push("}}");
             return stringArray.join("");
         };
-        this.toXPath = function() {
-            var predicates = "";
-            if (this.predicates.length > 0) {
-                predicates = "[" + this.predicates.map(objToXPath).join("][") + "]";
-            }
-            var expr = objToXPath(this.expr);
-            // FIXME should all non-function expressions be parenthesized?
-            if (!(this.expr instanceof xpm.XPathFuncExpr)) {
-                expr = "(" + expr + ")";
-            }
-            return expr + predicates;
-        };
-        this.toHashtag = this.toXPath;
+        function _combine(transFunc) {
+            return function() {
+                var predicates = "";
+                if (this.predicates.length > 0) {
+                    predicates = "[" + this.predicates.map(transFunc).join("][") + "]";
+                }
+                var expr = objToXPath(this.expr);
+                // FIXME should all non-function expressions be parenthesized?
+                if (!(this.expr instanceof xpm.XPathFuncExpr)) {
+                    expr = "(" + expr + ")";
+                }
+                return expr + predicates;
+            };
+        }
+        this.toXPath = _combine(objToXPath);
+        this.toHashtag = _combine(hashtagConfig.toHashtag);
         this.getChildren = function () {
            return this.predicates;
         };
@@ -567,9 +566,8 @@ var XPathModels = function(hashtagConfig) {
     }
     
     var binOpToXPath = printBinOp(objToXPath);
+    var binOpToHashtag = printBinOp(hashtagConfig.toHashtag);
 
-    var binOpToHashtag = printBinOp(objToHashtag);
-    
     var binOpChildren = function () {
         return [this.left, this.right];
     };
@@ -580,7 +578,7 @@ var XPathModels = function(hashtagConfig) {
         this.right = definition.right;
         this.toString = binOpToString;
         this.toXPath = binOpToXPath;
-        this.toHashtag = binOpToHashtag;
+        this.toHashtag = binOpToHashtag.bind(this);
         this.getChildren = binOpChildren;
         return this;
 
@@ -592,7 +590,7 @@ var XPathModels = function(hashtagConfig) {
         this.right = definition.right;
         this.toString = binOpToString;
         this.toXPath = binOpToXPath;
-        this.toHashtag = binOpToHashtag;
+        this.toHashtag = binOpToHashtag.bind(this);
         this.getChildren = binOpChildren;
         return this;
     };
@@ -603,7 +601,7 @@ var XPathModels = function(hashtagConfig) {
         this.right = definition.right;
         this.toString = binOpToString;
         this.toXPath = binOpToXPath;
-        this.toHashtag = binOpToHashtag;
+        this.toHashtag = binOpToHashtag.bind(this);
         this.getChildren = binOpChildren;
         return this;
     };
@@ -614,7 +612,7 @@ var XPathModels = function(hashtagConfig) {
         this.right = definition.right;
         this.toString = binOpToString;
         this.toXPath = binOpToXPath;
-        this.toHashtag = binOpToHashtag;
+        this.toHashtag = binOpToHashtag.bind(this);
         this.getChildren = binOpChildren;
         return this;
     };
@@ -625,7 +623,7 @@ var XPathModels = function(hashtagConfig) {
         this.right = definition.right;
         this.toString = binOpToString;
         this.toXPath = binOpToXPath;
-        this.toHashtag = binOpToHashtag;
+        this.toHashtag = binOpToHashtag.bind(this);
         this.getChildren = binOpChildren;
         return this;
     };
@@ -636,18 +634,19 @@ var XPathModels = function(hashtagConfig) {
         this.toString = function() {
             return "{unop-expr:" + this.type + "," + String(this.value) + "}";
         };
-        this.toXPath = function() {
-            return "-" + objToXPath(this.value);
-        };
-        this.toHashtag = function() {
-            return "-" + objToHashtag(this.value);
-        };
+        function _combine(transFunc) {
+            return function() {
+                return "-" + transFunc(this.value);
+            };
+        }
+        this.toXPath = _combine(objToXPath);
+        this.toHashtag = _combine(hashtagConfig.toHashtag);
         this.getChildren = function () {
            return [this.value];
         };
         return this;
     };
-    
+
     return xpm;
 };
 
