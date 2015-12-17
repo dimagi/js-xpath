@@ -327,9 +327,7 @@ var XPathModels = function(hashtagConfig) {
         this.toXPath = _combine(objToXPath);
         this.toHashtag = objToHashtagWithCombine(this, _combine);
         // custom function to pull out any filters and just return the root path
-        this.pathWithoutPredicates = function() {
-            return _combine(function (step) { return step.mainXPath(); });
-        };
+        this.pathWithoutPredicates = _combine(function (step) { return step.mainXPath(); });
 
         this.getChildren = function () {
            return this.steps;
@@ -432,9 +430,7 @@ var XPathModels = function(hashtagConfig) {
         this.toXPath = function () {
             return hashtagConfig.hashtagToXPath(this.toHashtag());
         };
-        this.toHashtag = function () {
-            return _combine();
-        };
+        this.toHashtag = _combine;
         this.getChildren = function () {
            return this.steps;
         };

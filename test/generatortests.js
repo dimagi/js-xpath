@@ -215,3 +215,22 @@ test("generator real world examples", function () {
         "function_call(26*(7+3), //*, /im/child::an/ancestor::x[3][true()]/path)": "function_call(26 * (7 + 3), //*, /im/an/ancestor::x[3][true()]/path)",
     });
 });
+
+test("generate without predicates", function () {
+    var testcases = {
+       "/data/blue": "/data/blue",
+       "/data/blue[$random = 'predicate']": "/data/blue",
+    }, parsed;
+    xpathmodels = XPathModels();
+    for (var i in testcases) {
+        if (testcases.hasOwnProperty(i)) {
+            try {
+                parsed = xpath.parse(i);
+                equal(parsed.pathWithoutPredicates(), testcases[i], "" + i + " generated correctly.");
+                equal(parsed.toXPath(), i, "" + i + " generated correctly.");
+            } catch(err) {
+                ok(false, "" + err + " for input: " + i);
+            }
+        }
+    }
+});
