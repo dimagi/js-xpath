@@ -50,6 +50,12 @@ var XPathModels = function(hashtagConfig) {
         return hashtagConfig.toHashtag(xpath_) || xpath_.toHashtag();
     };
 
+    var objToHashtagWithCombine = function(self, combineFunc) {
+        return function () {
+            return hashtagConfig.toHashtag(self) || combineFunc(objToHashtag).bind(self)();
+        };
+    };
+
     xpm.XPathNumericLiteral = function(value) {
         /*
          * This is shockingly complicated for what should be simple thanks to
@@ -258,9 +264,7 @@ var XPathModels = function(hashtagConfig) {
             };
         }
         this.toXPath = _combine(objToXPath);
-        this.toHashtag = function () {
-            return hashtagConfig.toHashtag(this) || _combine(objToHashtag).bind(this)();
-        };
+        this.toHashtag = objToHashtagWithCombine(this, _combine);
         this.getChildren = function () {
            return [];
         };
@@ -321,9 +325,7 @@ var XPathModels = function(hashtagConfig) {
             };
         };
         this.toXPath = _combine(objToXPath);
-        this.toHashtag = function () {
-            return hashtagConfig.toHashtag(this) || _combine(objToHashtag)();
-        };
+        this.toHashtag = objToHashtagWithCombine(this, _combine);
         // custom function to pull out any filters and just return the root path
         this.pathWithoutPredicates = function() {
             return _combine(function (step) { return step.mainXPath(); });
@@ -355,9 +357,7 @@ var XPathModels = function(hashtagConfig) {
             };
         }
         this.toXPath = _combine(objToXPath);
-        this.toHashtag = function () {
-            return hashtagConfig.toHashtag(this) || _combine(objToHashtag).bind(this)();
-        };
+        this.toHashtag = objToHashtagWithCombine(this, _combine);
         this.getChildren = function () {
            return this.args;
         };
@@ -392,9 +392,7 @@ var XPathModels = function(hashtagConfig) {
             };
         }
         this.toXPath = _combine(objToXPath);
-        this.toHashtag = function () {
-            return hashtagConfig.toHashtag(this) || _combine(objToHashtag).bind(this)();
-        };
+        this.toHashtag = objToHashtagWithCombine(this, _combine);
         this.getChildren = function () {
            return this.predicates;
         };
