@@ -1,60 +1,13 @@
-var runCommon = function(testcases, validHashtagNamepaces) {
-    xpathmodels = XPathModels({
+function makeXPathConfig(validHashtagNamespaces, translationDict) {
+    return {
         isValidNamespace: function (value) {
-            return validHashtagNamepaces.indexOf(value) !== -1;
+            return validHashtagNamespaces.indexOf(value) !== -1;
         },
         hashtagToXPath: function (hashtagExpr) {
             if (translationDict[hashtagExpr]) {
                 return translationDict[hashtagExpr];
             }
-            throw new Error('blah');
-        },
-        toHashtag: function () {
-            function toHashtag(xpathExpr) {
-                for (var key in translationDict) {
-                    if (translationDict.hasOwnProperty(key)) {
-                        if (translationDict[key] === xpathExpr)
-                            return key;
-                    }
-                }
-                return null;
-            }
-
-            return toHashtag(xpath_.toXPath());
-        },
-    });
-    for (var i in testcases) {
-        if (testcases.hasOwnProperty(i)) {
-            try {
-                equal(xpath.parse(i).toString(), testcases[i], "" + i + " parsed correctly.");
-            } catch(err) {
-                ok(false, "" + err + " for input: " + i);
-            }
-        }
-    }
-};
-
-var runFailures = function(testcases, validHashtagNamepaces) {
-    function tmpFunc() {
-        xpath.parse(i);
-    }
-    for (var i in testcases) {
-        if (testcases.hasOwnProperty(i)) {
-            raises(tmpFunc, testcases[i], "" + i + " correctly failed to parse.");
-        }
-    }
-};
-
-var runGeneratorTests = function(testcases, translationDict, namespaces) {
-    xpathmodels = XPathModels({
-        isValidNamespace: function (value) {
-            return namespaces.indexOf(value) !== -1;
-        },
-        hashtagToXPath: function (hashtagExpr) {
-            if (translationDict[hashtagExpr]) {
-                return translationDict[hashtagExpr];
-            }
-            throw new Error('blah');
+            throw new Error("Can't translate this hashtag to an XPath");
         },
         toHashtag: function (xpath_) {
             function toHashtag(xpathExpr) {
@@ -69,7 +22,36 @@ var runGeneratorTests = function(testcases, translationDict, namespaces) {
 
             return toHashtag(xpath_.toXPath());
         },
-    });
+    };
+}
+
+var runCommon = function(testcases, validHashtagNamespaces) {
+    xpathmodels = XPathModels(makeXPathConfig(validHashtagNamespaces, {}));
+    for (var i in testcases) {
+        if (testcases.hasOwnProperty(i)) {
+            try {
+                equal(xpath.parse(i).toString(), testcases[i], "" + i + " parsed correctly.");
+            } catch(err) {
+                ok(false, "" + err + " for input: " + i);
+            }
+        }
+    }
+};
+
+var runFailures = function(testcases, validHashtagNamespaces) {
+    function tmpFunc() {
+        xpath.parse(i);
+    }
+    xpathmodels = XPathModels(makeXPathConfig(validHashtagNamespaces, {}));
+    for (var i in testcases) {
+        if (testcases.hasOwnProperty(i)) {
+            raises(tmpFunc, testcases[i], "" + i + " correctly failed to parse.");
+        }
+    }
+};
+
+var runGeneratorTests = function(testcases, translationDict, namespaces) {
+    xpathmodels = XPathModels(makeXPathConfig(namespaces, translationDict));
     var parsed;
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
@@ -120,27 +102,7 @@ test("generator hashtags", function () {
 });
 
 test("hashtags with no xpath", function() {
-    xpathmodels = XPathModels({
-        isValidNamespace: function (value) {
-            return ['form', 'case'].indexOf(value) !== -1;
-        },
-        hashtagToXPath: function (hashtagExpr) {
-            throw new Error('translate that hashtag, yo');
-        },
-        toHashtag: function (xpath_) {
-            function toHashtag(xpathExpr) {
-                for (var key in translationDict) {
-                    if (translationDict.hasOwnProperty(key)) {
-                        if (translationDict[key] === xpathExpr)
-                            return key;
-                    }
-                }
-                return null;
-            }
-
-            return toHashtag(xpath_.toXPath());
-        },
-    });
+    xpathmodels = XPathModels(makeXPathConfig(['form', 'case'], {}));
 
     var testcases = {
         "#form/question1": "/data/question1",
@@ -168,27 +130,7 @@ test("from xpath to hashtag", function() {
             '#case/question': "instance('casedb')/cases/case[@case_id = case_id]/question",
         };
 
-    xpathmodels = XPathModels({
-        isValidNamespace: function (value) {
-            return ['form', 'case'].indexOf(value) !== -1;
-        },
-        hashtagToXPath: function (hashtagExpr) {
-            throw new Error('translate that hashtag, yo');
-        },
-        toHashtag: function (xpath_) {
-            function toHashtag(xpathExpr) {
-                for (var key in translationDict) {
-                    if (translationDict.hasOwnProperty(key)) {
-                        if (translationDict[key] === xpathExpr)
-                            return key;
-                    }
-                }
-                return null;
-            }
-
-            return toHashtag(xpath_.toXPath());
-        },
-    });
+    xpathmodels = XPathModels(makeXPathConfig(['form', 'case'], translationDict));
 
     var testcases = {
         "/data/question": "#form/question",
