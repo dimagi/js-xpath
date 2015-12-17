@@ -4,18 +4,7 @@
  * 
  */
 
-var runCommon = function(testcases, validHashtagNamepaces) {
-    xpathmodels = XPathModels({
-        isValidNamespace: function (value) {
-            return validHashtagNamepaces.indexOf(value) !== -1;
-        },
-        hashtagToXPath: function (hashtagExpr) {
-            throw new Error('blah');
-        },
-        toHashtag: function () {
-            return this.toXPath();
-        },
-    });
+var runCommon = function(testcases) {
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
             try {
@@ -27,7 +16,7 @@ var runCommon = function(testcases, validHashtagNamepaces) {
     }
 };
                 
-var runFailures = function(testcases, validHashtagNamepaces) {
+var runFailures = function(testcases) {
     function tmpFunc() {
         xpath.parse(i);
     }
@@ -303,19 +292,4 @@ test("real world examples", function () {
         "../jr:hist-data/labs[@type=\"cd4\"]": "{path-expr:rel,{{step:parent,node()},{step:child,jr:hist-data},{step:child,labs,{{binop-expr:==,{path-expr:rel,{{step:attribute,type}}},{str:'cd4'}}}}}}",
         "function_call(26*(7+3), //*, /im/child::an/ancestor::x[3][true()]/path)": "{func-expr:function_call,{{binop-expr:*,{num:26},{binop-expr:+,{num:7},{num:3}}},{path-expr:abs,{{step:descendant-or-self,node()},{step:child,*}}},{path-expr:abs,{{step:child,im},{step:child,an},{step:ancestor,x,{{num:3},{func-expr:true,{}}}},{step:child,path}}}}}"             
     });
-});
-
-test("hashtags", function () {
-    var namespaces = ['form', 'case'];
-    runCommon({
-        "#form/question": "{hashtag-expr:form,{question}}",
-        "#form/group/question": "{hashtag-expr:form,{group,question}}",
-        "#case/type/prop": "{hashtag-expr:case,{type,prop}}",
-    }, namespaces);
-    runFailures({
-        "#": null,
-        "#case/type/prop[filter=filter]": null,
-        "#/case/type/prop": null,
-        "#whale/orca": null,
-    }, namespaces);
 });
