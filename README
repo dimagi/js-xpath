@@ -16,6 +16,19 @@ Then try the following to get started.
 
 For examples of supported expressions, see the tests!
 
+models.js provides a default xpathmodels which does not support the hashtag
+preprocessor. If you want to support hashtags within xpaths, you can use:
+
+  hashtagConfig = {
+    isValidNamespace: function(namespace),
+    hashtagToXPath: function(hashtag),
+    toHashtag: function(expr)
+  }
+  xpathmodels = XPathModels(hashtagConfig)
+
+hashtags use the format #namespace/arbitrarily/long/path and do not support
+filtering
+
 Tests:
 
   Open test/tests.html to run tests (must be serving all files in the library).

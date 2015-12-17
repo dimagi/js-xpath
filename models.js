@@ -677,14 +677,21 @@ var XPathModels = function(hashtagConfig) {
 };
 
 var defaultHashtagConfig = {
-    isValidNamespace: function (value) {
+    // @param namespace - the namespace used in hashtag
+    // @return - truthy value
+    isValidNamespace: function (namespace) {
         return false;
     },
+    // @param hashtagExpr - text of hashtag ex. #form/question
+    // @return - the XPath or falsy value if no corresponding XPath found
     hashtagToXPath: function (hashtagExpr) {
         throw new Error("This should be overridden");
     },
-    toHashtag: function () {
-        return this.toXPath();
+    // @param xpath_ - XPath object (can be any of the objects defined in xpm
+    // @returns - text representation of XPath in hashtag format (default
+    //            implementation is to just return the XPath)
+    toHashtag: function (xpath_) {
+        return xpath_.toXPath();
     },
 };
 
