@@ -40,7 +40,7 @@ var XPathModels = function(hashtagConfig) {
         }
         throw name + " is not a valid axis name!";
     };
-    
+
     // helper function
     var objToXPath = function(something) {
         return something.toXPath();
@@ -94,11 +94,10 @@ var XPathModels = function(hashtagConfig) {
         };
         return this;
     };
-    
-    
+
     xpm.XPathStringLiteral = function(value) {
         this.value = value;
-    
+
         var toXPathString = function(value) {
             /*
              * XPath doesn't support escaping, so all we do is check for quotation
@@ -114,7 +113,7 @@ var XPathModels = function(hashtagConfig) {
                 return "'" + value + "'";
             }
         };
-    
+
         this.valueDisplay = toXPathString(value);
         this.toString = function() {
             return "{str:" + this.valueDisplay + "}";
@@ -128,7 +127,7 @@ var XPathModels = function(hashtagConfig) {
         };
         return this;
     };
-    
+
     xpm.XPathVariableReference = function(value) {
         this.value = value;
         this.toString = function() {
@@ -141,9 +140,8 @@ var XPathModels = function(hashtagConfig) {
         this.getChildren = function () {
            return [];
         };
-    
     };
-    
+
     xpm.XPathAxisEnum = {
         CHILD: "child",
         DESCENDANT: "descendant",
@@ -159,7 +157,7 @@ var XPathModels = function(hashtagConfig) {
         DESCENDANT_OR_SELF: "descendant-or-self",
         ANCESTOR_OR_SELF: "ancestor-or-self"
     };
-    
+
     xpm.XPathTestEnum = {
         NAME: "name",
         NAME_WILDCARD: "*",
@@ -168,10 +166,9 @@ var XPathModels = function(hashtagConfig) {
         TYPE_TEXT: "text()",
         TYPE_COMMENT: "comment()",
         TYPE_PROCESSING_INSTRUCTION: "processing-instruction"
-    
+
     };
-    
-    
+
     xpm.XPathStep = function(definition) {
         /*
          * A step (part of a path)
@@ -183,7 +180,7 @@ var XPathModels = function(hashtagConfig) {
         this.name = definition.name;
         this.namespace = definition.namespace;
         this.literal = definition.literal;
-    
+
         this.testString = function () {
              switch(this.test) {
                 case xpm.XPathTestEnum.NAME:
@@ -196,10 +193,10 @@ var XPathModels = function(hashtagConfig) {
                     return this.test || null;
              }
         };
-    
+
         this.toString = function() {
             var stringArray = [];
-    
+
             stringArray.push("{step:");
             stringArray.push(String(this.axis));
             stringArray.push(",");
@@ -209,11 +206,11 @@ var XPathModels = function(hashtagConfig) {
                 stringArray.push(this.predicates.join(","));
                 stringArray.push("}");
             }
-        
+
             stringArray.push("}");
             return stringArray.join("");
         };
-    
+
         this.mainXPath = function () {
             var axisPrefix = this.axis + "::"; // this is the default
             // Use the abbreviated syntax to shorten the axis
@@ -264,14 +261,14 @@ var XPathModels = function(hashtagConfig) {
 
         return this;
     };
-    
+
     xpm.XPathInitialContextEnum = {
         HASHTAG: "hashtag",
         ROOT: "abs",
         RELATIVE: "rel",
         EXPR: "expr"
     };
-    
+
     xpm.XPathPathExpr = function(definition) {
         /**
          * an XPath path, which consists mainly of steps
@@ -328,11 +325,9 @@ var XPathModels = function(hashtagConfig) {
            return this.steps;
         };
 
-
         return this;
     };
-    
-    
+
     xpm.XPathFuncExpr = function (definition) {
         /**
          * Representation of an xpath function expression.
@@ -358,8 +353,7 @@ var XPathModels = function(hashtagConfig) {
         };
         return this;
     };
-    
-    
+
     xpm.XPathFilterExpr = function (definition) {
         /**
          * Representation of an xpath filter expression.
@@ -437,9 +431,8 @@ var XPathModels = function(hashtagConfig) {
 
         return this;
     };
-    
+
     // expressions
-    
     xpm.XPathExpressionTypeEnum = {
         /*
          * These aren't yet really used anywhere, but they are correct.
@@ -462,7 +455,7 @@ var XPathModels = function(hashtagConfig) {
         UMINUS: "num-neg",
         UNION: "union"
     };
-    
+
     var expressionTypeEnumToXPathLiteral = xpm.expressionTypeEnumToXPathLiteral = function (val) {
         switch (val) {
             case xpm.XPathExpressionTypeEnum.EQ:
@@ -479,13 +472,12 @@ var XPathModels = function(hashtagConfig) {
                 return val;
         }
     };
-    
+
     var binOpToString = function() {
         return "{binop-expr:" + this.type + "," + String(this.left) + "," + String(this.right) + "}";
     };
-    
+
     var getOrdering = function(type) {
-    
         switch(type) {
             case xpm.XPathExpressionTypeEnum.OR:
             case xpm.XPathExpressionTypeEnum.AND:
@@ -509,7 +501,7 @@ var XPathModels = function(hashtagConfig) {
                 throw("No order for " + type);
         }
     };
-    
+
     var getPrecedence = function(type) {
         // we need to mimic the structure defined in the jison file
         //%right OR
@@ -548,7 +540,7 @@ var XPathModels = function(hashtagConfig) {
                 throw("No precedence for " + type);
         }
     };
-    
+
     var isOp = xpm.isOp = function(someToken) {
         /*
          * Whether something is an operation
@@ -557,13 +549,13 @@ var XPathModels = function(hashtagConfig) {
         var str = someToken.toString();
         return str.indexOf("{binop-expr:") === 0 || str.indexOf("{unop-expr:") === 0;
     };
-    
+
     var isLiteral = xpm.isLiteral = function(someToken) {
         return (someToken instanceof xpm.XPathNumericLiteral ||
                 someToken instanceof xpm.XPathStringLiteral ||
                 someToken instanceof xpm.XPathPathExpr);
     };
-    
+
     var isSimpleOp = xpm.isSimpleOp = function(someToken) {
         return isOp(someToken) && isLiteral(someToken.left) && isLiteral(someToken.right);
     };
@@ -588,14 +580,14 @@ var XPathModels = function(hashtagConfig) {
             return lString + " " + expressionTypeEnumToXPathLiteral(this.type) + " " + rString;
         };
     }
-    
+
     var binOpToXPath = printBinOp(objToXPath);
     var binOpToHashtag = printBinOp(hashtagConfig.toHashtag);
 
     var binOpChildren = function () {
         return [this.left, this.right];
     };
-    
+
     xpm.XPathBoolExpr = function(definition) {
         this.type = definition.type;
         this.left = definition.left;
@@ -607,7 +599,7 @@ var XPathModels = function(hashtagConfig) {
         return this;
 
     };
-    
+
     xpm.XPathEqExpr = function(definition) {
         this.type = definition.type;
         this.left = definition.left;
@@ -618,7 +610,7 @@ var XPathModels = function(hashtagConfig) {
         this.getChildren = binOpChildren;
         return this;
     };
-    
+
     xpm.XPathCmpExpr = function(definition) {
         this.type = definition.type;
         this.left = definition.left;
@@ -629,7 +621,7 @@ var XPathModels = function(hashtagConfig) {
         this.getChildren = binOpChildren;
         return this;
     };
-    
+
     xpm.XPathArithExpr = function(definition) {
         this.type = definition.type;
         this.left = definition.left;
@@ -640,7 +632,7 @@ var XPathModels = function(hashtagConfig) {
         this.getChildren = binOpChildren;
         return this;
     };
-    
+
     xpm.XPathUnionExpr = function(definition) {
         this.type = definition.type;
         this.left = definition.left;
@@ -651,7 +643,7 @@ var XPathModels = function(hashtagConfig) {
         this.getChildren = binOpChildren;
         return this;
     };
-    
+
     xpm.XPathNumNegExpr = function(definition) {
         this.type = definition.type;
         this.value = definition.value;
