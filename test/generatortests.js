@@ -26,7 +26,7 @@ var runGeneratorTests = function(testcases, translationDict, namespaces) {
                 return null;
             }
 
-            return toHashtag(xpath_.toXPath()) || xpath_.toHashtag();
+            return toHashtag(xpath_.toXPath());
         },
     });
     var parsed;
@@ -275,7 +275,7 @@ test("hashtags with no xpath", function() {
                 return null;
             }
 
-            return toHashtag(xpath_.toXPath()) || xpath_.toHashtag();
+            return toHashtag(xpath_.toXPath());
         },
     });
 
@@ -293,6 +293,56 @@ test("hashtags with no xpath", function() {
             } catch(err) {
                 ok(true, err);
             }
+        }
+    }
+});
+
+test("from xpath to hashtag", function() {
+    var translationDict = {
+            '#form/question': '/data/question',
+            '#form/question2': '/data/question2',
+            '#form/group/question': '/data/group/question',
+            '#case/question': "instance('casedb')/cases/case[@case_id = case_id]/question",
+        };
+
+    xpathmodels = XPathModels({
+        isValidNamespace: function (value) {
+            return ['form', 'case'].indexOf(value) !== -1;
+        },
+        hashtagToXPath: function (hashtagExpr) {
+            throw new Error('translate that hashtag, yo');
+        },
+        toHashtag: function (xpath_) {
+            function toHashtag(xpathExpr) {
+                for (var key in translationDict) {
+                    if (translationDict.hasOwnProperty(key)) {
+                        if (translationDict[key] === xpathExpr)
+                            return key;
+                    }
+                }
+                return null;
+            }
+
+            return toHashtag(xpath_.toXPath());
+        },
+    });
+
+    var testcases = {
+        "/data/question": "#form/question",
+        "/data/question + /data/question2": "#form/question + #form/question2",
+        "/data/question = instance('casedb')/cases/case[@case_id = case_id]/question": "#form/question = #case/question",
+        "/data/filtered[/data/question = 1]": "/data/filtered[#form/question = 1]",
+        "function   ( 5, 'arg', 4 * 12, /data/filtered[/data/question = 1])": "function(5, 'arg', 4 * 12, /data/filtered[#form/question = 1])",
+        "bunch-o-nodes()[3][/data/question !='galore']": "bunch-o-nodes()[3][#form/question != 'galore']",
+        "-some-function(/data/question)": "-some-function(#form/question)",
+    };
+
+    var parsed;
+    for (var i in testcases) {
+        if (testcases.hasOwnProperty(i)) {
+            parsed = xpath.parse(i);
+            ok(true, i + " correctly parsed");
+            equal(parsed.toHashtag(), testcases[i]);
         }
     }
 });

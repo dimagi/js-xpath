@@ -46,6 +46,10 @@ var XPathModels = function(hashtagConfig) {
         return something.toXPath();
     };
 
+    var objToHashtag = function (xpath_) {
+        return hashtagConfig.toHashtag(xpath_) || xpath_.toHashtag();
+    };
+
     xpm.XPathNumericLiteral = function(value) {
         /*
          * This is shockingly complicated for what should be simple thanks to
@@ -254,7 +258,9 @@ var XPathModels = function(hashtagConfig) {
             };
         }
         this.toXPath = _combine(objToXPath);
-        this.toHashtag = _combine(hashtagConfig.toHashtag);
+        this.toHashtag = function () {
+            return hashtagConfig.toHashtag(this) || _combine(objToHashtag).bind(this)();
+        };
         this.getChildren = function () {
            return [];
         };
@@ -315,7 +321,9 @@ var XPathModels = function(hashtagConfig) {
             };
         };
         this.toXPath = _combine(objToXPath);
-        this.toHashtag = _combine(hashtagConfig.toHashtag);
+        this.toHashtag = function () {
+            return hashtagConfig.toHashtag(this) || _combine(objToHashtag)();
+        };
         // custom function to pull out any filters and just return the root path
         this.pathWithoutPredicates = function() {
             return _combine(function (step) { return step.mainXPath(); });
@@ -347,7 +355,9 @@ var XPathModels = function(hashtagConfig) {
             };
         }
         this.toXPath = _combine(objToXPath);
-        this.toHashtag = _combine(hashtagConfig.toHashtag);
+        this.toHashtag = function () {
+            return hashtagConfig.toHashtag(this) || _combine(objToHashtag).bind(this)();
+        };
         this.getChildren = function () {
            return this.args;
         };
@@ -382,7 +392,9 @@ var XPathModels = function(hashtagConfig) {
             };
         }
         this.toXPath = _combine(objToXPath);
-        this.toHashtag = _combine(hashtagConfig.toHashtag);
+        this.toHashtag = function () {
+            return hashtagConfig.toHashtag(this) || _combine(objToHashtag).bind(this)();
+        };
         this.getChildren = function () {
            return this.predicates;
         };
@@ -582,7 +594,7 @@ var XPathModels = function(hashtagConfig) {
     }
 
     var binOpToXPath = printBinOp(objToXPath);
-    var binOpToHashtag = printBinOp(hashtagConfig.toHashtag);
+    var binOpToHashtag = printBinOp(objToHashtag);
 
     var binOpChildren = function () {
         return [this.left, this.right];
@@ -656,7 +668,7 @@ var XPathModels = function(hashtagConfig) {
             };
         }
         this.toXPath = _combine(objToXPath);
-        this.toHashtag = _combine(hashtagConfig.toHashtag);
+        this.toHashtag = _combine(objToHashtag);
         this.getChildren = function () {
            return [this.value];
         };
