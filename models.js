@@ -50,6 +50,7 @@ var defaultHashtagConfig = {
 
 var makeXPathModels = function(hashtagConfig) {
     var xpm = {};
+    xpm.DEBUG_MODE = false;
     hashtagConfig = hashtagConfig || defaultHashtagConfig;
 
     xpm.validateAxisName = function(name) {
@@ -693,7 +694,6 @@ var makeXPathModels = function(hashtagConfig) {
 };
 
 var xpathmodels = makeXPathModels(defaultHashtagConfig);
-xpathmodels.DEBUG_MODE = false;
 
 debuglog = function () {
     if (xpathmodels.DEBUG_MODE) {
