@@ -425,7 +425,7 @@ var makeXPathModels = function(hashtagConfig) {
         var self = this;
         this.initial_context = definition.initial_context;
         if (!hashtagConfig.isValidNamespace(definition.namespace)) {
-            throw definition.namespace + " is not a valid # expression";
+            throw new Error(definition.namespace + " is not a valid # expression");
         }
         this.namespace = definition.namespace;
         this.steps = definition.steps || [];
