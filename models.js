@@ -29,8 +29,28 @@ if (!Function.prototype.bind) {
     };
 }
 
+var defaultHashtagConfig = {
+    // @param namespace - the namespace used in hashtag
+    // @return - truthy value
+    isValidNamespace: function (namespace) {
+        return false;
+    },
+    // @param hashtagExpr - text of hashtag ex. #form/question
+    // @return - the XPath or falsy value if no corresponding XPath found
+    hashtagToXPath: function (hashtagExpr) {
+        throw new Error("This should be overridden");
+    },
+    // @param xpath_ - XPath object (can be any of the objects defined in xpm
+    // @returns - text representation of XPath in hashtag format (default
+    //            implementation is to just return the XPath)
+    toHashtag: function (xpath_) {
+        return xpath_.toXPath();
+    },
+};
+
 var makeXPathModels = function(hashtagConfig) {
     var xpm = {};
+    hashtagConfig = hashtagConfig || defaultHashtagConfig;
 
     xpm.validateAxisName = function(name) {
         for (var i in xpm.XPathAxisEnum) {
@@ -670,25 +690,6 @@ var makeXPathModels = function(hashtagConfig) {
     };
 
     return xpm;
-};
-
-var defaultHashtagConfig = {
-    // @param namespace - the namespace used in hashtag
-    // @return - truthy value
-    isValidNamespace: function (namespace) {
-        return false;
-    },
-    // @param hashtagExpr - text of hashtag ex. #form/question
-    // @return - the XPath or falsy value if no corresponding XPath found
-    hashtagToXPath: function (hashtagExpr) {
-        throw new Error("This should be overridden");
-    },
-    // @param xpath_ - XPath object (can be any of the objects defined in xpm
-    // @returns - text representation of XPath in hashtag format (default
-    //            implementation is to just return the XPath)
-    toHashtag: function (xpath_) {
-        return xpath_.toXPath();
-    },
 };
 
 var xpathmodels = makeXPathModels(defaultHashtagConfig);
