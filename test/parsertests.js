@@ -5,7 +5,7 @@
  */
 
 var runCommon = function(testcases) {
-    xpathmodels = XPathModels();
+    xpathmodels = makeXPathModels();
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
             try {
@@ -21,7 +21,7 @@ var runFailures = function(testcases) {
     function tmpFunc() {
         xpath.parse(i);
     }
-    xpathmodels = XPathModels();
+    xpathmodels = makeXPathModels();
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
             raises(tmpFunc, testcases[i], "" + i + " correctly failed to parse.");

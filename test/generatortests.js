@@ -6,7 +6,7 @@
 
 var runGeneratorTests = function(testcases) {
     var parsed;
-    xpathmodels = XPathModels();
+    xpathmodels = makeXPathModels();
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
             try {
@@ -221,7 +221,7 @@ test("generate without predicates", function () {
        "/data/blue": "/data/blue",
        "/data/blue[$random = 'predicate']": "/data/blue",
     }, parsed;
-    xpathmodels = XPathModels();
+    xpathmodels = makeXPathModels();
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
             try {

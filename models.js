@@ -29,7 +29,7 @@ if (!Function.prototype.bind) {
     };
 }
 
-var XPathModels = function(hashtagConfig) {
+var makeXPathModels = function(hashtagConfig) {
     var xpm = {};
 
     xpm.validateAxisName = function(name) {
@@ -691,7 +691,7 @@ var defaultHashtagConfig = {
     },
 };
 
-var xpathmodels = XPathModels(defaultHashtagConfig);
+var xpathmodels = makeXPathModels(defaultHashtagConfig);
 xpathmodels.DEBUG_MODE = false;
 
 debuglog = function () {
