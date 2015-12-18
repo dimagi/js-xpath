@@ -15,7 +15,8 @@ var runGeneratorTests = function(testcases) {
                 // It seems reasonable to expect that the generated xpath
                 // should parse back to the same object, although this may 
                 // not always hold true.
-                equal(parsed.toString(), xpath.parse(parsed.toXPath()).toString(), "" + i + " produced same result when reparsed.");
+                equal(parsed.toString(), xpath.parse(parsed.toXPath()).toString(), "XPath " + i + " produced same result when reparsed.");
+                equal(parsed.toString(), xpath.parse(parsed.toHashtag()).toString(), "Hashtag " + i + " produced same result when reparsed.");
             } catch(err) {
                 ok(false, "" + err + " for input: " + i);
             }
