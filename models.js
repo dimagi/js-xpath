@@ -53,6 +53,16 @@ var makeXPathModels = function(hashtagConfig) {
     xpm.DEBUG_MODE = false;
     hashtagConfig = hashtagConfig || defaultHashtagConfig;
 
+    xpm.debuglog = function () {
+        if (xpm.DEBUG_MODE) {
+            var string = "";
+            Array.prototype.slice.call(arguments).forEach(function (value) {
+                string += value + ", ";
+            });
+            console.log(string);
+        }
+    };
+
     xpm.validateAxisName = function(name) {
         for (var i in xpm.XPathAxisEnum) {
             if (xpm.XPathAxisEnum.hasOwnProperty(i) && xpm.XPathAxisEnum[i] === name) {
@@ -694,9 +704,3 @@ var makeXPathModels = function(hashtagConfig) {
 };
 
 var xpathmodels = makeXPathModels();
-
-debuglog = function () {
-    if (xpathmodels.DEBUG_MODE) {
-        console.log(arguments);
-    }
-};
