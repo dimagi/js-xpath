@@ -693,7 +693,7 @@ var makeXPathModels = function(hashtagConfig) {
     return xpm;
 };
 
-var xpathmodels = makeXPathModels(defaultHashtagConfig);
+var xpathmodels = makeXPathModels();
 
 debuglog = function () {
     if (xpathmodels.DEBUG_MODE) {
