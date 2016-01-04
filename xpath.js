@@ -852,7 +852,7 @@ case 34: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("COMMA", yy_.yytext); r
 break;
 case 35: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("HASH", yy_.yytext); return "HASH"; 
 break;
-case 36: this.begin("OP_CONTEXT"); yy_.yytext = yy_.yytext.substr(1,yy_.yyleng-2); xpathmodels.debuglog("STR", yy_.yytext); return "STR"; 
+case 36: this.begin("OP_CONTEXT"); xpathmodels.debuglog("STR", yy_.yytext); return "STR"; 
 break;
 case 37:return 5;
 break;

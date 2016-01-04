@@ -58,7 +58,7 @@ QName               [A-Za-z_][A-Za-z0-9._-]*(":"[A-Za-z_][A-Za-z0-9._-]*)?
 <*>"#"         { this.begin("VAL_CONTEXT"); xpathmodels.debuglog("HASH", yytext); return "HASH"; }
 
 
-<*>("\""[^"\""]*"\""|'\''[^'\'']*'\'')               { this.begin("OP_CONTEXT"); yytext = yytext.substr(1,yyleng-2); xpathmodels.debuglog("STR", yytext); return "STR"; }
+<*>("\""[^"\""]*"\""|'\''[^'\'']*'\'')               { this.begin("OP_CONTEXT"); xpathmodels.debuglog("STR", yytext); return "STR"; }
 
 
 <*><<EOF>>                              return 'EOF';

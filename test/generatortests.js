@@ -43,8 +43,8 @@ test("generator numbers", function() {
 
 test("generator strings", function () {
     runGeneratorTests({
-        "\"\"": "''",
-        "\"   \"": "'   '",
+        "\"\"": "\"\"",
+        "\"   \"": "\"   \"",
         "''": "''",
         "'\"'": "'\"'",
         "\"'\"": "\"'\"",
@@ -212,7 +212,7 @@ test("generator paths", function () {
 test("generator real world examples", function () {
     runGeneratorTests({
         "/patient/sex = 'male' and /patient/age > 15": "/patient/sex = 'male' and /patient/age > 15",
-        "../jr:hist-data/labs[@type=\"cd4\"]": "../jr:hist-data/labs[@type = 'cd4']",
+        "../jr:hist-data/labs[@type=\"cd4\"]": "../jr:hist-data/labs[@type = \"cd4\"]",
         "function_call(26*(7+3), //*, /im/child::an/ancestor::x[3][true()]/path)": "function_call(26 * (7 + 3), //*, /im/an/ancestor::x[3][true()]/path)",
     });
 });
