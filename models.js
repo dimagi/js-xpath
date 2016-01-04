@@ -78,6 +78,9 @@ var makeXPathModels = function(hashtagConfig) {
     };
 
     var objToHashtag = function (xpath_) {
+        if (xpath_ instanceof xpm.HashtagExpr) {
+            return xpath_.toHashtag();
+        }
         return hashtagConfig.toHashtag(xpath_) || xpath_.toHashtag();
     };
 
