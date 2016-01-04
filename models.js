@@ -137,22 +137,12 @@ var makeXPathModels = function(hashtagConfig) {
     };
 
     xpm.XPathStringLiteral = function(value) {
-        this.value = value;
+        var stringDelim = value[0];
+        this.value = value = value.substr(1, value.length-2);
+        this.stringDelim = stringDelim;
 
         var toXPathString = function(value) {
-            /*
-             * XPath doesn't support escaping, so all we do is check for quotation
-             * marks and if we find them, use the other kind.
-             *
-             */
-            if (value.indexOf("'") !== -1) {
-                // it has an apostrophe so wrap it in double quotes
-                return '"' + value + '"';
-            } else {
-                // it doesn't have an apostrophe so use single quotes, it could still
-                // have a double quote
-                return "'" + value + "'";
-            }
+            return stringDelim + value + stringDelim;
         };
 
         this.valueDisplay = toXPathString(value);
@@ -227,7 +217,7 @@ var makeXPathModels = function(hashtagConfig) {
                 case xpm.XPathTestEnum.NAME:
                     return String(this.name);
                 case xpm.XPathTestEnum.TYPE_PROCESSING_INSTRUCTION:
-                    return "processing-instruction(" + (this.literal ? "\'" + this.literal + "\'" : "") + ")";
+                    return "processing-instruction(" + (this.literal || "") + ")";
                 case xpm.XPathTestEnum.NAMESPACE_WILDCARD:
                     return this.namespace + ":*";
                 default:
