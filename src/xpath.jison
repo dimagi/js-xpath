@@ -108,6 +108,9 @@ filter_expr:  base_expr predicate     { $$ = new xpathmodels.XPathFilterExpr({ex
 hashtag_expr:  HASH QNAME SLASH hashtag_path              { $$ = new xpathmodels.HashtagExpr({initial_context: xpathmodels.XPathInitialContextEnum.HASHTAG,
                                                                       namespace: $2,
                                                                       steps: $4}); }
+        |  HASH QNAME                                     { $$ = new xpathmodels.HashtagExpr({initial_context: xpathmodels.XPathInitialContextEnum.HASHTAG,
+                                                                      namespace: $2,
+                                                                      steps: []}); }
         ;
 
 hashtag_path: QNAME  {$$ = [$1];}

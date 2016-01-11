@@ -123,6 +123,7 @@
 
     test("from xpath to hashtag", function() {
         var translationDict = {
+                '#form': '/data',
                 '#form/question': '/data/question',
                 '#form/question2': '/data/question2',
                 '#form/group/question': '/data/group/question',
@@ -132,6 +133,7 @@
         xpathmodels = makeXPathModels(makeXPathConfig(['form', 'case'], translationDict));
 
         var testcases = {
+            "/data": "#form",
             "/data/question": "#form/question",
             "/data/question + /data/question2": "#form/question + #form/question2",
             "/data/question = instance('casedb')/cases/case[@case_id = case_id]/question": "#form/question = #case/question",
