@@ -22,7 +22,7 @@
   },
   "main": "xpath.js",
   "scripts": {
-    "build": "jison src/xpath.jison src/xpath.jisonlex -o parser.js && browserify main.js > xpath.js",
+    "build": "jison src/xpath.jison src/xpath.jisonlex -o parser.js && browserify main.js --standalone xpath > xpath.js",
     "test": "node-qunit-phantomjs test/tests.html && jshint models.js test/*.js"
   }
 }

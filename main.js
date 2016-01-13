@@ -8,4 +8,4 @@ parser.setXPathModels = function(models) {
     parser.yy.xpathmodels = models;
 };
 
-window.xpath = parser;
+module.exports = parser;
