@@ -1,8 +1,8 @@
 var parser = require('./parser.js').parser,
-    models = require('./models.js');
+    makeXPathModels = require('./models.js').makeXPathModels;
 
-parser.yy.xpathmodels = models.xpathmodels;
-parser.makeXPathModels = models.makeXPathModels;
+parser.yy.xpathmodels = makeXPathModels();
+parser.makeXPathModels = makeXPathModels;
 
 parser.setXPathModels = function(models) {
     parser.yy.xpathmodels = models;

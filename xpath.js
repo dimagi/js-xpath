@@ -697,11 +697,8 @@ var makeXPathModels = function(hashtagConfig) {
     return xpm;
 };
 
-var xpathmodels = makeXPathModels();
-
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     exports.makeXPathModels = makeXPathModels;
-    exports.xpathmodels = xpathmodels;
 }
 
 },{}],2:[function(require,module,exports){
@@ -1932,10 +1929,10 @@ process.umask = function() { return 0; };
 
 },{}],6:[function(require,module,exports){
 var parser = require('./parser.js').parser,
-    models = require('./models.js');
+    makeXPathModels = require('./models.js').makeXPathModels;
 
-parser.yy.xpathmodels = models.xpathmodels;
-parser.makeXPathModels = models.makeXPathModels;
+parser.yy.xpathmodels = makeXPathModels();
+parser.makeXPathModels = makeXPathModels;
 
 parser.setXPathModels = function(models) {
     parser.yy.xpathmodels = models;

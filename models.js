@@ -696,9 +696,6 @@ var makeXPathModels = function(hashtagConfig) {
     return xpm;
 };
 
-var xpathmodels = makeXPathModels();
-
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     exports.makeXPathModels = makeXPathModels;
-    exports.xpathmodels = xpathmodels;
 }
