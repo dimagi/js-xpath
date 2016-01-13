@@ -93,58 +93,58 @@ case 7: case 41:
  this.$ = $$[$0-1]; 
 break;
 case 9:
- this.$ = new xpathmodels.XPathVariableReference($$[$0]); 
+ this.$ = new yy.xpathmodels.XPathVariableReference($$[$0]); 
 break;
 case 11:
- this.$ = new xpathmodels.XPathBoolExpr({"type": "or", "left": $$[$0-2], "right": $$[$0]}); 
+ this.$ = new yy.xpathmodels.XPathBoolExpr({"type": "or", "left": $$[$0-2], "right": $$[$0]}); 
 break;
 case 12:
- this.$ = new xpathmodels.XPathBoolExpr({"type": "and", "left": $$[$0-2], "right": $$[$0]}); 
+ this.$ = new yy.xpathmodels.XPathBoolExpr({"type": "and", "left": $$[$0-2], "right": $$[$0]}); 
 break;
 case 13:
- this.$ = new xpathmodels.XPathEqExpr({"type": "==", "left": $$[$0-2], "right": $$[$0]}); 
+ this.$ = new yy.xpathmodels.XPathEqExpr({"type": "==", "left": $$[$0-2], "right": $$[$0]}); 
 break;
 case 14:
- this.$ = new xpathmodels.XPathEqExpr({"type": "!=", "left": $$[$0-2], "right": $$[$0]}); 
+ this.$ = new yy.xpathmodels.XPathEqExpr({"type": "!=", "left": $$[$0-2], "right": $$[$0]}); 
 break;
 case 15:
- this.$ = new xpathmodels.XPathCmpExpr({"type": "<", "left":$$[$0-2], "right": $$[$0]}); 
+ this.$ = new yy.xpathmodels.XPathCmpExpr({"type": "<", "left":$$[$0-2], "right": $$[$0]}); 
 break;
 case 16:
- this.$ = new xpathmodels.XPathCmpExpr({"type": "<=", "left":$$[$0-2], "right": $$[$0]}); 
+ this.$ = new yy.xpathmodels.XPathCmpExpr({"type": "<=", "left":$$[$0-2], "right": $$[$0]}); 
 break;
 case 17:
- this.$ = new xpathmodels.XPathCmpExpr({"type": ">", "left":$$[$0-2], "right": $$[$0]}); 
+ this.$ = new yy.xpathmodels.XPathCmpExpr({"type": ">", "left":$$[$0-2], "right": $$[$0]}); 
 break;
 case 18:
- this.$ = new xpathmodels.XPathCmpExpr({"type": ">=", "left":$$[$0-2], "right": $$[$0]}); 
+ this.$ = new yy.xpathmodels.XPathCmpExpr({"type": ">=", "left":$$[$0-2], "right": $$[$0]}); 
 break;
 case 19:
- this.$ = new xpathmodels.XPathArithExpr({"type": "+", "left":$$[$0-2], "right": $$[$0]}); 
+ this.$ = new yy.xpathmodels.XPathArithExpr({"type": "+", "left":$$[$0-2], "right": $$[$0]}); 
 break;
 case 20:
- this.$ = new xpathmodels.XPathArithExpr({"type": "-", "left":$$[$0-2], "right": $$[$0]}); 
+ this.$ = new yy.xpathmodels.XPathArithExpr({"type": "-", "left":$$[$0-2], "right": $$[$0]}); 
 break;
 case 21:
- this.$ = new xpathmodels.XPathArithExpr({"type": "*", "left":$$[$0-2], "right": $$[$0]}); 
+ this.$ = new yy.xpathmodels.XPathArithExpr({"type": "*", "left":$$[$0-2], "right": $$[$0]}); 
 break;
 case 22:
- this.$ = new xpathmodels.XPathArithExpr({"type": "/", "left":$$[$0-2], "right": $$[$0]}); 
+ this.$ = new yy.xpathmodels.XPathArithExpr({"type": "/", "left":$$[$0-2], "right": $$[$0]}); 
 break;
 case 23:
- this.$ = new xpathmodels.XPathArithExpr({"type": "%", "left":$$[$0-2], "right": $$[$0]}); 
+ this.$ = new yy.xpathmodels.XPathArithExpr({"type": "%", "left":$$[$0-2], "right": $$[$0]}); 
 break;
 case 24:
- this.$ = new xpathmodels.XPathNumNegExpr({"type": "num-neg", "value":$$[$0]}); 
+ this.$ = new yy.xpathmodels.XPathNumNegExpr({"type": "num-neg", "value":$$[$0]}); 
 break;
 case 25:
- this.$ = new xpathmodels.XPathUnionExpr({"type": "union", "left":$$[$0-2], "right": $$[$0]}); 
+ this.$ = new yy.xpathmodels.XPathUnionExpr({"type": "union", "left":$$[$0-2], "right": $$[$0]}); 
 break;
 case 26:
- this.$ = new xpathmodels.XPathFuncExpr({id: $$[$0-3], args: $$[$0-1]}); 
+ this.$ = new yy.xpathmodels.XPathFuncExpr({id: $$[$0-3], args: $$[$0-1]}); 
 break;
 case 27:
- this.$ = new xpathmodels.XPathFuncExpr({id: $$[$0-2], args: []}); 
+ this.$ = new yy.xpathmodels.XPathFuncExpr({id: $$[$0-2], args: []}); 
 break;
 case 28:
  var args = $$[$0-2];
@@ -155,39 +155,39 @@ case 29:
  this.$ = [$$[$0]]; 
 break;
 case 31:
- this.$ = new xpathmodels.XPathPathExpr({
-                                                                    initial_context: xpathmodels.XPathInitialContextEnum.EXPR,
+ this.$ = new yy.xpathmodels.XPathPathExpr({
+                                                                    initial_context: yy.xpathmodels.XPathInitialContextEnum.EXPR,
                                                                     filter: $$[$0-2], steps: $$[$0]}); 
 break;
 case 32:
  var steps = $$[$0];
-                                                      steps.splice(0, 0, new xpathmodels.XPathStep({
-                                                                                axis: xpathmodels.XPathAxisEnum.DESCENDANT_OR_SELF, 
-                                                                                test: xpathmodels.XPathTestEnum.TYPE_NODE}));
-                                                      this.$ = new xpathmodels.XPathPathExpr({
-                                                                    initial_context: xpathmodels.XPathInitialContextEnum.EXPR,
+                                                      steps.splice(0, 0, new yy.xpathmodels.XPathStep({
+                                                                                axis: yy.xpathmodels.XPathAxisEnum.DESCENDANT_OR_SELF, 
+                                                                                test: yy.xpathmodels.XPathTestEnum.TYPE_NODE}));
+                                                      this.$ = new yy.xpathmodels.XPathPathExpr({
+                                                                    initial_context: yy.xpathmodels.XPathInitialContextEnum.EXPR,
                                                                     filter: $$[$0-2], steps: steps}); 
 break;
 case 33:
  // could eliminate filterExpr wrapper, but this makes tests pass as-is
-                                                      var filterExpr = new xpathmodels.XPathFilterExpr({expr: $$[$0-2]});
-                                                      this.$ = new xpathmodels.XPathPathExpr({
-                                                                    initial_context: xpathmodels.XPathInitialContextEnum.EXPR,
+                                                      var filterExpr = new yy.xpathmodels.XPathFilterExpr({expr: $$[$0-2]});
+                                                      this.$ = new yy.xpathmodels.XPathPathExpr({
+                                                                    initial_context: yy.xpathmodels.XPathInitialContextEnum.EXPR,
                                                                     filter: filterExpr, steps: $$[$0]}); 
 break;
 case 34:
  var steps = $$[$0];
                                                       // could eliminate filterExpr wrapper, but this makes tests pass as-is
-                                                      var filterExpr = new xpathmodels.XPathFilterExpr({expr: $$[$0-2]});
-                                                      steps.splice(0, 0, new xpathmodels.XPathStep({
-                                                                                axis: xpathmodels.XPathAxisEnum.DESCENDANT_OR_SELF, 
-                                                                                test: xpathmodels.XPathTestEnum.TYPE_NODE}));
-                                                      this.$ = new xpathmodels.XPathPathExpr({
-                                                                    initial_context: xpathmodels.XPathInitialContextEnum.EXPR,
+                                                      var filterExpr = new yy.xpathmodels.XPathFilterExpr({expr: $$[$0-2]});
+                                                      steps.splice(0, 0, new yy.xpathmodels.XPathStep({
+                                                                                axis: yy.xpathmodels.XPathAxisEnum.DESCENDANT_OR_SELF, 
+                                                                                test: yy.xpathmodels.XPathTestEnum.TYPE_NODE}));
+                                                      this.$ = new yy.xpathmodels.XPathPathExpr({
+                                                                    initial_context: yy.xpathmodels.XPathInitialContextEnum.EXPR,
                                                                     filter: filterExpr, steps: steps}); 
 break;
 case 35:
- this.$ = new xpathmodels.XPathFilterExpr({expr: $$[$0-1], predicates: [$$[$0]]}); 
+ this.$ = new yy.xpathmodels.XPathFilterExpr({expr: $$[$0-1], predicates: [$$[$0]]}); 
 break;
 case 36:
  var filterExpr = $$[$0-1];
@@ -195,12 +195,12 @@ case 36:
                                         this.$ = filterExpr; 
 break;
 case 37:
- this.$ = new xpathmodels.HashtagExpr({initial_context: xpathmodels.XPathInitialContextEnum.HASHTAG,
+ this.$ = new yy.xpathmodels.HashtagExpr({initial_context: yy.xpathmodels.XPathInitialContextEnum.HASHTAG,
                                                                       namespace: $$[$0-2],
                                                                       steps: $$[$0]}); 
 break;
 case 38:
- this.$ = new xpathmodels.HashtagExpr({initial_context: xpathmodels.XPathInitialContextEnum.HASHTAG,
+ this.$ = new yy.xpathmodels.HashtagExpr({initial_context: yy.xpathmodels.XPathInitialContextEnum.HASHTAG,
                                                                       namespace: $$[$0],
                                                                       steps: []}); 
 break;
@@ -211,23 +211,23 @@ case 40:
 var path = $$[$0-2]; path.push($$[$0]); this.$ = path;
 break;
 case 42:
- this.$ = new xpathmodels.XPathPathExpr({initial_context: xpathmodels.XPathInitialContextEnum.RELATIVE,
+ this.$ = new yy.xpathmodels.XPathPathExpr({initial_context: yy.xpathmodels.XPathInitialContextEnum.RELATIVE,
                                                                       steps: $$[$0]}); 
 break;
 case 43:
- this.$ = new xpathmodels.XPathPathExpr({initial_context: xpathmodels.XPathInitialContextEnum.ROOT,
+ this.$ = new yy.xpathmodels.XPathPathExpr({initial_context: yy.xpathmodels.XPathInitialContextEnum.ROOT,
                                                                       steps: $$[$0]}); 
 break;
 case 44:
  var steps = $$[$0];
                                               // insert descendant step into beginning
-                                              steps.splice(0, 0, new xpathmodels.XPathStep({axis: xpathmodels.XPathAxisEnum.DESCENDANT_OR_SELF, 
-                                                                                test: xpathmodels.XPathTestEnum.TYPE_NODE}));
-                                              this.$ = new xpathmodels.XPathPathExpr({initial_context: xpathmodels.XPathInitialContextEnum.ROOT,
+                                              steps.splice(0, 0, new yy.xpathmodels.XPathStep({axis: yy.xpathmodels.XPathAxisEnum.DESCENDANT_OR_SELF, 
+                                                                                test: yy.xpathmodels.XPathTestEnum.TYPE_NODE}));
+                                              this.$ = new yy.xpathmodels.XPathPathExpr({initial_context: yy.xpathmodels.XPathInitialContextEnum.ROOT,
                                                                       steps: steps}); 
 break;
 case 45:
- this.$ = new xpathmodels.XPathPathExpr({initial_context: xpathmodels.XPathInitialContextEnum.ROOT,
+ this.$ = new yy.xpathmodels.XPathPathExpr({initial_context: yy.xpathmodels.XPathInitialContextEnum.ROOT,
                                                               steps: []});
 break;
 case 46:
@@ -240,8 +240,8 @@ case 47:
 break;
 case 48:
  var path = $$[$0-2];
-                                            path.push(new xpathmodels.XPathStep({axis: xpathmodels.XPathAxisEnum.DESCENDANT_OR_SELF, 
-                                                                     test: xpathmodels.XPathTestEnum.TYPE_NODE}));
+                                            path.push(new yy.xpathmodels.XPathStep({axis: yy.xpathmodels.XPathAxisEnum.DESCENDANT_OR_SELF, 
+                                                                     test: yy.xpathmodels.XPathTestEnum.TYPE_NODE}));
                                             path.push($$[$0]);
                                             this.$ = path; 
 break;
@@ -249,12 +249,12 @@ case 49: case 53:
  this.$ = $$[$0]; 
 break;
 case 50:
- this.$ = new xpathmodels.XPathStep({axis: xpathmodels.XPathAxisEnum.SELF, 
-                                                          test: xpathmodels.XPathTestEnum.TYPE_NODE}); 
+ this.$ = new yy.xpathmodels.XPathStep({axis: yy.xpathmodels.XPathAxisEnum.SELF, 
+                                                          test: yy.xpathmodels.XPathTestEnum.TYPE_NODE}); 
 break;
 case 51:
- this.$ = new xpathmodels.XPathStep({axis: xpathmodels.XPathAxisEnum.PARENT, 
-                                                          test: xpathmodels.XPathTestEnum.TYPE_NODE}); 
+ this.$ = new yy.xpathmodels.XPathStep({axis: yy.xpathmodels.XPathAxisEnum.PARENT, 
+                                                          test: yy.xpathmodels.XPathTestEnum.TYPE_NODE}); 
 break;
 case 52:
  var step = $$[$0-1];
@@ -263,49 +263,49 @@ case 52:
 break;
 case 54:
  var nodeTest = $$[$0]; // temporary dict with appropriate args
-                                          nodeTest.axis = xpathmodels.XPathAxisEnum.CHILD;
-                                          this.$ = new xpathmodels.XPathStep(nodeTest); 
+                                          nodeTest.axis = yy.xpathmodels.XPathAxisEnum.CHILD;
+                                          this.$ = new yy.xpathmodels.XPathStep(nodeTest); 
 break;
 case 55:
  var nodeTest = $$[$0];  // temporary dict with appropriate args
                                           nodeTest.axis = $$[$0-1]; // add axis
-                                          this.$ = new xpathmodels.XPathStep(nodeTest); 
+                                          this.$ = new yy.xpathmodels.XPathStep(nodeTest); 
 break;
 case 56:
- this.$ = xpathmodels.validateAxisName($$[$0-1]); 
+ this.$ = yy.xpathmodels.validateAxisName($$[$0-1]); 
 break;
 case 57:
- this.$ = xpathmodels.XPathAxisEnum.ATTRIBUTE; 
+ this.$ = yy.xpathmodels.XPathAxisEnum.ATTRIBUTE; 
 break;
 case 58:
- this.$ = {"test": xpathmodels.XPathTestEnum.NAME, "name": $$[$0]}; 
+ this.$ = {"test": yy.xpathmodels.XPathTestEnum.NAME, "name": $$[$0]}; 
 break;
 case 59:
- this.$ = {"test": xpathmodels.XPathTestEnum.NAME_WILDCARD}; 
+ this.$ = {"test": yy.xpathmodels.XPathTestEnum.NAME_WILDCARD}; 
 break;
 case 60:
- this.$ = {"test": xpathmodels.XPathTestEnum.NAMESPACE_WILDCARD, "namespace": $$[$0]}; 
+ this.$ = {"test": yy.xpathmodels.XPathTestEnum.NAMESPACE_WILDCARD, "namespace": $$[$0]}; 
 break;
 case 61:
- this.$ = {"test": xpathmodels.XPathTestEnum.TYPE_NODE}; 
+ this.$ = {"test": yy.xpathmodels.XPathTestEnum.TYPE_NODE}; 
 break;
 case 62:
- this.$ = {"test": xpathmodels.XPathTestEnum.TYPE_TEXT}; 
+ this.$ = {"test": yy.xpathmodels.XPathTestEnum.TYPE_TEXT}; 
 break;
 case 63:
- this.$ = {"test": xpathmodels.XPathTestEnum.TYPE_COMMENT}; 
+ this.$ = {"test": yy.xpathmodels.XPathTestEnum.TYPE_COMMENT}; 
 break;
 case 64:
- this.$ = {"test": xpathmodels.XPathTestEnum.TYPE_PROCESSING_INSTRUCTION, "literal": null}; 
+ this.$ = {"test": yy.xpathmodels.XPathTestEnum.TYPE_PROCESSING_INSTRUCTION, "literal": null}; 
 break;
 case 65:
- this.$ = {"test": xpathmodels.XPathTestEnum.TYPE_PROCESSING_INSTRUCTION, "literal": $$[$0-1]}; 
+ this.$ = {"test": yy.xpathmodels.XPathTestEnum.TYPE_PROCESSING_INSTRUCTION, "literal": $$[$0-1]}; 
 break;
 case 66:
- this.$ = new xpathmodels.XPathStringLiteral($$[$0]); 
+ this.$ = new yy.xpathmodels.XPathStringLiteral($$[$0]); 
 break;
 case 67:
- this.$ = new xpathmodels.XPathNumericLiteral($$[$0]); 
+ this.$ = new yy.xpathmodels.XPathNumericLiteral($$[$0]); 
 break;
 }
 },
@@ -785,79 +785,79 @@ var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
 case 0:/* ignore whitespace */ 
 break;
-case 1: xpathmodels.debuglog("NODETYPE", yy_.yytext); return "NODETYPE_NODE"; 
+case 1: yy.xpathmodels.debuglog("NODETYPE", yy_.yytext); return "NODETYPE_NODE"; 
 break;
-case 2: xpathmodels.debuglog("NODETYPE", yy_.yytext); return "NODETYPE_TEXT"; 
+case 2: yy.xpathmodels.debuglog("NODETYPE", yy_.yytext); return "NODETYPE_TEXT"; 
 break;
-case 3: xpathmodels.debuglog("NODETYPE", yy_.yytext); return "NODETYPE_COMMENT"; 
+case 3: yy.xpathmodels.debuglog("NODETYPE", yy_.yytext); return "NODETYPE_COMMENT"; 
 break;
-case 4: xpathmodels.debuglog("NODETYPE", yy_.yytext); return "NODETYPE_PROCINSTR"; 
+case 4: yy.xpathmodels.debuglog("NODETYPE", yy_.yytext); return "NODETYPE_PROCINSTR"; 
 break;
-case 5: this.begin("OP_CONTEXT"); yy_.yytext = yy_.yytext.substr(1,yy_.yyleng-1); xpathmodels.debuglog("VAR", yy_.yytext); return "VAR"; 
+case 5: this.begin("OP_CONTEXT"); yy_.yytext = yy_.yytext.substr(1,yy_.yyleng-1); yy.xpathmodels.debuglog("VAR", yy_.yytext); return "VAR"; 
 break;
 case 6: this.begin("OP_CONTEXT"); 
                                      yy_.yytext = yy_.yytext.substr(0, yy_.yyleng-2);
-                                     xpathmodels.debuglog("NSWILDCARD", yy_.yytext); return "NSWILDCARD"; 
+                                     yy.xpathmodels.debuglog("NSWILDCARD", yy_.yytext); return "NSWILDCARD"; 
 break;
-case 7: this.begin("OP_CONTEXT"); xpathmodels.debuglog("QNAME", yy_.yytext); return "QNAME"; 
+case 7: this.begin("OP_CONTEXT"); yy.xpathmodels.debuglog("QNAME", yy_.yytext); return "QNAME"; 
 break;
-case 8: this.begin("OP_CONTEXT"); xpathmodels.debuglog("WILDCARD", yy_.yytext); return "WILDCARD"; 
+case 8: this.begin("OP_CONTEXT"); yy.xpathmodels.debuglog("WILDCARD", yy_.yytext); return "WILDCARD"; 
 break;
-case 9: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("MULT", yy_.yytext); return "MULT"; 
+case 9: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("MULT", yy_.yytext); return "MULT"; 
 break;
-case 10: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("AND", yy_.yytext); return "AND"; 
+case 10: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("AND", yy_.yytext); return "AND"; 
 break;
-case 11: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("OR", yy_.yytext); return "OR"; 
+case 11: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("OR", yy_.yytext); return "OR"; 
 break;
-case 12: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("DIV", yy_.yytext); return "DIV"; 
+case 12: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("DIV", yy_.yytext); return "DIV"; 
 break;
-case 13: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("MOD", yy_.yytext); return "MOD"; 
+case 13: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("MOD", yy_.yytext); return "MOD"; 
 break;
-case 14: this.begin("OP_CONTEXT"); xpathmodels.debuglog("NUM", yy_.yytext); return "NUM"; 
+case 14: this.begin("OP_CONTEXT"); yy.xpathmodels.debuglog("NUM", yy_.yytext); return "NUM"; 
 break;
-case 15: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("EQ", yy_.yytext); return "EQ"; 
+case 15: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("EQ", yy_.yytext); return "EQ"; 
 break;
-case 16: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("NEQ", yy_.yytext); return "NEQ"; 
+case 16: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("NEQ", yy_.yytext); return "NEQ"; 
 break;
-case 17: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("LTE", yy_.yytext); return "LTE"; 
+case 17: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("LTE", yy_.yytext); return "LTE"; 
 break;
-case 18: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("LT", yy_.yytext); return "LT"; 
+case 18: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("LT", yy_.yytext); return "LT"; 
 break;
-case 19: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("GTE", yy_.yytext); return "GTE"; 
+case 19: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("GTE", yy_.yytext); return "GTE"; 
 break;
-case 20: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("GT", yy_.yytext); return "GT"; 
+case 20: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("GT", yy_.yytext); return "GT"; 
 break;
-case 21: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("PLUS", yy_.yytext); return "PLUS"; 
+case 21: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("PLUS", yy_.yytext); return "PLUS"; 
 break;
-case 22: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("MINUS", yy_.yytext); return "MINUS"; 
+case 22: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("MINUS", yy_.yytext); return "MINUS"; 
 break;
-case 23: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("UNION", yy_.yytext); return "UNION"; 
+case 23: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("UNION", yy_.yytext); return "UNION"; 
 break;
-case 24: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("DBL", yy_.yytext); return "DBL_SLASH"; 
+case 24: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("DBL", yy_.yytext); return "DBL_SLASH"; 
 break;
-case 25: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("SLASH", yy_.yytext); return "SLASH"; 
+case 25: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("SLASH", yy_.yytext); return "SLASH"; 
 break;
-case 26: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("LBRACK", yy_.yytext); return "LBRACK"; 
+case 26: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("LBRACK", yy_.yytext); return "LBRACK"; 
 break;
-case 27: this.begin("OP_CONTEXT");  xpathmodels.debuglog("RBRACK", yy_.yytext); return "RBRACK"; 
+case 27: this.begin("OP_CONTEXT");  yy.xpathmodels.debuglog("RBRACK", yy_.yytext); return "RBRACK"; 
 break;
-case 28: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("LPAREN", yy_.yytext); return "LPAREN"; 
+case 28: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("LPAREN", yy_.yytext); return "LPAREN"; 
 break;
-case 29: this.begin("OP_CONTEXT");  xpathmodels.debuglog("RPAREN", yy_.yytext); return "RPAREN"; 
+case 29: this.begin("OP_CONTEXT");  yy.xpathmodels.debuglog("RPAREN", yy_.yytext); return "RPAREN"; 
 break;
-case 30: this.begin("OP_CONTEXT");  xpathmodels.debuglog("DBL", yy_.yytext); return "DBL_DOT"; 
+case 30: this.begin("OP_CONTEXT");  yy.xpathmodels.debuglog("DBL", yy_.yytext); return "DBL_DOT"; 
 break;
-case 31: this.begin("OP_CONTEXT");  xpathmodels.debuglog("DOT", yy_.yytext); return "DOT"; 
+case 31: this.begin("OP_CONTEXT");  yy.xpathmodels.debuglog("DOT", yy_.yytext); return "DOT"; 
 break;
-case 32: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("AT", yy_.yytext); return "AT"; 
+case 32: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("AT", yy_.yytext); return "AT"; 
 break;
-case 33: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("DBL", yy_.yytext); return "DBL_COLON"; 
+case 33: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("DBL", yy_.yytext); return "DBL_COLON"; 
 break;
-case 34: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("COMMA", yy_.yytext); return "COMMA"; 
+case 34: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("COMMA", yy_.yytext); return "COMMA"; 
 break;
-case 35: this.begin("VAL_CONTEXT"); xpathmodels.debuglog("HASH", yy_.yytext); return "HASH"; 
+case 35: this.begin("VAL_CONTEXT"); yy.xpathmodels.debuglog("HASH", yy_.yytext); return "HASH"; 
 break;
-case 36: this.begin("OP_CONTEXT"); xpathmodels.debuglog("STR", yy_.yytext); return "STR"; 
+case 36: this.begin("OP_CONTEXT"); yy.xpathmodels.debuglog("STR", yy_.yytext); return "STR"; 
 break;
 case 37:return 5;
 break;

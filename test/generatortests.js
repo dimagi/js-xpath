@@ -6,7 +6,7 @@
 
 var runGeneratorTests = function(testcases) {
     var parsed;
-    xpathmodels = makeXPathModels();
+    xpath.yy.xpathmodels = makeXPathModels();
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
             try {

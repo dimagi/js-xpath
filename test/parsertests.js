@@ -5,7 +5,7 @@
  */
 
 var runCommon = function(testcases) {
-    xpathmodels = makeXPathModels();
+    xpath.yy.xpathmodels = makeXPathModels();
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
             try {
