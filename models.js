@@ -456,7 +456,7 @@ var makeXPathModels = function(hashtagConfig) {
         };
         this.toHashtag = _combine;
         this.getChildren = function () {
-           return this.steps;
+           return [];
         };
 
         return this;
