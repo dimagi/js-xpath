@@ -456,7 +456,7 @@ var makeXPathModels = function(hashtagConfig) {
         };
         this.toHashtag = _combine;
         this.getChildren = function () {
-           return this.steps;
+           return [];
         };
 
         return this;
@@ -696,4 +696,6 @@ var makeXPathModels = function(hashtagConfig) {
     return xpm;
 };
 
-var xpathmodels = makeXPathModels();
+if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+    exports.makeXPathModels = makeXPathModels;
+}

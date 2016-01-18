@@ -27,7 +27,7 @@
     }
 
     var runCommon = function(testcases, validHashtagNamespaces) {
-        xpathmodels = makeXPathModels(makeXPathConfig(validHashtagNamespaces, {}));
+        xpath.setXPathModels(xpath.makeXPathModels(makeXPathConfig(validHashtagNamespaces, {})));
         for (var i in testcases) {
             if (testcases.hasOwnProperty(i)) {
                 try {
@@ -42,7 +42,7 @@
         function tmpFunc() {
             xpath.parse(i);
         }
-        xpathmodels = makeXPathModels(makeXPathConfig(validHashtagNamespaces, {}));
+        xpath.setXPathModels(xpath.makeXPathModels(makeXPathConfig(validHashtagNamespaces, {})));
         for (var i in testcases) {
             if (testcases.hasOwnProperty(i)) {
                 raises(tmpFunc, testcases[i], "" + i + " correctly failed to parse.");
@@ -50,7 +50,7 @@
         }
     };
     var runGeneratorTests = function(testcases, translationDict, namespaces) {
-        xpathmodels = makeXPathModels(makeXPathConfig(namespaces, translationDict));
+        xpath.setXPathModels(xpath.makeXPathModels(makeXPathConfig(namespaces, translationDict)));
         var parsed;
         for (var i in testcases) {
             if (testcases.hasOwnProperty(i)) {
@@ -101,7 +101,7 @@
     });
 
     test("hashtags with no xpath", function() {
-        xpathmodels = makeXPathModels(makeXPathConfig(['form', 'case'], {}));
+        xpath.setXPathModels(xpath.makeXPathModels(makeXPathConfig(['form', 'case'], {})));
 
         var testcases = {
             "#form/question1": "/data/question1",
@@ -130,7 +130,7 @@
                 '#case/question': "instance('casedb')/cases/case[@case_id = case_id]/question",
             };
 
-        xpathmodels = makeXPathModels(makeXPathConfig(['form', 'case'], translationDict));
+        xpath.setXPathModels(xpath.makeXPathModels(makeXPathConfig(['form', 'case'], translationDict)));
 
         var testcases = {
             "/data": "#form",
