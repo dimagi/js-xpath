@@ -5,6 +5,8 @@
  *
  */
 
+var SchemeNumber = require('./lib/schemeNumber.js').SchemeNumber;
+
 if (!Function.prototype.bind) {
     // PhantomJS doesn't support bind yet
     Function.prototype.bind = function(oThis) {

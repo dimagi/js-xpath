@@ -15,6 +15,7 @@
     "url": "https://github.com/dimagi/js-xpath.git"
   },
   "devDependencies": {
+    "biginteger": "^1.0.3",
     "jison": "^0.4.16",
     "jshint": "^2.8.0",
     "node-qunit-phantomjs": "^1.3.0",
