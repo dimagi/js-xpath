@@ -1,6 +1,6 @@
 {
   "name": "js-xpath",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An xpath parser",
   "authors": [
     "Dimagi <dev@dimagi.com>"
@@ -13,6 +13,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/dimagi/js-xpath.git"
+  },
+  "dependencies": {
+    "biginteger": "^1.0.3"
   },
   "devDependencies": {
     "jison": "^0.4.16",
