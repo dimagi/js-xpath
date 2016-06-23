@@ -89,8 +89,8 @@ break;
 case 2: case 3: case 4: case 5: case 6:
   this.$ = $$[$0]; 
 break;
-case 7: case 41:
- this.$ = $$[$0-1]; 
+case 7:
+ $$[$0-1].parens = true; this.$ = $$[$0-1]; 
 break;
 case 9:
  this.$ = new yy.xpathmodels.XPathVariableReference($$[$0]); 
@@ -209,6 +209,9 @@ this.$ = [$$[$0]];
 break;
 case 40:
 var path = $$[$0-2]; path.push($$[$0]); this.$ = path;
+break;
+case 41:
+ this.$ = $$[$0-1]; 
 break;
 case 42:
  this.$ = new yy.xpathmodels.XPathPathExpr({initial_context: yy.xpathmodels.XPathInitialContextEnum.RELATIVE,
