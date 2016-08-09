@@ -104,7 +104,6 @@ test("generator operator associativity", function () {
         "1 mod 2 div 3 div 4 * 5": "1 mod 2 div 3 div 4 * 5",
         "1|2|3": "1 | 2 | 3",
     });
-    
 });
 
 test("generator operator precedence", function () {
@@ -113,7 +112,7 @@ test("generator operator precedence", function () {
         "1 * 2 + 3 div 4 < 5 mod 6 | 7 - 8": "1 * 2 + 3 div 4 < 5 mod 6 | 7 - 8",
         "- 4 * 6": "-4 * 6",
         "6*(3+4)and(5or2)": "6 * (3 + 4) and (5 or 2)",
-        "(1 - 2) - 3": "1 - 2 - 3",        
+        "(1 - 2) - 3": "(1 - 2) - 3",
         "1 - (2 - 3)": "1 - (2 - 3)"
     });
 });

@@ -509,70 +509,6 @@ var makeXPathModels = function(hashtagConfig) {
         return "{binop-expr:" + this.type + "," + String(this.left) + "," + String(this.right) + "}";
     };
 
-    var getOrdering = function(type) {
-        switch(type) {
-            case xpm.XPathExpressionTypeEnum.OR:
-            case xpm.XPathExpressionTypeEnum.AND:
-                return "right";
-            case xpm.XPathExpressionTypeEnum.EQ:
-            case xpm.XPathExpressionTypeEnum.NEQ:
-            case xpm.XPathExpressionTypeEnum.LT:
-            case xpm.XPathExpressionTypeEnum.LTE:
-            case xpm.XPathExpressionTypeEnum.GT:
-            case xpm.XPathExpressionTypeEnum.GTE:
-            case xpm.XPathExpressionTypeEnum.PLUS:
-            case xpm.XPathExpressionTypeEnum.MINUS:
-            case xpm.XPathExpressionTypeEnum.MULT:
-            case xpm.XPathExpressionTypeEnum.DIV:
-            case xpm.XPathExpressionTypeEnum.MOD:
-            case xpm.XPathExpressionTypeEnum.UNION:
-                return "left";
-            case xpm.XPathExpressionTypeEnum.UMINUS:
-                return "nonassoc";
-            default:
-                throw("No order for " + type);
-        }
-    };
-
-    var getPrecedence = function(type) {
-        // we need to mimic the structure defined in the jison file
-        //%right OR
-        //%right AND
-        //%left EQ NEQ
-        //%left LT LTE GT GTE
-        //%left PLUS MINUS
-        //%left MULT DIV MOD
-        //%nonassoc UMINUS
-        //%left UNION
-        switch(type) {
-            case xpm.XPathExpressionTypeEnum.OR:
-                return 0;
-            case xpm.XPathExpressionTypeEnum.AND:
-                return 1;
-            case xpm.XPathExpressionTypeEnum.EQ:
-            case xpm.XPathExpressionTypeEnum.NEQ:
-                return 2;
-            case xpm.XPathExpressionTypeEnum.LT:
-            case xpm.XPathExpressionTypeEnum.LTE:
-            case xpm.XPathExpressionTypeEnum.GT:
-            case xpm.XPathExpressionTypeEnum.GTE:
-                return 3;
-            case xpm.XPathExpressionTypeEnum.PLUS:
-            case xpm.XPathExpressionTypeEnum.MINUS:
-                return 4;
-            case xpm.XPathExpressionTypeEnum.MULT:
-            case xpm.XPathExpressionTypeEnum.DIV:
-            case xpm.XPathExpressionTypeEnum.MOD:
-                return 5;
-            case xpm.XPathExpressionTypeEnum.UMINUS:
-                return 6;
-            case xpm.XPathExpressionTypeEnum.UNION:
-                return 7;
-            default:
-                throw("No precedence for " + type);
-        }
-    };
-
     var isOp = xpm.isOp = function(someToken) {
         /*
          * Whether something is an operation
@@ -594,22 +530,11 @@ var makeXPathModels = function(hashtagConfig) {
 
     function printBinOp (func) {
         return function () {
-            var prec = getPrecedence(this.type), lprec, rprec, lneedsParens = false, rneedsParens = false,
-                lString, rString;
-            // if the child has higher precedence we can omit parens
-            // if they are the same then we can omit
-            // if they tie, we look to the ordering
-            if (isOp(this.left)) {
-                lprec = getPrecedence(this.left.type);
-                lneedsParens = (lprec > prec) ? false : (lprec !== prec) ? true : (getOrdering(this.type) === "right");
+            var ret = func(this.left) + " " + expressionTypeEnumToXPathLiteral(this.type) + " " + func(this.right);
+            if (this.parens === true) {
+                return "(" + ret + ")";
             }
-            if (isOp(this.right)) {
-                rprec = getPrecedence(this.right.type);
-                rneedsParens = (rprec > prec) ? false : (rprec !== prec) ? true : (getOrdering(this.type) === "left");
-            }
-            lString = lneedsParens ? "(" + func(this.left) + ")" : func(this.left);
-            rString = rneedsParens ? "(" + func(this.right) + ")" : func(this.right);
-            return lString + " " + expressionTypeEnumToXPathLiteral(this.type) + " " + rString;
+            return ret;
         };
     }
 
@@ -629,7 +554,6 @@ var makeXPathModels = function(hashtagConfig) {
         this.toHashtag = binOpToHashtag.bind(this);
         this.getChildren = binOpChildren;
         return this;
-
     };
 
     xpm.XPathEqExpr = function(definition) {
