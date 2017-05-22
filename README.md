@@ -35,7 +35,7 @@ hashtags use the format `#namespace/arbitrarily/long/path` and do not support fi
 Tests
 -----
 - Open `test/tests.html` to run tests (must be serving all files in the library).
-- Individual tests are found in `test/parsertests.js` and `test/generatortests.js`
+- Individual tests are found in `test/parserTests.js` and `test/generatorTests.js`
 
 
 Known Limitations
@@ -47,21 +47,22 @@ Known Limitations
 Code Structure
 --------------
 
-| File      | Content                                            |
-| ---------:|:---------------------------------------------------|
-| xpath.js  | the generated parser file.                         |
-| models.js | the underlying models files used in parsing.       |
-| src/      | contains the jison parser files.                   |
-| lib/      | external libraries that the parser depends on.     |
-| test/     | qunit tests for the parser and generator.          |
+| File           | Content                                            |
+| --------------:|:---------------------------------------------------|
+| dist/          | contains a browser-ready build of the parser       |
+| src/jison/     | contains the jison parser files.                   |
+| src/lib/       | external libraries that the parser depends on.     |
+| src/main.js    | the entry point for non-browser users.             |
+| src/models.js  | the underlying models used in parsing.             |
+| src/parser.js  | the jison built parser file, do not edit manually. |
+| test/          | qunit tests for the parser and generator.          |
  
 Build
 ------
 This is built using [jison](http://zaach.github.com/jison/). To build the parser file yourself run:
 
-`$ npm run build`
+`$ npm run build` - This will build both the distribution (`browserify`) package in dist/ and rebuild the Jison parser (`src/parser.js`) from the `src/jison/` files. 
+`$ npm run jison` - Rebuild `parser.js` from the Jison specification files.
+`$ npm run dist` - Rebuild the browser friendly distribution from the current source files.
 
-(This is only necessary if you want to edit the jison or lex files)
-
-For more information on jison see the jison project website at: 
-http://zaach.github.com/jison/.
+For more information on jison see the jison project website at: http://zaach.github.com/jison/.
