@@ -31,6 +31,6 @@
     "jison": "jison src/jison/xpath.jison src/jison/xpath.jisonlex -o src/parser.js",
     "dist": "browserify src/main.js --standalone xpath > dist/js-xpath.js",
     "build": "npm run jison && npm run dist",
-    "test": "node-qunit-phantomjs test/tests.html && jshint models.js test/*.js"
+    "test": "node-qunit-phantomjs test/tests.html && jshint src/models.js test/*.js"
   }
 }
