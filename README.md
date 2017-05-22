@@ -1,0 +1,67 @@
+js-xpath
+--------
+An XPath Parser/Generator for JavaScript using the Jison parser/generator.
+
+Demo
+----
+
+See the [xpath.html](xpath.html) file for a very simple usage for parsing xpath expressions.
+
+Usage
+-----
+
+First include the libraries and xpath.js and models.js files in your document. Then try the following to get started.
+
+```js
+var expr = "/some/xpath/expression"
+var parsed = xpath.parse(expr);
+var regenerated = parsed.toXPath();
+```
+
+For examples of supported expressions, see the [tests](test)!
+
+`models.js` provides a default xpathmodels which does not support the hashtag preprocessor. If you want to support hashtags within xpaths, you can use:
+```js
+hashtagConfig = {
+  isValidNamespace: function(namespace),
+  hashtagToXPath: function(hashtag),
+  toHashtag: function(expr)
+}
+xPathModels = XPathModels(hashtagConfig)
+```
+
+hashtags use the format `#namespace/arbitrarily/long/path` and do not support filtering
+
+Tests
+-----
+- Open `test/tests.html` to run tests (must be serving all files in the library).
+- Individual tests are found in `test/parsertests.js` and `test/generatortests.js`
+
+
+Known Limitations
+-----------------
+- Filter expressions are not supported due to a known bug in jison.
+- See the failing tests for examples of expressions that are known not to work.
+
+  
+Code Structure
+--------------
+
+| File      | Content                                            |
+| ---------:|:---------------------------------------------------|
+| xpath.js  | the generated parser file.                         |
+| models.js | the underlying models files used in parsing.       |
+| src/      | contains the jison parser files.                   |
+| lib/      | external libraries that the parser depends on.     |
+| test/     | qunit tests for the parser and generator.          |
+ 
+Build
+------
+This is built using [jison](http://zaach.github.com/jison/). To build the parser file yourself run:
+
+`$ npm run build`
+
+(This is only necessary if you want to edit the jison or lex files)
+
+For more information on jison see the jison project website at: 
+http://zaach.github.com/jison/.
