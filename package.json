@@ -8,7 +8,9 @@
   "license": "MIT",
   "homepage": "https://github.com/dimagi/js-xpath",
   "keywords": [
-    "xpath"
+    "xpath",
+    "jison",
+    "parser"
   ],
   "repository": {
     "type": "git",
