@@ -48,7 +48,7 @@ Code Structure
 --------------
 
 | File           | Content                                            |
-| --------------:|:---------------------------------------------------|
+|----------------|----------------------------------------------------|
 | dist/          | contains a browser-ready build of the parser       |
 | src/jison/     | contains the jison parser files.                   |
 | src/lib/       | external libraries that the parser depends on.     |
