@@ -5,7 +5,7 @@
   "authors": [
     "Dimagi <dev@dimagi.com>"
   ],
-  "license": "MIT",
+  "license": "BSD-3-Clause",
   "homepage": "https://github.com/dimagi/js-xpath",
   "keywords": [
     "xpath",
