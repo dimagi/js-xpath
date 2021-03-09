@@ -9,9 +9,9 @@ var runCommon = function(testcases) {
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
             try {
-                equal(xpath.parse(i).toString(), testcases[i], "" + i + " parsed correctly.");
+                QUnit.assert.equal(xpath.parse(i).toString(), testcases[i], "" + i + " parsed correctly.");
             } catch(err) {
-                ok(false, "" + err + " for input: " + i);
+                QUnit.assert.ok(false, "" + err + " for input: " + i);
             }
         }
     }
@@ -24,12 +24,12 @@ var runFailures = function(testcases) {
     xpath.setXPathModels(xpath.makeXPathModels());
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
-            raises(tmpFunc, testcases[i], "" + i + " correctly failed to parse.");
+            QUnit.assert.throws(tmpFunc, testcases[i], "" + i + " correctly failed to parse.");
         }
     }
 };
 
-test("null expressions", function () {
+QUnit.test("null expressions", function () {
     runFailures({
         "": null,
         "     ": null,
@@ -37,7 +37,7 @@ test("null expressions", function () {
     });
 });
 
-test("numbers", function() {
+QUnit.test("numbers", function() {
     runCommon({
         "10": "{num:10}",
         "123.": "{num:123.}",
@@ -55,7 +55,7 @@ test("numbers", function() {
     });
 });
 
-test("strings", function () {
+QUnit.test("strings", function () {
     runCommon({
         "\"\"": "{str:\"\"}",
         "\"   \"": "{str:\"   \"}",
@@ -70,7 +70,7 @@ test("strings", function () {
 });
 
 
-test("variables", function () {
+QUnit.test("variables", function () {
     runCommon({
 		"$var": "{var:var}",
 		"$qualified:name": "{var:qualified:name}"
@@ -82,7 +82,7 @@ test("variables", function () {
     });
 });
 
-test("parens nesting", function () {
+QUnit.test("parens nesting", function () {
     runCommon({
         "(5)": "{num:5}",
         "(( (( (5 )) )))  ": "{num:5}",
@@ -95,7 +95,7 @@ test("parens nesting", function () {
     });
 });
 
-test("operators", function () {
+QUnit.test("operators", function () {
     runCommon({
         "5 + 5": "{binop-expr:+,{num:5},{num:5}}",
         "-5": "{unop-expr:num-neg,{num:5}}",
@@ -131,7 +131,7 @@ test("operators", function () {
     });
 });
 
-test("operator associativity", function () {
+QUnit.test("operator associativity", function () {
     runCommon({
         "1 or 2 or 3": "{binop-expr:or,{num:1},{binop-expr:or,{num:2},{num:3}}}",
         "1 and 2 and 3": "{binop-expr:and,{num:1},{binop-expr:and,{num:2},{num:3}}}",
@@ -145,7 +145,7 @@ test("operator associativity", function () {
     
 });
 
-test("operator precedence", function () {
+QUnit.test("operator precedence", function () {
     runCommon({
         "1 < 2 = 3 > 4 and 5 <= 6 != 7 >= 8 or 9 and 10":
                 "{binop-expr:or,{binop-expr:and,{binop-expr:==,{binop-expr:<,{num:1},{num:2}},{binop-expr:>,{num:3},{num:4}}},{binop-expr:!=,{binop-expr:<=,{num:5},{num:6}},{binop-expr:>=,{num:7},{num:8}}}},{binop-expr:and,{num:9},{num:10}}}",
@@ -160,7 +160,7 @@ test("operator precedence", function () {
     });
 });
 
-test("function calls", function () {
+QUnit.test("function calls", function () {
     runCommon({
         "function()": "{func-expr:function,{}}",
         "func:tion()": "{func-expr:func:tion,{}}",
@@ -175,7 +175,7 @@ test("function calls", function () {
 });
 
 
-test("function calls that are actually node tests", function () {
+QUnit.test("function calls that are actually node tests", function () {
     runCommon({
         "node()": "{path-expr:rel,{{step:child,node()}}}",
         "text()": "{path-expr:rel,{{step:child,text()}}}",
@@ -193,7 +193,7 @@ test("function calls that are actually node tests", function () {
     });
 });
 
-test("filter expressions", function () {
+QUnit.test("filter expressions", function () {
     runCommon({
         "bunch-o-nodes()[3]": "{filt-expr:{func-expr:bunch-o-nodes,{}},{{num:3}}}",
         "bunch-o-nodes()[3]['predicates'!='galore']": "{filt-expr:{func-expr:bunch-o-nodes,{}},{{num:3},{binop-expr:!=,{str:'predicates'},{str:'galore'}}}}",
@@ -203,7 +203,7 @@ test("filter expressions", function () {
     runFailures({});
 });
 
-test("path steps", function () {
+QUnit.test("path steps", function () {
     runCommon({
         ".": "{path-expr:rel,{{step:self,node()}}}",
         "..": "{path-expr:rel,{{step:parent,node()}}}",
@@ -214,7 +214,7 @@ test("path steps", function () {
     });
 });
 
-test("name tests", function () {
+QUnit.test("name tests", function () {
     runCommon({
         "name": "{path-expr:rel,{{step:child,name}}}",
         "qual:name": "{path-expr:rel,{{step:child,qual:name}}}",
@@ -231,7 +231,7 @@ test("name tests", function () {
     });
 });
 
-test("axes", function () {
+QUnit.test("axes", function () {
     runCommon({
         "child::*": "{path-expr:rel,{{step:child,*}}}",
         "parent::*": "{path-expr:rel,{{step:parent,*}}}",
@@ -258,7 +258,7 @@ test("axes", function () {
     });
 });
 
-test("predicates", function () {
+QUnit.test("predicates", function () {
     runCommon({
         "descendant::node()[@attr='blah'][4]": "{path-expr:rel,{{step:descendant,node(),{{binop-expr:==,{path-expr:rel,{{step:attribute,attr}}},{str:'blah'}},{num:4}}}}}",
     });
@@ -267,7 +267,7 @@ test("predicates", function () {
     });
 });
 
-test("paths", function () {
+QUnit.test("paths", function () {
     runCommon({
         "rel/ative/path": "{path-expr:rel,{{step:child,rel},{step:child,ative},{step:child,path}}}",
         "/abs/olute/path['etc']": "{path-expr:abs,{{step:child,abs},{step:child,olute},{step:child,path,{{str:'etc'}}}}}",
@@ -287,7 +287,7 @@ test("paths", function () {
     });
 });
 
-test("real world examples", function () {
+QUnit.test("real world examples", function () {
     runCommon({
         "/foo/bar = 2.0": "{binop-expr:==,{path-expr:abs,{{step:child,foo},{step:child,bar}}},{num:2.}}",
         "/patient/sex = 'male' and /patient/age > 15": "{binop-expr:and,{binop-expr:==,{path-expr:abs,{{step:child,patient},{step:child,sex}}},{str:'male'}},{binop-expr:>,{path-expr:abs,{{step:child,patient},{step:child,age}}},{num:15}}}",

@@ -11,20 +11,20 @@ var runGeneratorTests = function(testcases) {
         if (testcases.hasOwnProperty(i)) {
             try {
                 parsed = xpath.parse(i);
-                equal(parsed.toXPath(), testcases[i], "" + i + " generated correctly.");
+                QUnit.assert.equal(parsed.toXPath(), testcases[i], "" + i + " generated correctly.");
                 // It seems reasonable to expect that the generated xpath
                 // should parse back to the same object, although this may 
                 // not always hold true.
-                equal(parsed.toString(), xpath.parse(parsed.toXPath()).toString(), "XPath " + i + " produced same result when reparsed.");
-                equal(parsed.toString(), xpath.parse(parsed.toHashtag()).toString(), "Hashtag " + i + " produced same result when reparsed.");
+                QUnit.assert.equal(parsed.toString(), xpath.parse(parsed.toXPath()).toString(), "XPath " + i + " produced same result when reparsed.");
+                QUnit.assert.equal(parsed.toString(), xpath.parse(parsed.toHashtag()).toString(), "Hashtag " + i + " produced same result when reparsed.");
             } catch(err) {
-                ok(false, "" + err + " for input: " + i);
+                QUnit.assert.ok(false, "" + err + " for input: " + i);
             }
         }
     }
 };
 
-test("generator numbers", function() {
+QUnit.test("generator numbers", function() {
     runGeneratorTests({
         "123.": "123.",
         "734.04": "734.04",
@@ -41,7 +41,7 @@ test("generator numbers", function() {
 });
 
 
-test("generator strings", function () {
+QUnit.test("generator strings", function () {
     runGeneratorTests({
         "\"\"": "\"\"",
         "\"   \"": "\"   \"",
@@ -52,7 +52,7 @@ test("generator strings", function () {
     });
 });
 
-test("generator variables", function () {
+QUnit.test("generator variables", function () {
     runGeneratorTests({
 		"$var": "$var",
 		"$qualified:name": "$qualified:name"
@@ -60,14 +60,14 @@ test("generator variables", function () {
 });
 
 
-test("generator parens nesting", function () {
+QUnit.test("generator parens nesting", function () {
     runGeneratorTests({
         "(5)": "5",
         "(( (( (5 )) )))  ": "5",
     });
 });
 
-test("generator operators", function () {
+QUnit.test("generator operators", function () {
     runGeneratorTests({
         "5 + 5": "5 + 5",
         "-5": "-5",
@@ -94,7 +94,7 @@ test("generator operators", function () {
     });
 });
 
-test("generator operator associativity", function () {
+QUnit.test("generator operator associativity", function () {
     runGeneratorTests({
         "1 or 2 or 3": "1 or 2 or 3",
         "1 and 2 and 3": "1 and 2 and 3",
@@ -106,7 +106,7 @@ test("generator operator associativity", function () {
     });
 });
 
-test("generator operator precedence", function () {
+QUnit.test("generator operator precedence", function () {
     runGeneratorTests({
         "1 < 2 = 3 > 4 and 5 <= 6 != 7 >= 8 or 9 and 10": "1 < 2 = 3 > 4 and 5 <= 6 != 7 >= 8 or 9 and 10",
         "1 * 2 + 3 div 4 < 5 mod 6 | 7 - 8": "1 * 2 + 3 div 4 < 5 mod 6 | 7 - 8",
@@ -118,7 +118,7 @@ test("generator operator precedence", function () {
 });
 
 
-test("generator function calls", function () {
+QUnit.test("generator function calls", function () {
     runGeneratorTests({
         "function()": "function()",
         "func:tion()": "func:tion()",
@@ -130,7 +130,7 @@ test("generator function calls", function () {
 });
 
 
-test("generator function calls that are actually node tests", function () {
+QUnit.test("generator function calls that are actually node tests", function () {
     runGeneratorTests({
         "node()": "node()",
         "text()": "text()",
@@ -140,7 +140,7 @@ test("generator function calls that are actually node tests", function () {
     });
 });
 
-test("generator filter expressions", function () {
+QUnit.test("generator filter expressions", function () {
     runGeneratorTests({
         "bunch-o-nodes()[3]": "bunch-o-nodes()[3]",
         "bunch-o-nodes()[3]['predicates'!='galore']": "bunch-o-nodes()[3]['predicates' != 'galore']",
@@ -149,14 +149,14 @@ test("generator filter expressions", function () {
     });
 });
 
-test("generator path steps", function () {
+QUnit.test("generator path steps", function () {
     runGeneratorTests({
         ".": ".",
         "..": "..",
     });
 });
 
-test("generator name tests", function () {
+QUnit.test("generator name tests", function () {
     runGeneratorTests({
         "name": "name",
         "qual:name": "qual:name",
@@ -167,7 +167,7 @@ test("generator name tests", function () {
     });
 });
 
-test("generator axes", function () {
+QUnit.test("generator axes", function () {
     runGeneratorTests({
         "child::*": "*",
         "parent::*": "parent::*",
@@ -188,13 +188,13 @@ test("generator axes", function () {
     });
 });
 
-test("generator predicates", function () {
+QUnit.test("generator predicates", function () {
     runGeneratorTests({
         "descendant::node()[@attr='blah'][4]": "descendant::node()[@attr = 'blah'][4]",
     });
 });
 
-test("generator paths", function () {
+QUnit.test("generator paths", function () {
     runGeneratorTests({
         "rel/ative/path": "rel/ative/path",
         "/abs/olute/path['etc']": "/abs/olute/path['etc']",
@@ -208,7 +208,7 @@ test("generator paths", function () {
     });
 });
 
-test("generator real world examples", function () {
+QUnit.test("generator real world examples", function () {
     runGeneratorTests({
         "/patient/sex = 'male' and /patient/age > 15": "/patient/sex = 'male' and /patient/age > 15",
         "../jr:hist-data/labs[@type=\"cd4\"]": "../jr:hist-data/labs[@type = \"cd4\"]",
@@ -216,7 +216,7 @@ test("generator real world examples", function () {
     });
 });
 
-test("generate without predicates", function () {
+QUnit.test("generate without predicates", function () {
     var testcases = {
        "/data/blue": "/data/blue",
        "/data/blue[$random = 'predicate']": "/data/blue",
@@ -226,10 +226,10 @@ test("generate without predicates", function () {
         if (testcases.hasOwnProperty(i)) {
             try {
                 parsed = xpath.parse(i);
-                equal(parsed.pathWithoutPredicates(), testcases[i], "" + i + " generated correctly.");
-                equal(parsed.toXPath(), i, "" + i + " generated correctly.");
+                QUnit.assert.equal(parsed.pathWithoutPredicates(), testcases[i], "" + i + " generated correctly.");
+                QUnit.assert.equal(parsed.toXPath(), i, "" + i + " generated correctly.");
             } catch(err) {
-                ok(false, "" + err + " for input: " + i);
+                QUnit.assert.ok(false, "" + err + " for input: " + i);
             }
         }
     }

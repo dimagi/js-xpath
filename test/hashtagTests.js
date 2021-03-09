@@ -31,9 +31,9 @@
         for (var i in testcases) {
             if (testcases.hasOwnProperty(i)) {
                 try {
-                    equal(xpath.parse(i).toString(), testcases[i], "" + i + " parsed correctly.");
+                    QUnit.assert.equal(xpath.parse(i).toString(), testcases[i], "" + i + " parsed correctly.");
                 } catch(err) {
-                    ok(false, "" + err + " for input: " + i);
+                    QUnit.assert.ok(false, "" + err + " for input: " + i);
                 }
             }
         }
@@ -45,7 +45,7 @@
         xpath.setXPathModels(xpath.makeXPathModels(makeXPathConfig(validHashtagNamespaces, {})));
         for (var i in testcases) {
             if (testcases.hasOwnProperty(i)) {
-                raises(tmpFunc, testcases[i], "" + i + " correctly failed to parse.");
+                QUnit.assert.throws(tmpFunc, testcases[i], "" + i + " correctly failed to parse.");
             }
         }
     };
@@ -56,19 +56,19 @@
             if (testcases.hasOwnProperty(i)) {
                 try {
                     parsed = xpath.parse(i);
-                    equal(parsed.toXPath(), testcases[i], "" + i + " generated correctly.");
+                    QUnit.assert.equal(parsed.toXPath(), testcases[i], "" + i + " generated correctly.");
                     // It seems reasonable to expect that the generated xpath
                     // should parse back to the same object, although this may 
                     // not always hold true.
-                    equal(parsed.toString(), xpath.parse(parsed.toHashtag()).toString(), "" + i + " produced same result when reparsed.");
+                    QUnit.assert.equal(parsed.toString(), xpath.parse(parsed.toHashtag()).toString(), "" + i + " produced same result when reparsed.");
                 } catch(err) {
-                    ok(false, "" + err + " for input: " + i);
+                    QUnit.assert.ok(false, "" + err + " for input: " + i);
                 }
             }
         }
     };
 
-    test("hashtag parsing", function () {
+    QUnit.test("hashtag parsing", function () {
         var namespaces = ['form', 'case'];
         runCommon({
             "#form/question": "{hashtag-expr:form,{question}}",
@@ -83,7 +83,7 @@
         }, namespaces);
     });
 
-    test("generator hashtags", function () {
+    QUnit.test("generator hashtags", function () {
         var transDict = {
                 '#form/question': '/data/question',
                 '#form/group/question': '/data/group/question',
@@ -100,7 +100,7 @@
         runGeneratorTests(testCases, transDict, ['form', 'case']);
     });
 
-    test("hashtags with no xpath", function() {
+    QUnit.test("hashtags with no xpath", function() {
         xpath.setXPathModels(xpath.makeXPathModels(makeXPathConfig(['form', 'case'], {})));
 
         var testcases = {
@@ -110,18 +110,18 @@
         for (var i in testcases) {
             if (testcases.hasOwnProperty(i)) {
                 parsed = xpath.parse(i);
-                ok(true, i + " correctly parsed");
+                QUnit.assert.ok(true, i + " correctly parsed");
                 try {
                     parsed.toXPath();
-                    ok(false, "This should not be translatable");
+                    QUnit.assert.ok(false, "This should not be translatable");
                 } catch(err) {
-                    ok(true, err);
+                    QUnit.assert.ok(true, err);
                 }
             }
         }
     });
 
-    test("from xpath to hashtag", function() {
+    QUnit.test("from xpath to hashtag", function() {
         var translationDict = {
                 '#form': '/data',
                 '#form/question': '/data/question',
@@ -147,8 +147,8 @@
         for (var i in testcases) {
             if (testcases.hasOwnProperty(i)) {
                 parsed = xpath.parse(i);
-                ok(true, i + " correctly parsed");
-                equal(parsed.toHashtag(), testcases[i]);
+                QUnit.assert.ok(true, i + " correctly parsed");
+                QUnit.assert.equal(parsed.toHashtag(), testcases[i]);
             }
         }
     });
