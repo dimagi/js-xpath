@@ -24,7 +24,7 @@
     "jison": "0.4.18",
     "jshint": "^2.12.0",
     "node-qunit-phantomjs": "^2.1.1",
-    "qunitjs": "^2.0.0-rc1"
+    "qunit": "^2.14.0"
   },
   "resolutions": {
     "elliptic": "^6.5.4",
