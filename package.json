@@ -20,11 +20,17 @@
     "biginteger": "^1.0.3"
   },
   "devDependencies": {
-    "browserify": "14.3.0",
-    "jison": "0.4.17",
-    "jshint": "^2.8.0",
-    "node-qunit-phantomjs": "^1.3.0",
+    "browserify": "17.0.0",
+    "jison": "0.4.18",
+    "jshint": "^2.12.0",
+    "node-qunit-phantomjs": "^2.1.1",
     "qunitjs": "^1.20.0"
+  },
+  "resolutions": {
+    "elliptic": "^6.5.4",
+    "minimist": "^1.2.3",
+    "cached-path-relative": "^1.0.2",
+    "sshpk": "^1.13.2"
   },
   "main": "src/main.js",
   "scripts": {
