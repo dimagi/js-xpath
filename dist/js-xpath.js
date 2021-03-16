@@ -1622,7 +1622,10 @@ exports.BigInteger = BigInteger;
 },{}],2:[function(require,module,exports){
 
 },{}],3:[function(require,module,exports){
-(function (process){
+(function (process){(function (){
+// 'path' module extracted from Node.js v8.11.1 (only the posix part)
+// transplited with Babel
+
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1644,211 +1647,513 @@ exports.BigInteger = BigInteger;
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
+'use strict';
 
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
+function assertPath(path) {
+  if (typeof path !== 'string') {
+    throw new TypeError('Path must be a string. Received ' + JSON.stringify(path));
   }
-
-  return parts;
 }
 
-// Split a filename into [root, dir, basename, ext], unix version
-// 'root' is just a slash, or nothing.
-var splitPathRe =
-    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-var splitPath = function(filename) {
-  return splitPathRe.exec(filename).slice(1);
-};
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
-
-
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
+// Resolves . and .. elements in a path with directory names
+function normalizeStringPosix(path, allowAboveRoot) {
+  var res = '';
+  var lastSegmentLength = 0;
+  var lastSlash = -1;
+  var dots = 0;
+  var code;
+  for (var i = 0; i <= path.length; ++i) {
+    if (i < path.length)
+      code = path.charCodeAt(i);
+    else if (code === 47 /*/*/)
       break;
+    else
+      code = 47 /*/*/;
+    if (code === 47 /*/*/) {
+      if (lastSlash === i - 1 || dots === 1) {
+        // NOOP
+      } else if (lastSlash !== i - 1 && dots === 2) {
+        if (res.length < 2 || lastSegmentLength !== 2 || res.charCodeAt(res.length - 1) !== 46 /*.*/ || res.charCodeAt(res.length - 2) !== 46 /*.*/) {
+          if (res.length > 2) {
+            var lastSlashIndex = res.lastIndexOf('/');
+            if (lastSlashIndex !== res.length - 1) {
+              if (lastSlashIndex === -1) {
+                res = '';
+                lastSegmentLength = 0;
+              } else {
+                res = res.slice(0, lastSlashIndex);
+                lastSegmentLength = res.length - 1 - res.lastIndexOf('/');
+              }
+              lastSlash = i;
+              dots = 0;
+              continue;
+            }
+          } else if (res.length === 2 || res.length === 1) {
+            res = '';
+            lastSegmentLength = 0;
+            lastSlash = i;
+            dots = 0;
+            continue;
+          }
+        }
+        if (allowAboveRoot) {
+          if (res.length > 0)
+            res += '/..';
+          else
+            res = '..';
+          lastSegmentLength = 2;
+        }
+      } else {
+        if (res.length > 0)
+          res += '/' + path.slice(lastSlash + 1, i);
+        else
+          res = path.slice(lastSlash + 1, i);
+        lastSegmentLength = i - lastSlash - 1;
+      }
+      lastSlash = i;
+      dots = 0;
+    } else if (code === 46 /*.*/ && dots !== -1) {
+      ++dots;
+    } else {
+      dots = -1;
     }
   }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function(path) {
-  var result = splitPath(path),
-      root = result[0],
-      dir = result[1];
-
-  if (!root && !dir) {
-    // No dirname whatsoever
-    return '.';
-  }
-
-  if (dir) {
-    // It has a dirname, strip trailing slash
-    dir = dir.substr(0, dir.length - 1);
-  }
-
-  return root + dir;
-};
-
-
-exports.basename = function(path, ext) {
-  var f = splitPath(path)[2];
-  // TODO: make this comparison case-insensitive on windows?
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-
-exports.extname = function(path) {
-  return splitPath(path)[3];
-};
-
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
+  return res;
 }
 
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
+function _format(sep, pathObject) {
+  var dir = pathObject.dir || pathObject.root;
+  var base = pathObject.base || (pathObject.name || '') + (pathObject.ext || '');
+  if (!dir) {
+    return base;
+  }
+  if (dir === pathObject.root) {
+    return dir + base;
+  }
+  return dir + sep + base;
+}
 
-}).call(this,require('_process'))
+var posix = {
+  // path.resolve([from ...], to)
+  resolve: function resolve() {
+    var resolvedPath = '';
+    var resolvedAbsolute = false;
+    var cwd;
+
+    for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+      var path;
+      if (i >= 0)
+        path = arguments[i];
+      else {
+        if (cwd === undefined)
+          cwd = process.cwd();
+        path = cwd;
+      }
+
+      assertPath(path);
+
+      // Skip empty entries
+      if (path.length === 0) {
+        continue;
+      }
+
+      resolvedPath = path + '/' + resolvedPath;
+      resolvedAbsolute = path.charCodeAt(0) === 47 /*/*/;
+    }
+
+    // At this point the path should be resolved to a full absolute path, but
+    // handle relative paths to be safe (might happen when process.cwd() fails)
+
+    // Normalize the path
+    resolvedPath = normalizeStringPosix(resolvedPath, !resolvedAbsolute);
+
+    if (resolvedAbsolute) {
+      if (resolvedPath.length > 0)
+        return '/' + resolvedPath;
+      else
+        return '/';
+    } else if (resolvedPath.length > 0) {
+      return resolvedPath;
+    } else {
+      return '.';
+    }
+  },
+
+  normalize: function normalize(path) {
+    assertPath(path);
+
+    if (path.length === 0) return '.';
+
+    var isAbsolute = path.charCodeAt(0) === 47 /*/*/;
+    var trailingSeparator = path.charCodeAt(path.length - 1) === 47 /*/*/;
+
+    // Normalize the path
+    path = normalizeStringPosix(path, !isAbsolute);
+
+    if (path.length === 0 && !isAbsolute) path = '.';
+    if (path.length > 0 && trailingSeparator) path += '/';
+
+    if (isAbsolute) return '/' + path;
+    return path;
+  },
+
+  isAbsolute: function isAbsolute(path) {
+    assertPath(path);
+    return path.length > 0 && path.charCodeAt(0) === 47 /*/*/;
+  },
+
+  join: function join() {
+    if (arguments.length === 0)
+      return '.';
+    var joined;
+    for (var i = 0; i < arguments.length; ++i) {
+      var arg = arguments[i];
+      assertPath(arg);
+      if (arg.length > 0) {
+        if (joined === undefined)
+          joined = arg;
+        else
+          joined += '/' + arg;
+      }
+    }
+    if (joined === undefined)
+      return '.';
+    return posix.normalize(joined);
+  },
+
+  relative: function relative(from, to) {
+    assertPath(from);
+    assertPath(to);
+
+    if (from === to) return '';
+
+    from = posix.resolve(from);
+    to = posix.resolve(to);
+
+    if (from === to) return '';
+
+    // Trim any leading backslashes
+    var fromStart = 1;
+    for (; fromStart < from.length; ++fromStart) {
+      if (from.charCodeAt(fromStart) !== 47 /*/*/)
+        break;
+    }
+    var fromEnd = from.length;
+    var fromLen = fromEnd - fromStart;
+
+    // Trim any leading backslashes
+    var toStart = 1;
+    for (; toStart < to.length; ++toStart) {
+      if (to.charCodeAt(toStart) !== 47 /*/*/)
+        break;
+    }
+    var toEnd = to.length;
+    var toLen = toEnd - toStart;
+
+    // Compare paths to find the longest common path from root
+    var length = fromLen < toLen ? fromLen : toLen;
+    var lastCommonSep = -1;
+    var i = 0;
+    for (; i <= length; ++i) {
+      if (i === length) {
+        if (toLen > length) {
+          if (to.charCodeAt(toStart + i) === 47 /*/*/) {
+            // We get here if `from` is the exact base path for `to`.
+            // For example: from='/foo/bar'; to='/foo/bar/baz'
+            return to.slice(toStart + i + 1);
+          } else if (i === 0) {
+            // We get here if `from` is the root
+            // For example: from='/'; to='/foo'
+            return to.slice(toStart + i);
+          }
+        } else if (fromLen > length) {
+          if (from.charCodeAt(fromStart + i) === 47 /*/*/) {
+            // We get here if `to` is the exact base path for `from`.
+            // For example: from='/foo/bar/baz'; to='/foo/bar'
+            lastCommonSep = i;
+          } else if (i === 0) {
+            // We get here if `to` is the root.
+            // For example: from='/foo'; to='/'
+            lastCommonSep = 0;
+          }
+        }
+        break;
+      }
+      var fromCode = from.charCodeAt(fromStart + i);
+      var toCode = to.charCodeAt(toStart + i);
+      if (fromCode !== toCode)
+        break;
+      else if (fromCode === 47 /*/*/)
+        lastCommonSep = i;
+    }
+
+    var out = '';
+    // Generate the relative path based on the path difference between `to`
+    // and `from`
+    for (i = fromStart + lastCommonSep + 1; i <= fromEnd; ++i) {
+      if (i === fromEnd || from.charCodeAt(i) === 47 /*/*/) {
+        if (out.length === 0)
+          out += '..';
+        else
+          out += '/..';
+      }
+    }
+
+    // Lastly, append the rest of the destination (`to`) path that comes after
+    // the common path parts
+    if (out.length > 0)
+      return out + to.slice(toStart + lastCommonSep);
+    else {
+      toStart += lastCommonSep;
+      if (to.charCodeAt(toStart) === 47 /*/*/)
+        ++toStart;
+      return to.slice(toStart);
+    }
+  },
+
+  _makeLong: function _makeLong(path) {
+    return path;
+  },
+
+  dirname: function dirname(path) {
+    assertPath(path);
+    if (path.length === 0) return '.';
+    var code = path.charCodeAt(0);
+    var hasRoot = code === 47 /*/*/;
+    var end = -1;
+    var matchedSlash = true;
+    for (var i = path.length - 1; i >= 1; --i) {
+      code = path.charCodeAt(i);
+      if (code === 47 /*/*/) {
+          if (!matchedSlash) {
+            end = i;
+            break;
+          }
+        } else {
+        // We saw the first non-path separator
+        matchedSlash = false;
+      }
+    }
+
+    if (end === -1) return hasRoot ? '/' : '.';
+    if (hasRoot && end === 1) return '//';
+    return path.slice(0, end);
+  },
+
+  basename: function basename(path, ext) {
+    if (ext !== undefined && typeof ext !== 'string') throw new TypeError('"ext" argument must be a string');
+    assertPath(path);
+
+    var start = 0;
+    var end = -1;
+    var matchedSlash = true;
+    var i;
+
+    if (ext !== undefined && ext.length > 0 && ext.length <= path.length) {
+      if (ext.length === path.length && ext === path) return '';
+      var extIdx = ext.length - 1;
+      var firstNonSlashEnd = -1;
+      for (i = path.length - 1; i >= 0; --i) {
+        var code = path.charCodeAt(i);
+        if (code === 47 /*/*/) {
+            // If we reached a path separator that was not part of a set of path
+            // separators at the end of the string, stop now
+            if (!matchedSlash) {
+              start = i + 1;
+              break;
+            }
+          } else {
+          if (firstNonSlashEnd === -1) {
+            // We saw the first non-path separator, remember this index in case
+            // we need it if the extension ends up not matching
+            matchedSlash = false;
+            firstNonSlashEnd = i + 1;
+          }
+          if (extIdx >= 0) {
+            // Try to match the explicit extension
+            if (code === ext.charCodeAt(extIdx)) {
+              if (--extIdx === -1) {
+                // We matched the extension, so mark this as the end of our path
+                // component
+                end = i;
+              }
+            } else {
+              // Extension does not match, so our result is the entire path
+              // component
+              extIdx = -1;
+              end = firstNonSlashEnd;
+            }
+          }
+        }
+      }
+
+      if (start === end) end = firstNonSlashEnd;else if (end === -1) end = path.length;
+      return path.slice(start, end);
+    } else {
+      for (i = path.length - 1; i >= 0; --i) {
+        if (path.charCodeAt(i) === 47 /*/*/) {
+            // If we reached a path separator that was not part of a set of path
+            // separators at the end of the string, stop now
+            if (!matchedSlash) {
+              start = i + 1;
+              break;
+            }
+          } else if (end === -1) {
+          // We saw the first non-path separator, mark this as the end of our
+          // path component
+          matchedSlash = false;
+          end = i + 1;
+        }
+      }
+
+      if (end === -1) return '';
+      return path.slice(start, end);
+    }
+  },
+
+  extname: function extname(path) {
+    assertPath(path);
+    var startDot = -1;
+    var startPart = 0;
+    var end = -1;
+    var matchedSlash = true;
+    // Track the state of characters (if any) we see before our first dot and
+    // after any path separator we find
+    var preDotState = 0;
+    for (var i = path.length - 1; i >= 0; --i) {
+      var code = path.charCodeAt(i);
+      if (code === 47 /*/*/) {
+          // If we reached a path separator that was not part of a set of path
+          // separators at the end of the string, stop now
+          if (!matchedSlash) {
+            startPart = i + 1;
+            break;
+          }
+          continue;
+        }
+      if (end === -1) {
+        // We saw the first non-path separator, mark this as the end of our
+        // extension
+        matchedSlash = false;
+        end = i + 1;
+      }
+      if (code === 46 /*.*/) {
+          // If this is our first dot, mark it as the start of our extension
+          if (startDot === -1)
+            startDot = i;
+          else if (preDotState !== 1)
+            preDotState = 1;
+      } else if (startDot !== -1) {
+        // We saw a non-dot and non-path separator before our dot, so we should
+        // have a good chance at having a non-empty extension
+        preDotState = -1;
+      }
+    }
+
+    if (startDot === -1 || end === -1 ||
+        // We saw a non-dot character immediately before the dot
+        preDotState === 0 ||
+        // The (right-most) trimmed path component is exactly '..'
+        preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+      return '';
+    }
+    return path.slice(startDot, end);
+  },
+
+  format: function format(pathObject) {
+    if (pathObject === null || typeof pathObject !== 'object') {
+      throw new TypeError('The "pathObject" argument must be of type Object. Received type ' + typeof pathObject);
+    }
+    return _format('/', pathObject);
+  },
+
+  parse: function parse(path) {
+    assertPath(path);
+
+    var ret = { root: '', dir: '', base: '', ext: '', name: '' };
+    if (path.length === 0) return ret;
+    var code = path.charCodeAt(0);
+    var isAbsolute = code === 47 /*/*/;
+    var start;
+    if (isAbsolute) {
+      ret.root = '/';
+      start = 1;
+    } else {
+      start = 0;
+    }
+    var startDot = -1;
+    var startPart = 0;
+    var end = -1;
+    var matchedSlash = true;
+    var i = path.length - 1;
+
+    // Track the state of characters (if any) we see before our first dot and
+    // after any path separator we find
+    var preDotState = 0;
+
+    // Get non-dir info
+    for (; i >= start; --i) {
+      code = path.charCodeAt(i);
+      if (code === 47 /*/*/) {
+          // If we reached a path separator that was not part of a set of path
+          // separators at the end of the string, stop now
+          if (!matchedSlash) {
+            startPart = i + 1;
+            break;
+          }
+          continue;
+        }
+      if (end === -1) {
+        // We saw the first non-path separator, mark this as the end of our
+        // extension
+        matchedSlash = false;
+        end = i + 1;
+      }
+      if (code === 46 /*.*/) {
+          // If this is our first dot, mark it as the start of our extension
+          if (startDot === -1) startDot = i;else if (preDotState !== 1) preDotState = 1;
+        } else if (startDot !== -1) {
+        // We saw a non-dot and non-path separator before our dot, so we should
+        // have a good chance at having a non-empty extension
+        preDotState = -1;
+      }
+    }
+
+    if (startDot === -1 || end === -1 ||
+    // We saw a non-dot character immediately before the dot
+    preDotState === 0 ||
+    // The (right-most) trimmed path component is exactly '..'
+    preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+      if (end !== -1) {
+        if (startPart === 0 && isAbsolute) ret.base = ret.name = path.slice(1, end);else ret.base = ret.name = path.slice(startPart, end);
+      }
+    } else {
+      if (startPart === 0 && isAbsolute) {
+        ret.name = path.slice(1, startDot);
+        ret.base = path.slice(1, end);
+      } else {
+        ret.name = path.slice(startPart, startDot);
+        ret.base = path.slice(startPart, end);
+      }
+      ret.ext = path.slice(startDot, end);
+    }
+
+    if (startPart > 0) ret.dir = path.slice(0, startPart - 1);else if (isAbsolute) ret.dir = '/';
+
+    return ret;
+  },
+
+  sep: '/',
+  delimiter: ':',
+  win32: null,
+  posix: null
+};
+
+posix.posix = posix;
+
+module.exports = posix;
+
+}).call(this)}).call(this,require('_process'))
 },{"_process":4}],4:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
@@ -6351,8 +6656,8 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
 }
 
 },{"./lib/schemeNumber.js":5}],8:[function(require,module,exports){
-(function (process){
-/* parser generated by jison 0.4.17 */
+(function (process){(function (){
+/* parser generated by jison 0.4.18 */
 /*
   Returns a Parser object of the following structure:
 
@@ -6427,7 +6732,7 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
 */
 var parser = (function(){
 var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,8],$V1=[1,10],$V2=[1,12],$V3=[1,15],$V4=[1,19],$V5=[1,20],$V6=[1,14],$V7=[1,23],$V8=[1,24],$V9=[1,34],$Va=[1,28],$Vb=[1,29],$Vc=[1,30],$Vd=[1,31],$Ve=[1,32],$Vf=[1,33],$Vg=[1,16],$Vh=[1,17],$Vi=[1,36],$Vj=[1,37],$Vk=[1,38],$Vl=[1,39],$Vm=[1,40],$Vn=[1,41],$Vo=[1,42],$Vp=[1,43],$Vq=[1,44],$Vr=[1,45],$Vs=[1,46],$Vt=[1,47],$Vu=[1,48],$Vv=[1,49],$Vw=[5,12,16,17,18,19,20,21,22,23,24,25,26,27,28,29,32,41],$Vx=[1,53],$Vy=[5,12,16,17,18,19,20,21,22,23,24,25,26,27,28,29,32,34,36,40,41],$Vz=[2,58],$VA=[1,61],$VB=[1,62],$VC=[1,63],$VD=[1,65],$VE=[5,12,16,17,18,19,20,21,22,23,24,25,26,27,28,29,32,34,36,41],$VF=[30,51,52,53,54,55,56],$VG=[5,12,16,17,18,19,20,21,22,23,24,25,26,27,28,32,41],$VH=[5,12,16,17,18,19,32,41],$VI=[5,12,16,17,18,19,20,21,22,23,32,41],$VJ=[5,12,16,17,18,19,20,21,22,23,24,25,32,41],$VK=[12,32],$VL=[5,12,16,17,18,19,20,21,22,23,24,25,26,27,28,29,32,34,41];
-var parser = {trace: function trace() { },
+var parser = {trace: function trace () { },
 yy: {},
 symbols_: {"error":2,"xpath_expr":3,"expr":4,"EOF":5,"base_expr":6,"op_expr":7,"path_expr":8,"filter_expr":9,"hashtag_expr":10,"LPAREN":11,"RPAREN":12,"func_call":13,"VAR":14,"literal":15,"OR":16,"AND":17,"EQ":18,"NEQ":19,"LT":20,"LTE":21,"GT":22,"GTE":23,"PLUS":24,"MINUS":25,"MULT":26,"DIV":27,"MOD":28,"UNION":29,"QNAME":30,"arg_list":31,"COMMA":32,"loc_path":33,"SLASH":34,"rel_loc_path":35,"DBL_SLASH":36,"predicate":37,"HASH":38,"hashtag_path":39,"LBRACK":40,"RBRACK":41,"step":42,"step_unabbr":43,"DOT":44,"DBL_DOT":45,"step_body":46,"node_test":47,"axis_specifier":48,"DBL_COLON":49,"AT":50,"WILDCARD":51,"NSWILDCARD":52,"NODETYPE_NODE":53,"NODETYPE_TEXT":54,"NODETYPE_COMMENT":55,"NODETYPE_PROCINSTR":56,"STR":57,"NUM":58,"$accept":0,"$end":1},
 terminals_: {2:"error",5:"EOF",11:"LPAREN",12:"RPAREN",14:"VAR",16:"OR",17:"AND",18:"EQ",19:"NEQ",20:"LT",21:"LTE",22:"GT",23:"GTE",24:"PLUS",25:"MINUS",26:"MULT",27:"DIV",28:"MOD",29:"UNION",30:"QNAME",32:"COMMA",34:"SLASH",36:"DBL_SLASH",38:"HASH",40:"LBRACK",41:"RBRACK",44:"DOT",45:"DBL_DOT",49:"DBL_COLON",50:"AT",51:"WILDCARD",52:"NSWILDCARD",53:"NODETYPE_NODE",54:"NODETYPE_TEXT",55:"NODETYPE_COMMENT",56:"NODETYPE_PROCINSTR",57:"STR",58:"NUM"},
@@ -6668,17 +6973,13 @@ break;
 },
 table: [{3:1,4:2,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},{1:[3]},{5:[1,35],16:$Vi,17:$Vj,18:$Vk,19:$Vl,20:$Vm,21:$Vn,22:$Vo,23:$Vp,24:$Vq,25:$Vr,26:$Vs,27:$Vt,28:$Vu,29:$Vv},o($Vw,[2,2],{37:52,34:[1,50],36:[1,51],40:$Vx}),o($Vw,[2,3]),o($Vw,[2,4]),o($Vw,[2,5],{37:56,34:[1,54],36:[1,55],40:$Vx}),o($Vw,[2,6]),{4:57,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},o($Vy,[2,8]),o($Vy,[2,9]),o($Vy,[2,10]),{4:58,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},o($Vw,[2,30]),{30:[1,59]},o($Vy,$Vz,{11:[1,60],49:$VA}),o($Vy,[2,66]),o($Vy,[2,67]),o($Vw,[2,42],{34:$VB,36:$VC}),o($Vw,[2,45],{42:21,43:22,46:25,47:26,48:27,35:64,30:$VD,44:$V7,45:$V8,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf}),{30:$VD,35:66,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf},o($VE,[2,46]),o($VE,[2,49],{37:67,40:$Vx}),o($VE,[2,50]),o($VE,[2,51]),o($Vy,[2,53]),o($Vy,[2,54]),{30:[1,69],47:68,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf},o($Vy,[2,59]),o($Vy,[2,60]),{11:[1,70]},{11:[1,71]},{11:[1,72]},{11:[1,73]},o($VF,[2,57]),{1:[2,1]},{4:74,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},{4:75,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},{4:76,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},{4:77,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},{4:78,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},{4:79,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},{4:80,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},{4:81,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},{4:82,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},{4:83,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},{4:84,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},{4:85,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},{4:86,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},{4:87,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},{30:$VD,35:88,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf},{30:$VD,35:89,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf},o($Vy,[2,35]),{4:90,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},{30:$VD,35:91,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf},{30:$VD,35:92,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf},o($Vy,[2,36]),{12:[1,93],16:$Vi,17:$Vj,18:$Vk,19:$Vl,20:$Vm,21:$Vn,22:$Vo,23:$Vp,24:$Vq,25:$Vr,26:$Vs,27:$Vt,28:$Vu,29:$Vv},o($VG,[2,24],{29:$Vv}),o($Vw,[2,38],{34:[1,94]}),{4:97,6:3,7:4,8:5,9:6,10:7,11:$V0,12:[1,96],13:9,14:$V1,15:11,25:$V2,30:$V3,31:95,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},o($VF,[2,56]),{30:$VD,42:98,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf},{30:$VD,42:99,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf},o($Vw,[2,43],{34:$VB,36:$VC}),o($Vy,$Vz,{49:$VA}),o($Vw,[2,44],{34:$VB,36:$VC}),o($Vy,[2,52]),o($Vy,[2,55]),o($Vy,$Vz),{12:[1,100]},{12:[1,101]},{12:[1,102]},{12:[1,103],57:[1,104]},o([5,12,32,41],[2,11],{16:$Vi,17:$Vj,18:$Vk,19:$Vl,20:$Vm,21:$Vn,22:$Vo,23:$Vp,24:$Vq,25:$Vr,26:$Vs,27:$Vt,28:$Vu,29:$Vv}),o([5,12,16,32,41],[2,12],{17:$Vj,18:$Vk,19:$Vl,20:$Vm,21:$Vn,22:$Vo,23:$Vp,24:$Vq,25:$Vr,26:$Vs,27:$Vt,28:$Vu,29:$Vv}),o($VH,[2,13],{20:$Vm,21:$Vn,22:$Vo,23:$Vp,24:$Vq,25:$Vr,26:$Vs,27:$Vt,28:$Vu,29:$Vv}),o($VH,[2,14],{20:$Vm,21:$Vn,22:$Vo,23:$Vp,24:$Vq,25:$Vr,26:$Vs,27:$Vt,28:$Vu,29:$Vv}),o($VI,[2,15],{24:$Vq,25:$Vr,26:$Vs,27:$Vt,28:$Vu,29:$Vv}),o($VI,[2,16],{24:$Vq,25:$Vr,26:$Vs,27:$Vt,28:$Vu,29:$Vv}),o($VI,[2,17],{24:$Vq,25:$Vr,26:$Vs,27:$Vt,28:$Vu,29:$Vv}),o($VI,[2,18],{24:$Vq,25:$Vr,26:$Vs,27:$Vt,28:$Vu,29:$Vv}),o($VJ,[2,19],{26:$Vs,27:$Vt,28:$Vu,29:$Vv}),o($VJ,[2,20],{26:$Vs,27:$Vt,28:$Vu,29:$Vv}),o($VG,[2,21],{29:$Vv}),o($VG,[2,22],{29:$Vv}),o($VG,[2,23],{29:$Vv}),o($Vw,[2,25]),o($Vw,[2,33],{34:$VB,36:$VC}),o($Vw,[2,34],{34:$VB,36:$VC}),{16:$Vi,17:$Vj,18:$Vk,19:$Vl,20:$Vm,21:$Vn,22:$Vo,23:$Vp,24:$Vq,25:$Vr,26:$Vs,27:$Vt,28:$Vu,29:$Vv,41:[1,105]},o($Vw,[2,31],{34:$VB,36:$VC}),o($Vw,[2,32],{34:$VB,36:$VC}),o($Vy,[2,7]),{30:[1,107],39:106},{12:[1,108],32:[1,109]},o($Vy,[2,27]),o($VK,[2,29],{16:$Vi,17:$Vj,18:$Vk,19:$Vl,20:$Vm,21:$Vn,22:$Vo,23:$Vp,24:$Vq,25:$Vr,26:$Vs,27:$Vt,28:$Vu,29:$Vv}),o($VE,[2,47]),o($VE,[2,48]),o($Vy,[2,61]),o($Vy,[2,62]),o($Vy,[2,63]),o($Vy,[2,64]),{12:[1,110]},o($Vy,[2,41]),o($Vw,[2,37],{34:[1,111]}),o($VL,[2,39]),o($Vy,[2,26]),{4:112,6:3,7:4,8:5,9:6,10:7,11:$V0,13:9,14:$V1,15:11,25:$V2,30:$V3,33:13,34:$V4,35:18,36:$V5,38:$V6,42:21,43:22,44:$V7,45:$V8,46:25,47:26,48:27,50:$V9,51:$Va,52:$Vb,53:$Vc,54:$Vd,55:$Ve,56:$Vf,57:$Vg,58:$Vh},o($Vy,[2,65]),{30:[1,113]},o($VK,[2,28],{16:$Vi,17:$Vj,18:$Vk,19:$Vl,20:$Vm,21:$Vn,22:$Vo,23:$Vp,24:$Vq,25:$Vr,26:$Vs,27:$Vt,28:$Vu,29:$Vv}),o($VL,[2,40])],
 defaultActions: {35:[2,1]},
-parseError: function parseError(str, hash) {
+parseError: function parseError (str, hash) {
     if (hash.recoverable) {
         this.trace(str);
     } else {
-        function _parseError (msg, hash) {
-            this.message = msg;
-            this.hash = hash;
-        }
-        _parseError.prototype = Error;
-
-        throw new _parseError(str, hash);
+        var error = new Error(str);
+        error.hash = hash;
+        throw error;
     }
 },
 parse: function parse(input) {
@@ -6960,7 +7261,7 @@ showPosition:function () {
     },
 
 // test the lexed token: return FALSE when not a match, otherwise return token
-test_match:function (match, indexed_rule) {
+test_match:function(match, indexed_rule) {
         var token,
             lines,
             backup;
@@ -7090,7 +7391,7 @@ next:function () {
     },
 
 // return next match that has a token
-lex:function lex() {
+lex:function lex () {
         var r = this.next();
         if (r) {
             return r;
@@ -7100,12 +7401,12 @@ lex:function lex() {
     },
 
 // activates a new lexer condition state (pushes the new lexer condition state onto the condition stack)
-begin:function begin(condition) {
+begin:function begin (condition) {
         this.conditionStack.push(condition);
     },
 
 // pop the previously active lexer condition state off the condition stack
-popState:function popState() {
+popState:function popState () {
         var n = this.conditionStack.length - 1;
         if (n > 0) {
             return this.conditionStack.pop();
@@ -7115,7 +7416,7 @@ popState:function popState() {
     },
 
 // produce the lexer rule set which is active for the currently active lexer condition state
-_currentRules:function _currentRules() {
+_currentRules:function _currentRules () {
         if (this.conditionStack.length && this.conditionStack[this.conditionStack.length - 1]) {
             return this.conditions[this.conditionStack[this.conditionStack.length - 1]].rules;
         } else {
@@ -7124,7 +7425,7 @@ _currentRules:function _currentRules() {
     },
 
 // return the currently active lexer condition state; when an index argument is provided it produces the N-th previous condition state, if available
-topState:function topState(n) {
+topState:function topState (n) {
         n = this.conditionStack.length - 1 - Math.abs(n || 0);
         if (n >= 0) {
             return this.conditionStack[n];
@@ -7134,7 +7435,7 @@ topState:function topState(n) {
     },
 
 // alias for begin(condition)
-pushState:function pushState(condition) {
+pushState:function pushState (condition) {
         this.begin(condition);
     },
 
@@ -7244,7 +7545,7 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
 exports.parser = parser;
 exports.Parser = parser.Parser;
 exports.parse = function () { return parser.parse.apply(parser, arguments); };
-exports.main = function commonjsMain(args) {
+exports.main = function commonjsMain (args) {
     if (!args[1]) {
         console.log('Usage: '+args[0]+' FILE');
         process.exit(1);
@@ -7256,6 +7557,6 @@ if (typeof module !== 'undefined' && require.main === module) {
   exports.main(process.argv.slice(1));
 }
 }
-}).call(this,require('_process'))
+}).call(this)}).call(this,require('_process'))
 },{"_process":4,"fs":2,"path":3}]},{},[6])(6)
 });
