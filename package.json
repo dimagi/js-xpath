@@ -1,6 +1,6 @@
 {
   "name": "js-xpath",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "An xpath parser",
   "authors": [
     "Dimagi <dev@dimagi.com>"
