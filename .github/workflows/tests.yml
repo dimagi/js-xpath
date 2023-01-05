@@ -1,0 +1,23 @@
+name: tests
+on:
+  pull_request:
+    branches:
+    - master
+jobs:
+  tests:
+    runs-on: ubuntu-18.04
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 14
+    - name: Install dependencies
+      run: |
+        yarn_version=$(grep -Eo '^yarn@[^:]+' ./yarn.lock)
+        echo "lock file requires: $yarn_version"
+        npm install "$yarn_version"
+        yarn install
+    - name: Run tests
+      run: |
+        npm test

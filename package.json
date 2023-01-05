@@ -17,7 +17,8 @@
     "url": "https://github.com/dimagi/js-xpath.git"
   },
   "dependencies": {
-    "biginteger": "^1.0.3"
+    "biginteger": "^1.0.3",
+    "yarn": "1.22.10"
   },
   "devDependencies": {
     "browserify": "17.0.0",
@@ -25,6 +26,9 @@
     "jshint": "^2.12.0",
     "node-qunit-phantomjs": "^2.1.1",
     "qunit": "^2.14.0"
+  },
+  "engines": {
+    "yarn": ">= 1.0.0"
   },
   "resolutions": {
     "elliptic": "^6.5.4",
