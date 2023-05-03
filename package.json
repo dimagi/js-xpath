@@ -1,6 +1,6 @@
 {
   "name": "js-xpath",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "An xpath parser",
   "authors": [
     "Dimagi <dev@dimagi.com>"
@@ -31,9 +31,12 @@
     "yarn": ">= 1.0.0"
   },
   "resolutions": {
+    "cached-path-relative": "^1.0.2",
     "elliptic": "^6.5.4",
     "minimist": "^1.2.3",
-    "cached-path-relative": "^1.0.2",
+    "json-schema": "^0.4.0",
+    "request": "^2.88.2",
+    "shelljs": "^0.8.5",
     "sshpk": "^1.13.2"
   },
   "main": "src/main.js",
