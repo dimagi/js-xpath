@@ -127,6 +127,7 @@ bcrypt-pbkdf@^1.0.0:
 biginteger@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/biginteger/-/biginteger-1.0.3.tgz#111c682070b852d0677a1621fd33452aab674607"
+  integrity sha512-gmTfQyNVreGeTlSrZiD7mAg52B0e20NWTJdt9zESPcUce/SEdP0UT/GGal6OZxNELiues4+XuyJzyAlkuO9nNg==
 
 bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.1.1:
   version "4.11.6"
@@ -2005,11 +2006,6 @@ xtend@^4.0.1, xtend@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
-
-yarn@1.22.10:
-  version "1.22.10"
-  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.22.10.tgz#c99daa06257c80f8fa2c3f1490724e394c26b18c"
-  integrity sha512-IanQGI9RRPAN87VGTF7zs2uxkSyQSrSPsju0COgbsKQOOXr5LtcVPeyXWgwVa0ywG3d8dg6kSYKGBuYK021qeA==
 
 yauzl@^2.10.0:
   version "2.10.0"

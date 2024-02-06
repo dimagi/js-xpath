@@ -17,8 +17,7 @@
     "url": "https://github.com/dimagi/js-xpath.git"
   },
   "dependencies": {
-    "biginteger": "^1.0.3",
-    "yarn": "1.22.10"
+    "biginteger": "^1.0.3"
   },
   "devDependencies": {
     "browserify": "17.0.0",
