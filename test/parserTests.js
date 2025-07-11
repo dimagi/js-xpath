@@ -4,7 +4,7 @@
  * 
  */
 
-const xpath = require('../src/main.js');
+var xpath = require('../src/main.js');
 
 var runCommon = function(assert, testcases) {
     xpath.setXPathModels(xpath.makeXPathModels());

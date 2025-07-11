@@ -4,7 +4,7 @@
  * 
  */
 
-const xpath = require('../src/main.js');
+var xpath = require('../src/main.js');
 
 var runGeneratorTests = function(assert, testcases) {
     var parsed;
