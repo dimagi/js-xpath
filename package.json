@@ -23,7 +23,6 @@
     "browserify": "17.0.0",
     "jison": "0.4.18",
     "jshint": "^2.12.0",
-    "node-qunit-phantomjs": "^2.1.1",
     "qunit": "^2.14.0"
   },
   "engines": {
@@ -43,6 +42,6 @@
     "jison": "jison src/jison/xpath.jison src/jison/xpath.jisonlex -o src/parser.js",
     "dist": "browserify src/main.js --standalone xpath > dist/js-xpath.js",
     "build": "npm run jison && npm run dist",
-    "test": "node-qunit-phantomjs test/tests.html && jshint src/models.js test/*.js"
+    "test": "qunit test/*.js && jshint src/models.js test/*.js"
   }
 }
