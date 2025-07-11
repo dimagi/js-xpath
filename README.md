@@ -34,8 +34,7 @@ hashtags use the format `#namespace/arbitrarily/long/path` and do not support fi
 
 Tests
 -----
-- Open `test/tests.html` to run tests (must be serving all files in the library).
-- Individual tests are found in `test/parserTests.js` and `test/generatorTests.js`
+- Run `yarn test` or `yarn qunit test/generatorTests.js` for a specific test file 
 
 
 Known Limitations

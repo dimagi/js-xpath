@@ -4,41 +4,43 @@
  * 
  */
 
-var runCommon = function(testcases) {
+var xpath = require('../src/main.js');
+
+var runCommon = function(assert, testcases) {
     xpath.setXPathModels(xpath.makeXPathModels());
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
             try {
-                QUnit.assert.equal(xpath.parse(i).toString(), testcases[i], "" + i + " parsed correctly.");
+                assert.equal(xpath.parse(i).toString(), testcases[i], "" + i + " parsed correctly.");
             } catch(err) {
-                QUnit.assert.ok(false, "" + err + " for input: " + i);
+                assert.ok(false, "" + err + " for input: " + i);
             }
         }
     }
 };
                 
-var runFailures = function(testcases) {
+var runFailures = function(assert, testcases) {
     function tmpFunc() {
         xpath.parse(i);
     }
     xpath.setXPathModels(xpath.makeXPathModels());
     for (var i in testcases) {
         if (testcases.hasOwnProperty(i)) {
-            QUnit.assert.throws(tmpFunc, testcases[i], "" + i + " correctly failed to parse.");
+            assert.throws(tmpFunc, testcases[i], "" + i + " correctly failed to parse.");
         }
     }
 };
 
-QUnit.test("null expressions", function () {
-    runFailures({
+QUnit.test("null expressions", function (assert) {
+    runFailures(assert, {
         "": null,
         "     ": null,
         "  \t \n  \r ": null
     });
 });
 
-QUnit.test("numbers", function() {
-    runCommon({
+QUnit.test("numbers", function(assert) {
+    runCommon(assert, {
         "10": "{num:10}",
         "123.": "{num:123.}",
  		"734.04": "{num:734.04}",
@@ -55,8 +57,8 @@ QUnit.test("numbers", function() {
     });
 });
 
-QUnit.test("strings", function () {
-    runCommon({
+QUnit.test("strings", function (assert) {
+    runCommon(assert, {
         "\"\"": "{str:\"\"}",
         "\"   \"": "{str:\"   \"}",
         "''": "{str:''}",
@@ -64,30 +66,30 @@ QUnit.test("strings", function () {
         "\"'\"": "{str:\"'\"}",
         "'mary had a little lamb'": "{str:'mary had a little lamb'}"
     });
-    runFailures({
+    runFailures(assert, {
         "'unterminated string...": null,
     });
 });
 
 
-QUnit.test("variables", function () {
-    runCommon({
+QUnit.test("variables", function (assert) {
+    runCommon(assert, {
 		"$var": "{var:var}",
 		"$qualified:name": "{var:qualified:name}"
     });
-    runFailures({
+    runFailures(assert, {
         "$x:*": null,
         "$": null,
         "$$asdf": null
     });
 });
 
-QUnit.test("parens nesting", function () {
-    runCommon({
+QUnit.test("parens nesting", function (assert) {
+    runCommon(assert, {
         "(5)": "{num:5}",
         "(( (( (5 )) )))  ": "{num:5}",
     });
-    runFailures({
+    runFailures(assert, {
         ")": null,
         "(": null,
         "()": null,
@@ -95,8 +97,8 @@ QUnit.test("parens nesting", function () {
     });
 });
 
-QUnit.test("operators", function () {
-    runCommon({
+QUnit.test("operators", function (assert) {
+    runCommon(assert, {
         "5 + 5": "{binop-expr:+,{num:5},{num:5}}",
         "-5": "{unop-expr:num-neg,{num:5}}",
         "- 5": "{unop-expr:num-neg,{num:5}}",
@@ -120,7 +122,7 @@ QUnit.test("operators", function () {
         "5 or 5": "{binop-expr:or,{num:5},{num:5}}",
         "5 | 5": "{binop-expr:union,{num:5},{num:5}}"
     });
-    runFailures({
+    runFailures(assert, {
         "+-": null,
         "5/5": null,
         "5%5": null,
@@ -131,8 +133,8 @@ QUnit.test("operators", function () {
     });
 });
 
-QUnit.test("operator associativity", function () {
-    runCommon({
+QUnit.test("operator associativity", function (assert) {
+    runCommon(assert, {
         "1 or 2 or 3": "{binop-expr:or,{num:1},{binop-expr:or,{num:2},{num:3}}}",
         "1 and 2 and 3": "{binop-expr:and,{num:1},{binop-expr:and,{num:2},{num:3}}}",
         "1 = 2 != 3 != 4 = 5": "{binop-expr:==,{binop-expr:!=,{binop-expr:!=,{binop-expr:==,{num:1},{num:2}},{num:3}},{num:4}},{num:5}}",
@@ -145,8 +147,8 @@ QUnit.test("operator associativity", function () {
     
 });
 
-QUnit.test("operator precedence", function () {
-    runCommon({
+QUnit.test("operator precedence", function (assert) {
+    runCommon(assert, {
         "1 < 2 = 3 > 4 and 5 <= 6 != 7 >= 8 or 9 and 10":
                 "{binop-expr:or,{binop-expr:and,{binop-expr:==,{binop-expr:<,{num:1},{num:2}},{binop-expr:>,{num:3},{num:4}}},{binop-expr:!=,{binop-expr:<=,{num:5},{num:6}},{binop-expr:>=,{num:7},{num:8}}}},{binop-expr:and,{num:9},{num:10}}}",
         "1 * 2 + 3 div 4 < 5 mod 6 | 7 - 8":
@@ -154,14 +156,14 @@ QUnit.test("operator precedence", function () {
         "- 4 * 6": "{binop-expr:*,{unop-expr:num-neg,{num:4}},{num:6}}",
         "6*(3+4)and(5or2)": "{binop-expr:and,{binop-expr:*,{num:6},{binop-expr:+,{num:3},{num:4}}},{binop-expr:or,{num:5},{num:2}}}",
     });
-    runFailures({
+    runFailures(assert, {
         // disallowed by the xpath spec, but we don't care enough to catch this
         // "8|-9": null 
     });
 });
 
-QUnit.test("function calls", function () {
-    runCommon({
+QUnit.test("function calls", function (assert) {
+    runCommon(assert, {
         "function()": "{func-expr:function,{}}",
         "func:tion()": "{func-expr:func:tion,{}}",
         "function(   )": "{func-expr:function,{}}",
@@ -169,21 +171,21 @@ QUnit.test("function calls", function () {
         "function   ( 5, 'arg', 4 * 12)": "{func-expr:function,{{num:5},{str:'arg'},{binop-expr:*,{num:4},{num:12}}}}",
         "4andfunc()": "{binop-expr:and,{num:4},{func-expr:func,{}}}",
     });
-    runFailures({
+    runFailures(assert, {
         "function ( 4, 5, 6 ": null,
     });
 });
 
 
-QUnit.test("function calls that are actually node tests", function () {
-    runCommon({
+QUnit.test("function calls that are actually node tests", function (assert) {
+    runCommon(assert, {
         "node()": "{path-expr:rel,{{step:child,node()}}}",
         "text()": "{path-expr:rel,{{step:child,text()}}}",
         "comment()": "{path-expr:rel,{{step:child,comment()}}}",
         "processing-instruction()": "{path-expr:rel,{{step:child,processing-instruction()}}}",
         "processing-instruction('asdf')": "{path-expr:rel,{{step:child,processing-instruction('asdf')}}}",
     });
-    runFailures({
+    runFailures(assert, {
         "node(5)": null,
         "text('str')": null,
         "comment(name)": null,
@@ -193,29 +195,29 @@ QUnit.test("function calls that are actually node tests", function () {
     });
 });
 
-QUnit.test("filter expressions", function () {
-    runCommon({
+QUnit.test("filter expressions", function (assert) {
+    runCommon(assert, {
         "bunch-o-nodes()[3]": "{filt-expr:{func-expr:bunch-o-nodes,{}},{{num:3}}}",
         "bunch-o-nodes()[3]['predicates'!='galore']": "{filt-expr:{func-expr:bunch-o-nodes,{}},{{num:3},{binop-expr:!=,{str:'predicates'},{str:'galore'}}}}",
         "(bunch-o-nodes)[3]": "{filt-expr:{path-expr:rel,{{step:child,bunch-o-nodes}}},{{num:3}}}",
         "bunch-o-nodes[3]": "{path-expr:rel,{{step:child,bunch-o-nodes,{{num:3}}}}}",
     });
-    runFailures({});
+    runFailures(assert, {});
 });
 
-QUnit.test("path steps", function () {
-    runCommon({
+QUnit.test("path steps", function (assert) {
+    runCommon(assert, {
         ".": "{path-expr:rel,{{step:self,node()}}}",
         "..": "{path-expr:rel,{{step:parent,node()}}}",
     });
-    runFailures({
+    runFailures(assert, {
         "..[4]": null,
         "preceding::..": null,
     });
 });
 
-QUnit.test("name tests", function () {
-    runCommon({
+QUnit.test("name tests", function (assert) {
+    runCommon(assert, {
         "name": "{path-expr:rel,{{step:child,name}}}",
         "qual:name": "{path-expr:rel,{{step:child,qual:name}}}",
         "_rea--ll:y.funk..y_N4M3": "{path-expr:rel,{{step:child,_rea--ll:y.funk..y_N4M3}}}",
@@ -223,7 +225,7 @@ QUnit.test("name tests", function () {
         "*": "{path-expr:rel,{{step:child,*}}}",
         "*****": "{binop-expr:*,{binop-expr:*,{path-expr:rel,{{step:child,*}}},{path-expr:rel,{{step:child,*}}}},{path-expr:rel,{{step:child,*}}}}",            
     });
-    runFailures({
+    runFailures(assert, {
         "a:b:c": null,
         "inv#lid_N~AME": null,
         ".abc": null,
@@ -231,8 +233,8 @@ QUnit.test("name tests", function () {
     });
 });
 
-QUnit.test("axes", function () {
-    runCommon({
+QUnit.test("axes", function (assert) {
+    runCommon(assert, {
         "child::*": "{path-expr:rel,{{step:child,*}}}",
         "parent::*": "{path-expr:rel,{{step:parent,*}}}",
         "descendant::*": "{path-expr:rel,{{step:descendant,*}}}",
@@ -250,7 +252,7 @@ QUnit.test("axes", function () {
         "@*": "{path-expr:rel,{{step:attribute,*}}}",
         "@ns:*": "{path-expr:rel,{{step:attribute,ns:*}}}",
     });
-    runFailures({
+    runFailures(assert, {
         "bad-axis::*": null,
         "::*": null,
         "child::.": null,
@@ -258,17 +260,17 @@ QUnit.test("axes", function () {
     });
 });
 
-QUnit.test("predicates", function () {
-    runCommon({
+QUnit.test("predicates", function (assert) {
+    runCommon(assert, {
         "descendant::node()[@attr='blah'][4]": "{path-expr:rel,{{step:descendant,node(),{{binop-expr:==,{path-expr:rel,{{step:attribute,attr}}},{str:'blah'}},{num:4}}}}}",
     });
-    runFailures({
+    runFailures(assert, {
         "[2+3]": null,
     });
 });
 
-QUnit.test("paths", function () {
-    runCommon({
+QUnit.test("paths", function (assert) {
+    runCommon(assert, {
         "rel/ative/path": "{path-expr:rel,{{step:child,rel},{step:child,ative},{step:child,path}}}",
         "/abs/olute/path['etc']": "{path-expr:abs,{{step:child,abs},{step:child,olute},{step:child,path,{{str:'etc'}}}}}",
         "filter()/expr/path": "{path-expr:{filt-expr:{func-expr:filter,{}},{}},{{step:child,expr},{step:child,path}}}",
@@ -280,15 +282,15 @@ QUnit.test("paths", function () {
         "6andpath": "{binop-expr:and,{num:6},{path-expr:rel,{{step:child,path}}}}",
     
     });
-    runFailures({
+    runFailures(assert, {
         "rel/ative/path/": null,
         "filter-expr/(must-come)['first']": null,
         "//": null,
     });
 });
 
-QUnit.test("real world examples", function () {
-    runCommon({
+QUnit.test("real world examples", function (assert) {
+    runCommon(assert, {
         "/foo/bar = 2.0": "{binop-expr:==,{path-expr:abs,{{step:child,foo},{step:child,bar}}},{num:2.}}",
         "/patient/sex = 'male' and /patient/age > 15": "{binop-expr:and,{binop-expr:==,{path-expr:abs,{{step:child,patient},{step:child,sex}}},{str:'male'}},{binop-expr:>,{path-expr:abs,{{step:child,patient},{step:child,age}}},{num:15}}}",
         "../jr:hist-data/labs[@type=\"cd4\"]": "{path-expr:rel,{{step:parent,node()},{step:child,jr:hist-data},{step:child,labs,{{binop-expr:==,{path-expr:rel,{{step:attribute,type}}},{str:\"cd4\"}}}}}}",

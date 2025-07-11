@@ -1,3 +1,5 @@
+var xpath = require('../src/main.js');
+
 (function() {
     function makeXPathConfig(validHashtagNamespaces, translationDict) {
         return {
@@ -26,56 +28,56 @@
         };
     }
 
-    var runCommon = function(testcases, validHashtagNamespaces) {
+    var runCommon = function(assert, testcases, validHashtagNamespaces) {
         xpath.setXPathModels(xpath.makeXPathModels(makeXPathConfig(validHashtagNamespaces, {})));
         for (var i in testcases) {
             if (testcases.hasOwnProperty(i)) {
                 try {
-                    QUnit.assert.equal(xpath.parse(i).toString(), testcases[i], "" + i + " parsed correctly.");
+                    assert.equal(xpath.parse(i).toString(), testcases[i], "" + i + " parsed correctly.");
                 } catch(err) {
-                    QUnit.assert.ok(false, "" + err + " for input: " + i);
+                    assert.ok(false, "" + err + " for input: " + i);
                 }
             }
         }
     };
-    var runFailures = function(testcases, validHashtagNamespaces) {
+    var runFailures = function(assert, testcases, validHashtagNamespaces) {
         function tmpFunc() {
             xpath.parse(i);
         }
         xpath.setXPathModels(xpath.makeXPathModels(makeXPathConfig(validHashtagNamespaces, {})));
         for (var i in testcases) {
             if (testcases.hasOwnProperty(i)) {
-                QUnit.assert.throws(tmpFunc, testcases[i], "" + i + " correctly failed to parse.");
+                assert.throws(tmpFunc, testcases[i], "" + i + " correctly failed to parse.");
             }
         }
     };
-    var runGeneratorTests = function(testcases, translationDict, namespaces) {
+    var runGeneratorTests = function(assert, testcases, translationDict, namespaces) {
         xpath.setXPathModels(xpath.makeXPathModels(makeXPathConfig(namespaces, translationDict)));
         var parsed;
         for (var i in testcases) {
             if (testcases.hasOwnProperty(i)) {
                 try {
                     parsed = xpath.parse(i);
-                    QUnit.assert.equal(parsed.toXPath(), testcases[i], "" + i + " generated correctly.");
+                    assert.equal(parsed.toXPath(), testcases[i], "" + i + " generated correctly.");
                     // It seems reasonable to expect that the generated xpath
                     // should parse back to the same object, although this may 
                     // not always hold true.
-                    QUnit.assert.equal(parsed.toString(), xpath.parse(parsed.toHashtag()).toString(), "" + i + " produced same result when reparsed.");
+                    assert.equal(parsed.toString(), xpath.parse(parsed.toHashtag()).toString(), "" + i + " produced same result when reparsed.");
                 } catch(err) {
-                    QUnit.assert.ok(false, "" + err + " for input: " + i);
+                    assert.ok(false, "" + err + " for input: " + i);
                 }
             }
         }
     };
 
-    QUnit.test("hashtag parsing", function () {
+    QUnit.test("hashtag parsing", function (assert) {
         var namespaces = ['form', 'case'];
-        runCommon({
+        runCommon(assert, {
             "#form/question": "{hashtag-expr:form,{question}}",
             "#form/group/question": "{hashtag-expr:form,{group,question}}",
             "#case/type/prop": "{hashtag-expr:case,{type,prop}}",
         }, namespaces);
-        runFailures({
+        runFailures(assert, {
             "#": null,
             "#case/type/prop[filter=filter]": null,
             "#/case/type/prop": null,
@@ -83,7 +85,7 @@
         }, namespaces);
     });
 
-    QUnit.test("generator hashtags", function () {
+    QUnit.test("generator hashtags", function (assert) {
         var transDict = {
                 '#form/question': '/data/question',
                 '#form/group/question': '/data/group/question',
@@ -97,10 +99,10 @@
                 "/data/filtered[@id = #form/question]": "/data/filtered[@id = /data/question]"
             };
 
-        runGeneratorTests(testCases, transDict, ['form', 'case']);
+        runGeneratorTests(assert, testCases, transDict, ['form', 'case']);
     });
 
-    QUnit.test("hashtags with no xpath", function() {
+    QUnit.test("hashtags with no xpath", function(assert) {
         xpath.setXPathModels(xpath.makeXPathModels(makeXPathConfig(['form', 'case'], {})));
 
         var testcases = {
@@ -110,18 +112,18 @@
         for (var i in testcases) {
             if (testcases.hasOwnProperty(i)) {
                 parsed = xpath.parse(i);
-                QUnit.assert.ok(true, i + " correctly parsed");
+                assert.ok(true, i + " correctly parsed");
                 try {
                     parsed.toXPath();
-                    QUnit.assert.ok(false, "This should not be translatable");
+                    assert.ok(false, "This should not be translatable");
                 } catch(err) {
-                    QUnit.assert.ok(true, err);
+                    assert.ok(true, err);
                 }
             }
         }
     });
 
-    QUnit.test("from xpath to hashtag", function() {
+    QUnit.test("from xpath to hashtag", function(assert) {
         var translationDict = {
                 '#form': '/data',
                 '#form/question': '/data/question',
@@ -147,8 +149,8 @@
         for (var i in testcases) {
             if (testcases.hasOwnProperty(i)) {
                 parsed = xpath.parse(i);
-                QUnit.assert.ok(true, i + " correctly parsed");
-                QUnit.assert.equal(parsed.toHashtag(), testcases[i]);
+                assert.ok(true, i + " correctly parsed");
+                assert.equal(parsed.toHashtag(), testcases[i]);
             }
         }
     });
