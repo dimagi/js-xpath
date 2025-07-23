@@ -20,8 +20,8 @@
     "biginteger": "^1.0.3"
   },
   "devDependencies": {
-    "browserify": "17.0.0",
-    "jison": "0.4.18",
+    "browserify": "^17.0.0",
+    "jison": "^0.4.18",
     "jshint": "^2.12.0",
     "qunit": "^2.14.0"
   },
