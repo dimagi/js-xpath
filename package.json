@@ -20,8 +20,8 @@
     "biginteger": "^1.0.3"
   },
   "devDependencies": {
-    "browserify": "17.0.0",
-    "jison": "0.4.18",
+    "browserify": "^17.0.0",
+    "jison": "^0.4.18",
     "jshint": "^2.12.0",
     "qunit": "^2.14.0"
   },
@@ -30,13 +30,11 @@
   },
   "resolutions": {
     "cached-path-relative": "^1.0.2",
-    "elliptic": "^6.5.4",
+    "elliptic": "^6.6.1",
     "minimist": "^1.2.3",
     "json-schema": "^0.4.0",
     "pbkdf2": "^3.1.3",
-    "request": "^2.88.2",
-    "shelljs": "^0.8.5",
-    "sshpk": "^1.13.2"
+    "shelljs": "^0.8.5"
   },
   "main": "src/main.js",
   "scripts": {
