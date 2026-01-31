@@ -3647,7 +3647,7 @@ function checkPureVirtual(handler) {
         handler(e);
     }
 }
-checkPureVirtual(this.alert || this.print || function(e) {throw e;});
+checkPureVirtual(globalThis.alert || this.print || function(e) {throw e;});
 
 return SN;
 
